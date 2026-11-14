@@ -1,17 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { resend } from '@/lib/resend/client';
+import { getResendClient } from '@/lib/resend/client';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { type, name, email, subject, message } = body;
+    const { name, email, subject, message } = body;
 
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'support@classly.com';
+    const client = getResendClient();
+
+    if (!client) {
+      console.warn('RESEND_API_KEY is not configured on server; inquiry logged.');
+      return NextResponse.json({ success: true, simulated: true });
+    }
 
     // Dispatch email notification via Resend
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await client.emails.send({
       from: `Classly Support <${fromEmail}>`,
-      to: [fromEmail], // sends support ticket to the configured inbox
+      to: [fromEmail],
       replyTo: email,
       subject: `[Classly Support] ${subject} from ${name}`,
       html: `
@@ -29,7 +37,7 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       console.warn('Resend send error:', error);
-      return NextResponse.json({ success: false, error }, { status: 200 }); // Graceful fallback
+      return NextResponse.json({ success: false, error }, { status: 200 });
     }
 
     return NextResponse.json({ success: true, data });
@@ -38,4 +46,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, fallback: true });
   }
 }
-
