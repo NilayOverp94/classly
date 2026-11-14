@@ -28,7 +28,7 @@ Inspired by Wyzant's proven marketplace model, designed from the ground up with 
 | **How It Works** | `/how-it-works` | Step-by-step walkthrough for families & educators, safety standards, and guarantees |
 | **Become a Tutor** | `/become-a-tutor` | Teacher recruitment page, interactive earnings calculator, and 4-step teacher application wizard |
 | **Teacher Registration** | `/register/teacher` | Teacher onboarding redirect to the application wizard |
-| **Login** | `/login` | Role-based login (Student/Parent, Teacher, Admin) with 1-click demo buttons |
+| **Login** | `/login` | Supabase authentication (Student/Parent, Teacher, Admin) with Google OAuth support |
 | **Student Registration** | `/register/student` | Parent-supervised student registration with COPPA consent workflows |
 | **Student Dashboard** | `/dashboard/student` | Upcoming lessons with 1-click live classroom join, lesson history, materials, and receipts |
 | **Teacher Dashboard** | `/dashboard/teacher` | Earnings metrics, upcoming classes, availability scheduler, class creation form, and student roster |

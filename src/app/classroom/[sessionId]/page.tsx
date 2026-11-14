@@ -16,20 +16,23 @@ import {
   PenTool, 
   Eraser, 
   Download, 
-  Upload, 
   Send,
-  Users,
   ShieldCheck,
-  Maximize2,
-  X
+  X,
+  Loader2
 } from 'lucide-react';
 import { mockTutors } from '@/lib/data/mockTutors';
 
 export default function ClassroomPage() {
   const params = useParams();
   const router = useRouter();
-  const sessionId = (params?.sessionId as string) || 'session-demo';
+  const sessionId = (params?.sessionId as string) || 'room-session-active';
   const tutor = mockTutors[0];
+
+  // LiveKit Connection State
+  const [liveKitToken, setLiveKitToken] = useState<string | null>(null);
+  const [liveKitUrl, setLiveKitUrl] = useState<string>('wss://classly-cq8rvxev.livekit.cloud');
+  const [connecting, setConnecting] = useState(true);
 
   // Media Controls State
   const [micActive, setMicActive] = useState(true);
@@ -52,11 +55,39 @@ export default function ClassroomPage() {
   const [penColor, setPenColor] = useState<string>('#183153');
 
   // Elapsed timer
-  const [seconds, setSeconds] = useState(142); // 2 mins 22 secs in
+  const [seconds, setSeconds] = useState(0);
   useEffect(() => {
     const timer = setInterval(() => setSeconds((s) => s + 1), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Fetch real LiveKit token from server
+  useEffect(() => {
+    async function initLiveKit() {
+      try {
+        const res = await fetch('/api/livekit/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            roomName: sessionId,
+            participantName: 'Classly Learner',
+            identity: `learner-${Math.random().toString(36).substring(2, 8)}`,
+            isTeacher: false,
+          }),
+        });
+        const data = await res.json();
+        if (data.token) {
+          setLiveKitToken(data.token);
+          if (data.wsUrl) setLiveKitUrl(data.wsUrl);
+        }
+      } catch (err) {
+        console.warn('LiveKit room connection notice:', err);
+      } finally {
+        setConnecting(false);
+      }
+    }
+    initLiveKit();
+  }, [sessionId]);
 
   const formatTimer = (totalSeconds: number) => {
     const m = Math.floor(totalSeconds / 60);
@@ -70,7 +101,6 @@ export default function ClassroomPage() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    // Set background to pure white initially
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }, [activeSidePanel]);
@@ -95,7 +125,7 @@ export default function ClassroomPage() {
     const rect = canvas.getBoundingClientRect();
     if (tool === 'eraser') {
       ctx.strokeStyle = '#FFFFFF';
-      ctx.lineWidth = 16;
+      ctx.lineWidth = 18;
     } else {
       ctx.strokeStyle = penColor;
       ctx.lineWidth = 3;
@@ -196,7 +226,7 @@ export default function ClassroomPage() {
                   />
                   <div className="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-sm px-2.5 py-1 rounded text-xs font-medium text-white flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                    <span>Ethan Miller (You)</span>
+                    <span>Ethan Miller (Student)</span>
                   </div>
                 </>
               ) : (
@@ -224,7 +254,7 @@ export default function ClassroomPage() {
               <div className="flex items-center gap-2">
                 <span className="font-bold text-navy-800 flex items-center gap-1.5 mr-2">
                   <PenTool className="w-4 h-4 text-navy-800" />
-                  <span>Live Digital Whiteboard</span>
+                  <span>Interactive Whiteboard</span>
                 </span>
 
                 <button
@@ -329,7 +359,7 @@ export default function ClassroomPage() {
                 <form onSubmit={handleSendMessage} className="mt-3 pt-3 border-t border-navy-800 flex gap-2">
                   <input
                     type="text"
-                    placeholder="Type a message to Dr. Sharma..."
+                    placeholder="Type a message to your teacher..."
                     value={inputMsg}
                     onChange={(e) => setInputMsg(e.target.value)}
                     className="flex-1 bg-navy-950 border border-navy-800 rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-navy-600"
@@ -351,9 +381,9 @@ export default function ClassroomPage() {
                 <div className="p-3 bg-navy-950 rounded-lg border border-navy-800 flex items-center justify-between">
                   <div>
                     <div className="font-semibold text-white">Calculus_Derivatives_Practice.pdf</div>
-                    <div className="text-[10px] text-gray-400">1.2 MB • Uploaded by Dr. Sharma</div>
+                    <div className="text-[10px] text-gray-400">1.2 MB • Uploaded by {tutor.full_name}</div>
                   </div>
-                  <button onClick={() => alert('File downloading')} className="text-accent-400 hover:underline">
+                  <button onClick={() => alert('Downloading file')} className="text-accent-400 hover:underline">
                     <Download className="w-4 h-4" />
                   </button>
                 </div>
@@ -461,4 +491,3 @@ export default function ClassroomPage() {
     </div>
   );
 }
-

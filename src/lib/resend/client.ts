@@ -1,13 +1,14 @@
 import { Resend } from 'resend';
 
-// Use environment variable if available, otherwise a dummy placeholder to prevent build-time constructor crash
-const apiKey = process.env.RESEND_API_KEY || 're_placeholder_for_build_safe';
-export const resend = new Resend(apiKey);
+let _resend: Resend | null = null;
 
-export function getResendClient() {
+export function getResendClient(): Resend | null {
   const key = process.env.RESEND_API_KEY;
   if (!key || key.includes('placeholder')) return null;
-  return new Resend(key);
+  if (!_resend) {
+    _resend = new Resend(key);
+  }
+  return _resend;
 }
 
 export async function sendBookingConfirmationEmail(params: {

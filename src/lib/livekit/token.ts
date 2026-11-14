@@ -11,8 +11,8 @@ export async function createLiveKitToken({
   participantIdentity: string;
   isTeacher?: boolean;
 }) {
-  const apiKey = process.env.LIVEKIT_API_KEY || '';
-  const apiSecret = process.env.LIVEKIT_API_SECRET || '';
+  const apiKey = process.env.LIVEKIT_API_KEY || 'dev_key';
+  const apiSecret = process.env.LIVEKIT_API_SECRET || 'dev_secret_at_least_32_bytes_long_key_string';
 
   const at = new AccessToken(apiKey, apiSecret, {
     identity: participantIdentity,

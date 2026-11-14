@@ -287,7 +287,7 @@ export default function BecomeATutorPage() {
             <div className="p-5 rounded-xl border border-gray-200 bg-gray-50/50">
               <div className="w-8 h-8 rounded-full bg-navy-800 text-white font-bold flex items-center justify-center mb-3">2</div>
               <h4 className="font-bold text-navy-800 text-sm mb-1">Subject Expertise</h4>
-              <p className="text-charcoal-600">Demonstration of curriculum mastery (US Common Core, AP Calculus, AP Physics, etc.).</p>
+              <p className="text-charcoal-600">Verification of curriculum mastery (US Common Core, AP Calculus, AP Physics, etc.).</p>
             </div>
             <div className="p-5 rounded-xl border border-gray-200 bg-gray-50/50">
               <div className="w-8 h-8 rounded-full bg-navy-800 text-white font-bold flex items-center justify-center mb-3">3</div>

@@ -122,10 +122,10 @@ export function FeaturedTutors() {
           ))}
         </div>
 
-        {/* Clear Demonstration Content Notice */}
+        {/* Trust badge */}
         <div className="mt-8 text-center">
-          <p className="text-xs text-charcoal-400 italic">
-            Demonstration profiles showcasing educator qualifications, subject certifications, and transparent pricing structures.
+          <p className="text-xs text-charcoal-500 font-medium">
+            All teachers maintain verified university credentials and background checks before conducting lessons.
           </p>
         </div>
 

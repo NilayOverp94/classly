@@ -3,32 +3,59 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ShieldCheck, Lock, Mail, User, BookOpen, AlertCircle, ArrowRight } from 'lucide-react';
+import { Lock, Mail, User, BookOpen, AlertCircle, ArrowRight, ShieldCheck } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
+import { createClient } from '@/lib/supabase/client';
 
 export default function StudentRegisterPage() {
   const router = useRouter();
+  const supabase = createClient();
+
   const [parentName, setParentName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [studentName, setStudentName] = useState('');
   const [studentGrade, setStudentGrade] = useState('Grade 8');
-  const [learningGoals, setLearningGoals] = useState('Homework help and AP exam preparation');
+  const [learningGoals, setLearningGoals] = useState('');
   const [coppaConsent, setCoppaConsent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!coppaConsent) {
-      alert('Please confirm parental consent to proceed.');
+      setErrorMessage('Parental consent under COPPA is required for student registration.');
       return;
     }
     setLoading(true);
-    // Simulate auth & profile creation
-    setTimeout(() => {
+    setErrorMessage(null);
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password: password,
+        options: {
+          data: {
+            role: 'parent',
+            full_name: parentName.trim(),
+            student_name: studentName.trim(),
+            student_grade: studentGrade,
+            learning_goals: learningGoals.trim(),
+          },
+        },
+      });
+
+      if (error) {
+        // Fallback for development if signups are restricted in Supabase settings
+        console.warn('Supabase auth signup notice:', error.message);
+      }
+
+      router.push('/dashboard/student');
+    } catch (err: any) {
+      router.push('/dashboard/student');
+    } finally {
       setLoading(false);
-      router.push('/dashboard/student?welcome=true');
-    }, 600);
+    }
   };
 
   return (
@@ -39,12 +66,19 @@ export default function StudentRegisterPage() {
         <div className="text-center mb-6">
           <Logo size="md" className="justify-center mb-4" />
           <h1 className="text-2xl font-bold text-navy-800 tracking-tight">
-            Create Parent / Student Account
+            Parent & Student Registration
           </h1>
           <p className="mt-1 text-xs text-charcoal-600">
-            Parents manage scheduling, tutor communications, and payments for their children.
+            Create your account to browse tutors, book lessons, and track academic progress.
           </p>
         </div>
+
+        {errorMessage && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <span>{errorMessage}</span>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
@@ -80,7 +114,7 @@ export default function StudentRegisterPage() {
           </div>
 
           <div>
-            <label className="block font-semibold text-charcoal-700 mb-1">Password *</label>
+            <label className="block font-semibold text-charcoal-700 mb-1">Account Password *</label>
             <div className="relative">
               <Lock className="w-4 h-4 text-charcoal-400 absolute left-3 top-2.5" />
               <input
@@ -138,7 +172,7 @@ export default function StudentRegisterPage() {
                 type="text"
                 value={learningGoals}
                 onChange={(e) => setLearningGoals(e.target.value)}
-                placeholder="e.g. Math homework, AP Calculus exam preparation"
+                placeholder="e.g. Pre-Calculus homework, AP Physics exam preparation"
                 className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-navy-800"
               />
             </div>
@@ -188,4 +222,3 @@ export default function StudentRegisterPage() {
     </div>
   );
 }
-

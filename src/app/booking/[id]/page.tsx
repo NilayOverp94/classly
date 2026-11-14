@@ -116,7 +116,7 @@ function BookingContent() {
                 className="w-full sm:w-auto px-8 py-3 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-bold shadow-subtle transition flex items-center justify-center gap-2"
               >
                 <Video className="w-4 h-4" />
-                <span>Enter Live Classroom Demo</span>
+                <span>Enter Live Classroom</span>
               </Link>
               <Link
                 href="/dashboard/student"

@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 export function createClient() {
   const cookieStore = cookies();
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://isooxdepfamnufwglosa.supabase.co';
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'dummy_key_for_build';
 
   return createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {

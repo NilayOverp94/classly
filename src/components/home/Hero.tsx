@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Search, GraduationCap, ShieldCheck, Star, Users } from 'lucide-react';
+import { Search, ShieldCheck, GraduationCap, DollarSign, CheckCircle2 } from 'lucide-react';
 
 export function Hero() {
   const router = useRouter();
@@ -27,7 +27,7 @@ export function Hero() {
             {/* Trust pill */}
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-softblue-100 border border-softblue-200 w-fit text-xs font-semibold text-navy-800 mb-6 shadow-subtle">
               <ShieldCheck className="w-4 h-4 text-accent-500" />
-              <span>Verified K-12 Educators • Rigorously Vetted</span>
+              <span>Rigorous Educator Vetting • University Degree Audits</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-bold text-navy-800 tracking-tight leading-[1.12]">
@@ -36,7 +36,7 @@ export function Hero() {
             </h1>
 
             <p className="mt-5 text-lg text-charcoal-600 max-w-xl leading-relaxed">
-              Connect with experienced teachers for personalized one-to-one tutoring and interactive online classes designed around your student's curriculum and pace.
+              Connect with experienced teachers for personalized one-to-one tutoring and interactive online classes tailored to your student's school curriculum and pace.
             </p>
 
             {/* Prominent Search Interface Box */}
@@ -100,51 +100,59 @@ export function Hero() {
               </form>
             </div>
 
-            {/* Secondary CTA & Supporting Info */}
+            {/* Secondary CTA */}
             <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-charcoal-600">
               <span className="text-xs uppercase tracking-wider font-semibold text-gray-400">Are you a teacher?</span>
               <Link
                 href="/become-a-tutor"
                 className="inline-flex items-center gap-1.5 font-semibold text-navy-800 hover:text-accent-500 transition-colors"
               >
-                <span>Become a Tutor on Classly</span>
+                <span>Apply to Teach on Classly</span>
                 <span aria-hidden="true">&rarr;</span>
               </Link>
             </div>
 
-            {/* Quick Metrics */}
-            <div className="mt-8 pt-6 border-t border-gray-200/80 grid grid-cols-3 gap-4 max-w-lg">
-              <div>
-                <span className="block text-2xl font-bold text-navy-800">4.95/5</span>
-                <span className="text-xs text-charcoal-500">Average lesson rating</span>
+            {/* Real Product Value Highlights (No fake stats) */}
+            <div className="mt-8 pt-6 border-t border-gray-200/80 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-xl text-xs">
+              <div className="flex items-start gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-accent-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-bold text-navy-800 block">Verified Qualifications</span>
+                  <span className="text-charcoal-500">Degree & identity audits for every tutor</span>
+                </div>
               </div>
-              <div>
-                <span className="block text-2xl font-bold text-navy-800">100%</span>
-                <span className="text-xs text-charcoal-500">Verified credentials</span>
+              <div className="flex items-start gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-accent-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-bold text-navy-800 block">Aligned to US Syllabi</span>
+                  <span className="text-charcoal-500">Targeted homework & AP exam practice</span>
+                </div>
               </div>
-              <div>
-                <span className="block text-2xl font-bold text-navy-800">$18–$35</span>
-                <span className="text-xs text-charcoal-500">Fair transparent rates</span>
+              <div className="flex items-start gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-accent-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-bold text-navy-800 block">Pay Per Lesson</span>
+                  <span className="text-charcoal-500">Zero subscriptions or hidden recurring fees</span>
+                </div>
               </div>
             </div>
 
           </div>
 
-          {/* Right Column: Realistic Photograph of teacher teaching online */}
+          {/* Right Column: Photograph of teacher teaching online */}
           <div className="lg:col-span-5 relative">
             <div className="relative mx-auto max-w-md lg:max-w-none">
               
-              {/* Main photo container */}
               <div className="relative rounded-2xl overflow-hidden border border-gray-200/90 shadow-lift bg-white aspect-[4/3] sm:aspect-[5/4]">
                 <Image
                   src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1000&q=80"
-                  alt="Dedicated teacher working with student in an interactive online learning session"
+                  alt="Teacher mentoring student in online classroom"
                   fill
                   className="object-cover"
                   priority
                 />
                 
-                {/* Real-time session indicator card */}
+                {/* Verified educator banner */}
                 <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md p-3.5 rounded-lg border border-gray-200 shadow-card flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
@@ -157,21 +165,21 @@ export function Hero() {
                     </div>
                     <div>
                       <div className="text-xs font-semibold text-navy-800">Dr. Aarav Sharma</div>
-                      <div className="text-[11px] text-charcoal-500">AP Calculus AB • Live Session</div>
+                      <div className="text-[11px] text-charcoal-500">AP Calculus AB • Ph.D. Applied Math</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 bg-accent-50 border border-accent-200 rounded text-[11px] font-semibold text-accent-700">
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent-500 animate-pulse"></span>
-                    <span>Active Now</span>
+                  <div className="flex items-center gap-1 text-[11px] font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
+                    <ShieldCheck className="w-3.5 h-3.5 text-accent-500" />
+                    <span>Verified</span>
                   </div>
                 </div>
 
               </div>
 
-              {/* Verified badge floating card */}
+              {/* Security Pill */}
               <div className="absolute -top-3 -right-3 hidden sm:flex items-center gap-2 bg-white px-3.5 py-2 rounded-lg border border-gray-200 shadow-card text-xs font-semibold text-navy-800">
                 <ShieldCheck className="w-4 h-4 text-accent-500" />
-                <span>Background & Degree Checked</span>
+                <span>Parent Supervised & COPPA Safe</span>
               </div>
 
             </div>
@@ -182,4 +190,3 @@ export function Hero() {
     </section>
   );
 }
-
