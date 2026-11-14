@@ -4,27 +4,16 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Logo } from '../ui/Logo';
-import { 
-  Menu, 
-  X, 
-  ChevronDown, 
-  User, 
-  BookOpen, 
-  GraduationCap, 
-  ShieldCheck, 
-  Search,
-  LogIn
-} from 'lucide-react';
+import { Menu, X, LogIn } from 'lucide-react';
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const pathname = usePathname();
 
   const navLinks = [
     { name: 'Find Tutors', href: '/tutors' },
+    { name: 'Subjects', href: '/subjects' },
     { name: 'How It Works', href: '/how-it-works' },
-    { name: 'Subjects', href: '/tutors?focus=subjects' },
     { name: 'Become a Tutor', href: '/become-a-tutor' },
   ];
 
@@ -45,7 +34,7 @@ export function Navbar() {
           </div>
 
           {/* Center: Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
+          <nav className="hidden md:flex items-center space-x-1 lg:space-x-3">
             {navLinks.map((link) => {
               const active = isCurrent(link.href);
               return (
@@ -64,58 +53,8 @@ export function Navbar() {
             })}
           </nav>
 
-          {/* Right: Actions & Dashboards */}
+          {/* Right: Actions */}
           <div className="hidden md:flex items-center space-x-3">
-            {/* Quick Demo Switcher Dropdown */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                onBlur={() => setTimeout(() => setDropdownOpen(false), 200)}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-navy-800 bg-navy-50 rounded-md border border-navy-100 hover:bg-navy-100 transition-colors"
-              >
-                <span>Demo Portals</span>
-                <ChevronDown className="w-3.5 h-3.5 text-navy-600" />
-              </button>
-
-              {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-lift border border-gray-200 py-1.5 z-50 text-xs">
-                  <div className="px-3 py-1 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
-                    Instant Access
-                  </div>
-                  <Link
-                    href="/dashboard/student"
-                    className="flex items-center gap-2.5 px-3 py-2 text-charcoal-700 hover:bg-softblue-50 hover:text-navy-800"
-                  >
-                    <BookOpen className="w-4 h-4 text-navy-700" />
-                    <span>Student / Parent Dashboard</span>
-                  </Link>
-                  <Link
-                    href="/dashboard/teacher"
-                    className="flex items-center gap-2.5 px-3 py-2 text-charcoal-700 hover:bg-softblue-50 hover:text-navy-800"
-                  >
-                    <GraduationCap className="w-4 h-4 text-accent-500" />
-                    <span>Teacher Dashboard</span>
-                  </Link>
-                  <Link
-                    href="/admin"
-                    className="flex items-center gap-2.5 px-3 py-2 text-charcoal-700 hover:bg-softblue-50 hover:text-navy-800"
-                  >
-                    <ShieldCheck className="w-4 h-4 text-purple-600" />
-                    <span>Administrator Console</span>
-                  </Link>
-                  <div className="border-t border-gray-100 my-1"></div>
-                  <Link
-                    href="/classroom/demo-session-preview"
-                    className="flex items-center gap-2.5 px-3 py-2 text-charcoal-700 hover:bg-softblue-50 hover:text-navy-800"
-                  >
-                    <Search className="w-4 h-4 text-blue-600" />
-                    <span>Live Classroom Demo</span>
-                  </Link>
-                </div>
-              )}
-            </div>
-
             <Link
               href="/login"
               className="text-sm font-medium text-charcoal-700 hover:text-navy-800 px-3 py-2 transition-colors flex items-center gap-1.5"
@@ -159,35 +98,6 @@ export function Navbar() {
               {link.name}
             </Link>
           ))}
-          <div className="border-t border-gray-100 pt-3 mt-2 space-y-2">
-            <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3">
-              Portals
-            </div>
-            <Link
-              href="/dashboard/student"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-charcoal-700 hover:bg-gray-50"
-            >
-              <BookOpen className="w-4 h-4 text-navy-800" />
-              <span>Student / Parent Dashboard</span>
-            </Link>
-            <Link
-              href="/dashboard/teacher"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-charcoal-700 hover:bg-gray-50"
-            >
-              <GraduationCap className="w-4 h-4 text-accent-500" />
-              <span>Teacher Dashboard</span>
-            </Link>
-            <Link
-              href="/admin"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-charcoal-700 hover:bg-gray-50"
-            >
-              <ShieldCheck className="w-4 h-4 text-purple-600" />
-              <span>Administrator Portal</span>
-            </Link>
-          </div>
 
           <div className="pt-4 border-t border-gray-100 flex flex-col gap-2">
             <Link
@@ -210,4 +120,3 @@ export function Navbar() {
     </header>
   );
 }
-

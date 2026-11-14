@@ -43,10 +43,10 @@ export function PopularSubjects() {
             </p>
           </div>
           <Link
-            href="/tutors"
+            href="/subjects"
             className="mt-4 md:mt-0 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-navy-900 group"
           >
-            <span>Browse all subjects</span>
+            <span>Browse all subjects & curriculum</span>
             <ArrowRight className="w-4 h-4 text-accent-500 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
