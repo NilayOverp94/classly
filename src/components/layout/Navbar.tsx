@@ -8,7 +8,6 @@ import {
   Menu, 
   X, 
   LogIn, 
-  User, 
   LogOut, 
   ShieldCheck, 
   BookOpen, 
@@ -79,19 +78,6 @@ export function Navbar() {
     router.refresh();
   };
 
-  const navLinks = [
-    { name: 'Find Tutors', href: '/tutors' },
-    { name: 'Subjects', href: '/subjects' },
-    { name: 'How It Works', href: '/how-it-works' },
-    { name: 'Become a Tutor', href: '/become-a-tutor' },
-  ];
-
-  const isCurrent = (href: string) => {
-    if (href === '/tutors' && pathname === '/tutors') return true;
-    if (href !== '/tutors' && pathname.startsWith(href)) return true;
-    return false;
-  };
-
   const dashboardHref = 
     userRole === 'admin' 
       ? '/admin' 
@@ -107,19 +93,39 @@ export function Navbar() {
       : 'My Dashboard';
 
   const userDisplayName = 
+    user?.user_metadata?.student_name ||
     user?.user_metadata?.full_name || 
     user?.user_metadata?.name || 
     user?.email?.split('@')[0] || 
     'Account';
+
+  // Distinct navigation links based on authentication state:
+  // Before Login (Guest): shows marketing & onboarding links (How It Works, Become a Tutor)
+  // After Login (Authenticated): clean, functional product navigation only
+  const navLinks = user ? [
+    { name: 'Find Tutors', href: '/tutors' },
+    { name: 'Subjects', href: '/subjects' },
+  ] : [
+    { name: 'Find Tutors', href: '/tutors' },
+    { name: 'Subjects', href: '/subjects' },
+    { name: 'How It Works', href: '/how-it-works' },
+    { name: 'Become a Tutor', href: '/become-a-tutor' },
+  ];
+
+  const isCurrent = (href: string) => {
+    if (href === '/tutors' && pathname === '/tutors') return true;
+    if (href !== '/tutors' && pathname.startsWith(href)) return true;
+    return false;
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200/80 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
-          {/* Left: Brand Logo */}
+          {/* Left: Brand Logo (Links to Dashboard when logged in, Home when logged out) */}
           <div className="flex-shrink-0">
-            <Logo size="md" />
+            <Logo size="md" href={user ? dashboardHref : '/'} />
           </div>
 
           {/* Center: Desktop Navigation Links */}
@@ -179,7 +185,7 @@ export function Navbar() {
                   <button
                     onClick={handleSignOut}
                     title="Sign Out"
-                    className="p-2 text-charcoal-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                    className="p-2 text-charcoal-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition cursor-pointer"
                   >
                     <LogOut className="w-4 h-4" />
                   </button>

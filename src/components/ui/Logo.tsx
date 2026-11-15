@@ -5,9 +5,10 @@ interface LogoProps {
   className?: string;
   size?: 'sm' | 'md' | 'lg';
   variant?: 'dark' | 'light';
+  href?: string;
 }
 
-export function Logo({ className = '', size = 'md', variant = 'dark' }: LogoProps) {
+export function Logo({ className = '', size = 'md', variant = 'dark', href = '/' }: LogoProps) {
   const iconSizes = {
     sm: 'w-6 h-6',
     md: 'w-7 h-7',
@@ -23,7 +24,7 @@ export function Logo({ className = '', size = 'md', variant = 'dark' }: LogoProp
   const isLight = variant === 'light';
 
   return (
-    <Link href="/" className={`inline-flex items-center gap-2.5 font-bold tracking-tight group select-none ${className}`}>
+    <Link href={href} className={`inline-flex items-center gap-2.5 font-bold tracking-tight group select-none ${className}`}>
       <div className={`relative flex items-center justify-center rounded-lg bg-navy-800 p-1.5 transition-transform group-hover:scale-105 shadow-subtle ${isLight ? 'bg-white' : 'bg-navy-800'}`}>
         <svg
           viewBox="0 0 32 32"
