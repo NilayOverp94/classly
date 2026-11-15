@@ -431,16 +431,38 @@ export default function StudentDashboardPage() {
 
             {/* TAB: Settings */}
             {activeTab === 'settings' && (
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle space-y-4 text-xs">
-                <h2 className="text-base font-bold text-navy-800">Account & Safety Settings</h2>
+              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle space-y-6 text-xs">
+                <div>
+                  <h2 className="text-base font-bold text-navy-800">Account & Safety Settings</h2>
+                  <p className="text-xs text-charcoal-500 mt-0.5">
+                    Manage student information, grade levels, and guardian contact details.
+                  </p>
+                </div>
+
                 <div className="p-4 bg-softblue-50 rounded-lg border border-softblue-200">
                   <div className="flex items-center gap-2 font-bold text-navy-800 mb-1">
                     <ShieldCheck className="w-4 h-4 text-accent-500" />
-                    <span>Protected K-12 Student Account</span>
+                    <span>Protected K-12 Student Account (COPPA Compliant)</span>
                   </div>
                   <p className="text-[11px] text-charcoal-600">
                     All tutor interactions, session links, and billing receipts are managed securely under <strong>{userEmail}</strong>.
                   </p>
+                </div>
+
+                <div className="p-5 bg-gray-50 rounded-xl border border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="font-bold text-navy-900 text-sm">Personal & Academic Profile</h3>
+                    <p className="text-xs text-charcoal-500 mt-0.5">
+                      Update student name, school grade level, timezones, and learning goals.
+                    </p>
+                  </div>
+                  <Link
+                    href="/profile"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg font-bold text-xs shadow-subtle transition"
+                  >
+                    <User className="w-3.5 h-3.5" />
+                    <span>Edit Profile</span>
+                  </Link>
                 </div>
               </div>
             )}

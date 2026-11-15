@@ -15,7 +15,8 @@ import {
   CheckCircle2, 
   ShieldCheck, 
   BookOpen,
-  LogOut
+  LogOut,
+  User
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
@@ -129,6 +130,13 @@ export default function TeacherDashboardPage() {
           </div>
 
           <div className="flex items-center gap-3">
+            <Link
+              href="/profile"
+              className="px-3.5 py-2 bg-gray-50 hover:bg-gray-100 text-navy-800 rounded-lg text-xs font-semibold border border-gray-200 shadow-subtle flex items-center gap-1.5 transition"
+            >
+              <User className="w-4 h-4 text-accent-600" />
+              <span>Edit Profile</span>
+            </Link>
             <button
               onClick={() => setActiveTab('create_class')}
               className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold shadow-subtle flex items-center gap-1.5"
