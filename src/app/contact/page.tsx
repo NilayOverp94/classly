@@ -122,7 +122,7 @@ export default function ContactPage() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="e.g. David Miller"
+                    placeholder="e.g. Jane Smith"
                     className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-navy-800"
                   />
                 </div>
@@ -135,7 +135,7 @@ export default function ContactPage() {
                       required
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="david@example.com"
+                      placeholder="jane@example.com"
                       className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-navy-800"
                     />
                   </div>

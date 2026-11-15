@@ -12,7 +12,7 @@ export function CTASection() {
         </h2>
         
         <p className="mt-4 text-base text-gray-300 max-w-xl mx-auto leading-relaxed">
-          Join thousands of parents and students who trust Classly for personalized, high-impact K-12 instruction.
+          Experience personalized, high-impact K-12 instruction tailored to your child's curriculum and academic pace.
         </p>
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">

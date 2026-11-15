@@ -92,7 +92,7 @@ export default function StudentRegisterPage() {
                 required
                 value={parentName}
                 onChange={(e) => setParentName(e.target.value)}
-                placeholder="e.g. Jennifer Miller"
+                placeholder="e.g. Jane Smith"
                 className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:ring-2 focus:ring-navy-600 focus:bg-white text-navy-800"
               />
             </div>
@@ -142,7 +142,7 @@ export default function StudentRegisterPage() {
                   required
                   value={studentName}
                   onChange={(e) => setStudentName(e.target.value)}
-                  placeholder="e.g. Ethan"
+                  placeholder="e.g. Alex"
                   className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-navy-800"
                 />
               </div>

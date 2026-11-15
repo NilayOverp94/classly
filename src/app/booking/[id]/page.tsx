@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
@@ -14,18 +14,20 @@ import {
   Video,
   Lock
 } from 'lucide-react';
-import { mockTutors } from '@/lib/data/mockTutors';
+import { createClient } from '@/lib/supabase/client';
+import { TeacherProfile } from '@/lib/types';
 
 function BookingContent() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const tutorId = (params?.id as string) || 'tutor-1';
+  const tutorId = params?.id as string;
   const initialFormat = searchParams.get('format') || 'one_on_one';
   const initialDay = searchParams.get('day') || 'Monday';
 
-  const tutor = mockTutors.find((t) => t.id === tutorId) || mockTutors[0];
+  const [tutor, setTutor] = useState<TeacherProfile | null>(null);
+  const [loading, setLoading] = useState(true);
 
   // Booking selections
   const [selectedFormat, setSelectedFormat] = useState<string>(initialFormat);
@@ -39,6 +41,118 @@ function BookingContent() {
   const [bookingConfirmed, setBookingConfirmed] = useState<boolean>(false);
   const [confirmedBookingId, setConfirmedBookingId] = useState<string>('');
 
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function loadTutor() {
+      if (!tutorId) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('teacher_profiles')
+          .select(`
+            id,
+            user_id,
+            headline,
+            bio,
+            years_experience,
+            hourly_rate,
+            teaching_format,
+            status,
+            education,
+            rating,
+            review_count,
+            total_hours_taught,
+            city,
+            country,
+            profiles (
+              full_name,
+              avatar_url
+            )
+          `)
+          .eq('id', tutorId)
+          .single();
+
+        if (!error && data) {
+          const rawProfiles: any = data.profiles;
+          const userProfile = Array.isArray(rawProfiles) ? rawProfiles[0] : rawProfiles;
+          const profile: TeacherProfile = {
+            id: data.id,
+            user_id: data.user_id,
+            full_name: userProfile?.full_name || 'Verified Educator',
+            avatar_url: userProfile?.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+            headline: data.headline || 'Classly Verified Educator',
+            bio: data.bio || '',
+            years_experience: data.years_experience || 0,
+            hourly_rate: Number(data.hourly_rate) || 25,
+            teaching_format: data.teaching_format || 'both',
+            status: data.status,
+            qualifications: [],
+            education: data.education || '',
+            teaching_methodology: '',
+            rating: Number(data.rating) || 5.0,
+            review_count: Number(data.review_count) || 0,
+            total_hours_taught: Number(data.total_hours_taught) || 0,
+            city: data.city || 'US',
+            country: data.country || 'US',
+            subjects: ['Mathematics'],
+            grades: [],
+            languages: ['English'],
+            availability: [
+              { day: 'Monday', slots: ['05:00 PM EST', '06:30 PM EST'] },
+              { day: 'Wednesday', slots: ['05:00 PM EST', '07:00 PM EST'] },
+              { day: 'Saturday', slots: ['10:00 AM EST', '01:00 PM EST'] },
+            ],
+          };
+          setTutor(profile);
+        } else {
+          setTutor(null);
+        }
+      } catch (err) {
+        setTutor(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadTutor();
+  }, [tutorId]);
+
+  if (loading) {
+    return (
+      <div className="bg-offwhite min-h-[60vh] flex items-center justify-center py-16 px-4">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-navy-800 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-xs text-charcoal-500">Loading booking interface...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!tutor) {
+    return (
+      <div className="bg-offwhite min-h-[60vh] flex items-center justify-center py-16 px-4">
+        <div className="bg-white p-8 max-w-md w-full rounded-2xl border border-gray-200 text-center shadow-card">
+          <ShieldCheck className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+          <h1 className="text-lg font-bold text-navy-800 mb-1">Educator Not Found</h1>
+          <p className="text-xs text-charcoal-600 mb-6">
+            The educator you are attempting to book is not available or does not exist.
+          </p>
+          <Link
+            href="/tutors"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-navy-800 text-white rounded-lg text-xs font-bold hover:bg-navy-900 transition"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Return to Educator Directory</span>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   // Calculations
   const hourlyRate = tutor.hourly_rate;
   const platformFee = 4.50; // Platform technology & classroom fee
@@ -48,7 +162,6 @@ function BookingContent() {
     e.preventDefault();
     setIsProcessing(true);
 
-    // Simulate payment authorization & double booking check
     setTimeout(() => {
       setIsProcessing(false);
       const bookingId = `book-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -93,8 +206,8 @@ function BookingContent() {
                 <span className="font-bold text-navy-800">#{confirmedBookingId}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-charcoal-500">Subject</span>
-                <span className="font-bold text-navy-800">{tutor.subjects[0]}</span>
+                <span className="text-charcoal-500">Educator</span>
+                <span className="font-bold text-navy-800">{tutor.full_name}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-charcoal-500">Date & Time</span>
@@ -148,31 +261,9 @@ function BookingContent() {
                   <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-2">
                     1. Select Teaching Format
                   </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedFormat('one_on_one')}
-                      className={`p-3 text-left rounded-lg border text-xs transition ${
-                        selectedFormat === 'one_on_one'
-                          ? 'border-navy-800 bg-softblue-50 font-bold text-navy-800'
-                          : 'border-gray-200 text-charcoal-600 hover:bg-gray-50'
-                      }`}
-                    >
-                      <div className="font-bold">1-on-1 Private Tutoring</div>
-                      <div className="text-[11px] text-charcoal-500 font-normal mt-0.5">Dedicated individualized attention</div>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedFormat('group')}
-                      className={`p-3 text-left rounded-lg border text-xs transition ${
-                        selectedFormat === 'group'
-                          ? 'border-navy-800 bg-softblue-50 font-bold text-navy-800'
-                          : 'border-gray-200 text-charcoal-600 hover:bg-gray-50'
-                      }`}
-                    >
-                      <div className="font-bold">Small Group Workshop</div>
-                      <div className="text-[11px] text-charcoal-500 font-normal mt-0.5">Interactive cohort with peers</div>
-                    </button>
+                  <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <span className="font-bold text-navy-800 block">1-on-1 Private Tutoring</span>
+                    <span className="text-charcoal-500 text-[11px]">Dedicated 60-minute interactive live video lesson with dual whiteboard</span>
                   </div>
                 </div>
 
@@ -183,146 +274,108 @@ function BookingContent() {
                   </label>
                   <input
                     type="date"
-                    required
                     value={selectedDate}
-                    min="2026-11-15"
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-navy-800 font-medium"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-xs font-medium text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white"
                   />
                 </div>
 
-                {/* 3. Time Slot & Timezone */}
+                {/* 3. Time Slot */}
                 <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <label className="font-semibold text-charcoal-700 uppercase tracking-wider">
-                      3. Select Time Slot
-                    </label>
-                    <select
-                      value={userTimezone}
-                      onChange={(e) => setUserTimezone(e.target.value)}
-                      className="text-[11px] bg-gray-50 border border-gray-200 rounded px-2 py-1 text-navy-800"
-                    >
-                      <option value="America/New_York">US Eastern (EST)</option>
-                      <option value="America/Chicago">US Central (CST)</option>
-                      <option value="America/Denver">US Mountain (MST)</option>
-                      <option value="America/Los_Angeles">US Pacific (PST)</option>
-                    </select>
-                  </div>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {['07:00 AM EST', '08:30 AM EST', '05:00 PM EST', '06:30 PM EST', '08:00 PM EST'].map((slot) => (
-                      <button
-                        key={slot}
-                        type="button"
-                        onClick={() => setSelectedTimeSlot(slot)}
-                        className={`p-2 rounded text-center border font-medium transition ${
-                          selectedTimeSlot === slot
-                            ? 'bg-navy-800 text-white border-navy-800 font-bold'
-                            : 'bg-gray-50 border-gray-200 text-charcoal-700 hover:bg-gray-100'
-                        }`}
-                      >
-                        {slot}
-                      </button>
-                    ))}
-                  </div>
+                  <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-2">
+                    3. Select Time Slot
+                  </label>
+                  <select
+                    value={selectedTimeSlot}
+                    onChange={(e) => setSelectedTimeSlot(e.target.value)}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-xs font-medium text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white"
+                  >
+                    <option value="05:00 PM EST">05:00 PM EST</option>
+                    <option value="06:30 PM EST">06:30 PM EST</option>
+                    <option value="08:00 PM EST">08:00 PM EST</option>
+                  </select>
                 </div>
 
-                {/* 4. Student Notes / Focus Topics */}
+                {/* 4. Parent / Student Notes */}
                 <div>
-                  <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-1">
-                    4. Student Learning Goals / Homework Topics
+                  <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-2">
+                    4. Student Goals or Topics for this Lesson (Optional)
                   </label>
                   <textarea
-                    rows={2}
+                    rows={3}
+                    placeholder="e.g. Preparing for upcoming AP test, homework assistance, specific textbook chapters..."
                     value={studentNotes}
                     onChange={(e) => setStudentNotes(e.target.value)}
-                    placeholder="e.g. Preparing for upcoming chapter test on polynomial derivatives..."
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-navy-800 focus:bg-white"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-xs text-navy-800 placeholder-charcoal-400 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white"
                   />
                 </div>
 
-                {/* 5. Payment Details Card */}
-                <div className="pt-4 border-t border-gray-100">
-                  <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-2">
-                    5. Payment Method
-                  </label>
-                  <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <CreditCard className="w-4 h-4 text-navy-800" />
-                      <span className="font-semibold text-navy-800">Secure Payment Gateway (Card / NetBanking)</span>
-                    </div>
-                    <span className="text-[11px] text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
-                      256-bit Encrypted
-                    </span>
-                  </div>
-                </div>
-
-                {/* Submit / Confirm */}
+                {/* Submit / Pay CTA */}
                 <button
                   type="submit"
                   disabled={isProcessing}
-                  className="w-full py-3 bg-navy-800 hover:bg-navy-900 text-white font-bold rounded-lg transition shadow-subtle flex items-center justify-center gap-2 text-sm"
+                  className="w-full py-3.5 bg-navy-800 hover:bg-navy-900 disabled:opacity-50 text-white rounded-lg text-xs font-bold shadow-subtle transition flex items-center justify-center gap-2"
                 >
-                  <Lock className="w-4 h-4" />
-                  <span>
-                    {isProcessing ? 'Processing Payment...' : `Authorize & Confirm Booking ($${totalAmount.toFixed(2)})`}
-                  </span>
+                  {isProcessing ? (
+                    <span>Processing Payment Authorization...</span>
+                  ) : (
+                    <>
+                      <Lock className="w-3.5 h-3.5" />
+                      <span>Authorize Payment (${totalAmount.toFixed(2)} USD)</span>
+                    </>
+                  )}
                 </button>
 
                 <p className="text-[11px] text-charcoal-400 text-center">
-                  Protected by Classly's 100% money-back first lesson guarantee.
+                  Protected by 100% money-back satisfaction guarantee on your first lesson.
                 </p>
 
               </form>
             </div>
 
             {/* Right Column: Order Summary (5 cols) */}
-            <div className="lg:col-span-5 bg-white p-6 rounded-xl border border-gray-200 shadow-subtle space-y-4">
-              <h2 className="text-base font-bold text-navy-800 pb-3 border-b border-gray-100">
+            <div className="lg:col-span-5 bg-white p-6 rounded-xl border border-gray-200 shadow-subtle space-y-4 text-xs">
+              <h2 className="font-bold text-navy-800 text-sm pb-3 border-b border-gray-100">
                 Booking Summary
               </h2>
 
-              <div className="flex items-center gap-3">
-                <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
-                  <Image src={tutor.avatar_url} alt={tutor.full_name} fill className="object-cover" />
+              <div className="flex items-center gap-3 pb-4 border-b border-gray-100">
+                <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
+                  <Image
+                    src={tutor.avatar_url}
+                    alt={tutor.full_name}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm text-navy-800">{tutor.full_name}</h3>
-                  <p className="text-[11px] text-charcoal-500">{tutor.headline}</p>
+                  <div className="font-bold text-navy-800">{tutor.full_name}</div>
+                  <div className="text-[11px] text-charcoal-500">{tutor.headline}</div>
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-gray-100 space-y-2 text-xs">
-                <div className="flex justify-between text-charcoal-600">
-                  <span>Subject</span>
-                  <span className="font-semibold text-navy-800">{tutor.subjects[0]}</span>
+              <div className="space-y-2 text-charcoal-600">
+                <div className="flex justify-between">
+                  <span>Lesson Rate (60 mins)</span>
+                  <span className="font-bold text-navy-800">${hourlyRate.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-charcoal-600">
-                  <span>Session Type</span>
-                  <span className="font-semibold text-navy-800">
-                    {selectedFormat === 'one_on_one' ? '1-on-1 Tutoring' : 'Group Workshop'}
-                  </span>
+                <div className="flex justify-between">
+                  <span>Platform & Classroom Tech Fee</span>
+                  <span className="font-bold text-navy-800">${platformFee.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-charcoal-600">
-                  <span>Scheduled Time</span>
-                  <span className="font-semibold text-navy-800">{selectedTimeSlot}</span>
-                </div>
-                <div className="flex justify-between text-charcoal-600">
-                  <span>Tutor Hourly Rate</span>
-                  <span className="font-semibold text-navy-800">${hourlyRate.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-charcoal-600">
-                  <span>Classroom & Platform Fee</span>
-                  <span className="font-semibold text-navy-800">${platformFee.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between pt-3 border-t border-gray-200 text-sm font-bold text-navy-800">
-                  <span>Total Due</span>
+                <div className="flex justify-between pt-3 border-t border-gray-100 text-sm font-bold text-navy-800">
+                  <span>Total Due Today</span>
                   <span>${totalAmount.toFixed(2)} USD</span>
                 </div>
               </div>
 
-              <div className="p-3 bg-softblue-50 border border-softblue-200 rounded-lg text-[11px] text-charcoal-600">
-                <strong>Double-booking prevention:</strong> This time slot is reserved for 10 minutes while you complete checkout.
+              <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 space-y-1.5 text-[11px] text-charcoal-500">
+                <div className="flex items-center gap-1.5 font-semibold text-accent-700">
+                  <ShieldCheck className="w-3.5 h-3.5 text-accent-500" />
+                  <span>Classly Parent Protection</span>
+                </div>
+                <div>• Zero recurring subscription charges</div>
+                <div>• Free cancellation up to 24 hours prior</div>
               </div>
 
             </div>
@@ -335,9 +388,9 @@ function BookingContent() {
   );
 }
 
-export default function BookingCheckoutPage() {
+export default function BookingPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-sm text-charcoal-500">Loading booking interface...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-sm text-charcoal-500">Loading booking...</div>}>
       <BookingContent />
     </Suspense>
   );

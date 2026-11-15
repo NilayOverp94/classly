@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Search, ShieldCheck, GraduationCap, DollarSign, CheckCircle2 } from 'lucide-react';
+import { Search, ShieldCheck, GraduationCap, DollarSign, CheckCircle2, Video } from 'lucide-react';
 
 export function Hero() {
   const router = useRouter();
@@ -152,20 +152,15 @@ export function Hero() {
                   priority
                 />
                 
-                {/* Verified educator banner */}
+                {/* Live Classroom Feature Callout */}
                 <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md p-3.5 rounded-lg border border-gray-200 shadow-card flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
-                      <Image
-                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
-                        alt="Dr. Aarav Sharma"
-                        fill
-                        className="object-cover"
-                      />
+                    <div className="w-9 h-9 rounded-lg bg-softblue-100 flex items-center justify-center flex-shrink-0">
+                      <Video className="w-4 h-4 text-navy-800" />
                     </div>
                     <div>
-                      <div className="text-xs font-semibold text-navy-800">Dr. Aarav Sharma</div>
-                      <div className="text-[11px] text-charcoal-500">AP Calculus AB • Ph.D. Applied Math</div>
+                      <div className="text-xs font-bold text-navy-800">Interactive HD Classroom</div>
+                      <div className="text-[11px] text-charcoal-500">Dual digital whiteboards & live 1-on-1 video</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-1 text-[11px] font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">

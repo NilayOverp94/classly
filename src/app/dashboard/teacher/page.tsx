@@ -17,7 +17,6 @@ import {
   BookOpen,
   LogOut
 } from 'lucide-react';
-import { mockTutors } from '@/lib/data/mockTutors';
 import { createClient } from '@/lib/supabase/client';
 
 export default function TeacherDashboardPage() {
@@ -42,8 +41,23 @@ export default function TeacherDashboardPage() {
     router.refresh();
   };
 
-  const tutor = mockTutors[0];
-  const teacherDisplayName = user?.user_metadata?.full_name || user?.user_metadata?.name || tutor.full_name;
+  const teacherDisplayName = 
+    user?.user_metadata?.full_name || 
+    user?.user_metadata?.name || 
+    user?.email?.split('@')[0] || 
+    'Teacher';
+
+  const teacherHeadline = 
+    user?.user_metadata?.headline || 
+    user?.user_metadata?.education || 
+    'Classly Verified Educator';
+
+  const teacherAvatar = 
+    user?.user_metadata?.avatar_url || 
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80';
+
+  const teacherHourlyRate = 
+    user?.user_metadata?.hourly_rate || 25;
   const [activeTab, setActiveTab] = useState<'overview' | 'classes' | 'availability' | 'create_class' | 'earnings' | 'students'>('overview');
   
   // Real class listings created by teacher (starts empty)
@@ -95,8 +109,8 @@ export default function TeacherDashboardPage() {
           <div className="flex items-center gap-4">
             <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
               <Image
-                src={tutor.avatar_url}
-                alt={tutor.full_name}
+                src={teacherAvatar}
+                alt={teacherDisplayName}
                 fill
                 className="object-cover"
               />
@@ -109,7 +123,7 @@ export default function TeacherDashboardPage() {
                 </span>
               </div>
               <p className="text-xs text-charcoal-500 mt-0.5">
-                {tutor.headline} • Local Time: New Delhi (IST)
+                {teacherHeadline}
               </p>
             </div>
           </div>
@@ -192,7 +206,7 @@ export default function TeacherDashboardPage() {
                   </div>
                   <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-subtle">
                     <span className="text-xs text-charcoal-500 font-medium block mb-1">Hourly Rate</span>
-                    <span className="text-2xl font-bold text-navy-800">${tutor.hourly_rate}</span>
+                    <span className="text-2xl font-bold text-navy-800">${teacherHourlyRate}</span>
                     <span className="text-[11px] text-charcoal-400 block mt-1">1-on-1 private rate</span>
                   </div>
                   <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-subtle">

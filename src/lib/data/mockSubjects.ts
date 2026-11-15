@@ -7,7 +7,7 @@ export const mockSubjects: SubjectItem[] = [
     category: 'Mathematics',
     description: 'Pre-Algebra, Algebra I & II, Geometry, Trigonometry, Pre-Calculus & AP Calculus AB/BC',
     iconName: 'Calculator',
-    tutorCount: 42,
+    tutorCount: 0,
   },
   {
     id: 'subj-science',
@@ -15,7 +15,7 @@ export const mockSubjects: SubjectItem[] = [
     category: 'Science',
     description: 'Integrated Middle School Science, Earth & Space Science, and Physical Science',
     iconName: 'FlaskConical',
-    tutorCount: 28,
+    tutorCount: 0,
   },
   {
     id: 'subj-english',
@@ -23,7 +23,7 @@ export const mockSubjects: SubjectItem[] = [
     category: 'Humanities',
     description: 'Reading Comprehension, Essay Structure, Analytical Writing, and Literature',
     iconName: 'BookOpen',
-    tutorCount: 31,
+    tutorCount: 0,
   },
   {
     id: 'subj-physics',
@@ -31,7 +31,7 @@ export const mockSubjects: SubjectItem[] = [
     category: 'Science',
     description: 'AP Physics 1, AP Physics C (Mechanics & E/M), High School Conceptual & Honors Physics',
     iconName: 'Atom',
-    tutorCount: 24,
+    tutorCount: 0,
   },
   {
     id: 'subj-chemistry',
@@ -39,7 +39,7 @@ export const mockSubjects: SubjectItem[] = [
     category: 'Science',
     description: 'AP Chemistry, Honors Chemistry, Atomic Structure, Stoichiometry, and Organic Basics',
     iconName: 'TestTube',
-    tutorCount: 19,
+    tutorCount: 0,
   },
   {
     id: 'subj-biology',
@@ -47,7 +47,7 @@ export const mockSubjects: SubjectItem[] = [
     category: 'Science',
     description: 'AP Biology, Cellular Respiration, Genetics, Molecular Biology & Ecology',
     iconName: 'Dna',
-    tutorCount: 22,
+    tutorCount: 0,
   },
   {
     id: 'subj-cs',
@@ -55,7 +55,7 @@ export const mockSubjects: SubjectItem[] = [
     category: 'Coding',
     description: 'Python for Beginners, AP Computer Science A (Java), Data Structures & Web Tech',
     iconName: 'Code',
-    tutorCount: 36,
+    tutorCount: 0,
   },
   {
     id: 'subj-history',
@@ -63,7 +63,6 @@ export const mockSubjects: SubjectItem[] = [
     category: 'Humanities',
     description: 'US History, AP World History, DBQ Essay Preparation & Social Studies',
     iconName: 'Landmark',
-    tutorCount: 17,
+    tutorCount: 0,
   },
 ];
-

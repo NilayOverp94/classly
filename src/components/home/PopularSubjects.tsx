@@ -76,7 +76,7 @@ export function PopularSubjects() {
               </div>
 
               <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-medium text-charcoal-500">
-                <span>{subject.tutorCount} verified tutors</span>
+                <span>US K-12 Curriculum</span>
                 <span className="text-navy-800 group-hover:text-accent-600 font-semibold group-hover:underline">
                   Explore &rarr;
                 </span>

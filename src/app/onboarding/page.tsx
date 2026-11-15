@@ -230,7 +230,7 @@ function OnboardingContent() {
                     required
                     value={parentName}
                     onChange={(e) => setParentName(e.target.value)}
-                    placeholder="e.g. Jennifer Miller"
+                    placeholder="e.g. Jane Smith"
                     className="w-full h-10 px-3.5 bg-charcoal-50/60 border border-charcoal-200/90 rounded-xl text-xs text-navy-900 focus:bg-white focus:border-navy-700 focus:ring-4 focus:ring-navy-800/8 transition outline-none"
                   />
                 </div>
@@ -245,7 +245,7 @@ function OnboardingContent() {
                       required
                       value={studentName}
                       onChange={(e) => setStudentName(e.target.value)}
-                      placeholder="e.g. Alex Miller"
+                      placeholder="e.g. Alex Smith"
                       className="w-full h-10 px-3.5 bg-charcoal-50/60 border border-charcoal-200/90 rounded-xl text-xs text-navy-900 focus:bg-white focus:border-navy-700 focus:ring-4 focus:ring-navy-800/8 transition outline-none"
                     />
                   </div>
@@ -325,7 +325,7 @@ function OnboardingContent() {
                     required
                     value={teacherName}
                     onChange={(e) => setTeacherName(e.target.value)}
-                    placeholder="e.g. Dr. Priya Nambiar"
+                    placeholder="e.g. Dr. Jane Smith"
                     className="w-full h-10 px-3.5 bg-charcoal-50/60 border border-charcoal-200/90 rounded-xl text-xs text-navy-900 focus:bg-white focus:border-navy-700 focus:ring-4 focus:ring-navy-800/8 transition outline-none"
                   />
                 </div>

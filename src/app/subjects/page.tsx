@@ -17,7 +17,6 @@ import {
   CheckCircle2,
   GraduationCap
 } from 'lucide-react';
-import { mockSubjects } from '@/lib/data/mockSubjects';
 
 interface DetailedSubject {
   id: string;
@@ -27,8 +26,6 @@ interface DetailedSubject {
   description: string;
   topics: string[];
   grades: string;
-  tutorCount: number;
-  startingPrice: number;
   iconName: string;
 }
 
@@ -41,8 +38,6 @@ const detailedSubjects: DetailedSubject[] = [
     description: 'Master foundational numeracy, algebraic reasoning, geometry proofs, and differential/integral calculus with step-by-step visual problem solving.',
     topics: ['Pre-Algebra', 'Algebra I & II', 'Geometry', 'Trigonometry', 'Pre-Calculus', 'AP Calculus AB', 'AP Calculus BC', 'SAT Math Prep'],
     grades: 'Grades 5 – 12',
-    tutorCount: 42,
-    startingPrice: 20,
     iconName: 'Calculator',
   },
   {
@@ -53,8 +48,6 @@ const detailedSubjects: DetailedSubject[] = [
     description: 'Understand Newtonian mechanics, thermodynamics, electromagnetism, and wave optics through intuitive real-world simulations and free-response problem sets.',
     topics: ['Kinematics & Dynamics', 'Work, Energy & Power', 'Rotational Mechanics', 'Electricity & Magnetism', 'AP Physics 1 & 2', 'AP Physics C Mechanics'],
     grades: 'Grades 8 – 12',
-    tutorCount: 24,
-    startingPrice: 24,
     iconName: 'Atom',
   },
   {
@@ -65,8 +58,6 @@ const detailedSubjects: DetailedSubject[] = [
     description: 'Demystify stoichiometry, molecular orbital theory, chemical equilibrium, thermochemistry, and reaction kinetics with structured worksheets.',
     topics: ['Atomic Structure & Periodic Trends', 'Stoichiometry & Dimensional Analysis', 'Chemical Equilibrium', 'Acids, Bases & Buffers', 'Thermodynamics & Kinetics', 'Organic Chemistry Basics'],
     grades: 'Grades 9 – 12',
-    tutorCount: 19,
-    startingPrice: 25,
     iconName: 'TestTube',
   },
   {
@@ -77,8 +68,6 @@ const detailedSubjects: DetailedSubject[] = [
     description: 'Explore cellular energetics, Mendelian genetics, molecular biotechnology, evolutionary biology, and ecology with interactive concept maps.',
     topics: ['Cell Structure & Transport', 'Cellular Respiration & Photosynthesis', 'Genetics & Heredity', 'Gene Expression & Regulation', 'Ecology & Natural Selection'],
     grades: 'Grades 7 – 12',
-    tutorCount: 22,
-    startingPrice: 22,
     iconName: 'Dna',
   },
   {
@@ -89,8 +78,6 @@ const detailedSubjects: DetailedSubject[] = [
     description: 'From first lines of code to advanced object-oriented programming, data structures, recursion, and algorithmic problem-solving for school and competitions.',
     topics: ['Python for Beginners', 'AP Computer Science A (Java)', 'Data Structures & Algorithms', 'Object-Oriented Design', 'Web Basics (HTML/CSS/JS)', 'Logic & Problem Solving'],
     grades: 'Grades 6 – 12',
-    tutorCount: 36,
-    startingPrice: 25,
     iconName: 'Code',
   },
   {
@@ -101,8 +88,6 @@ const detailedSubjects: DetailedSubject[] = [
     description: 'Develop persuasive thesis construction, literary analysis, grammatical precision, and close-reading strategies for middle school and high school exams.',
     topics: ['Reading Comprehension', 'Persuasive & Expository Writing', 'AP English Language', 'AP English Literature', 'SAT/ACT Verbal Strategies', 'Vocabulary & Rhetoric'],
     grades: 'Grades 6 – 12',
-    tutorCount: 31,
-    startingPrice: 22,
     iconName: 'BookOpen',
   },
   {
@@ -113,8 +98,6 @@ const detailedSubjects: DetailedSubject[] = [
     description: 'Master historical contextualization, DBQ (Document-Based Question) structure, and chronological cause-and-effect reasoning.',
     topics: ['AP US History (APUSH)', 'AP World History (Modern)', 'European History', 'Civics & US Government', 'Historical Essay Writing'],
     grades: 'Grades 7 – 12',
-    tutorCount: 17,
-    startingPrice: 22,
     iconName: 'Landmark',
   },
   {
@@ -125,8 +108,6 @@ const detailedSubjects: DetailedSubject[] = [
     description: 'Build robust foundational scientific inquiry skills covering earth systems, states of matter, simple machines, and experimental design.',
     topics: ['Earth & Space Science', 'Forces & Motion', 'Weather & Climate', 'Matter & Energy', 'Scientific Method & Lab Skills'],
     grades: 'Grades 5 – 8',
-    tutorCount: 28,
-    startingPrice: 20,
     iconName: 'FlaskConical',
   },
 ];
@@ -241,8 +222,10 @@ export default function SubjectsDirectoryPage() {
                   </div>
 
                   <div className="text-right flex-shrink-0">
-                    <span className="text-xs font-bold text-navy-800 block">From ${subj.startingPrice}/hr</span>
-                    <span className="text-[11px] text-charcoal-500">{subj.tutorCount} tutors</span>
+                    <span className="text-xs font-bold text-navy-800 block">{subj.grades}</span>
+                    <span className="text-[11px] text-accent-700 font-semibold bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
+                      Standard Track
+                    </span>
                   </div>
                 </div>
 

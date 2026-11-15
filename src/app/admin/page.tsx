@@ -1,22 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { 
-  ShieldCheck, 
   Users, 
-  GraduationCap, 
-  Calendar, 
-  DollarSign, 
+  ShieldCheck, 
+  Clock, 
   Check, 
   X, 
-  Search,
+  DollarSign, 
+  GraduationCap, 
   BookOpen,
   CheckCircle2,
   AlertCircle
 } from 'lucide-react';
-import { mockTutors } from '@/lib/data/mockTutors';
+import { createClient } from '@/lib/supabase/client';
+import { TeacherProfile } from '@/lib/types';
 
 interface PendingApplication {
   id: string;
@@ -32,57 +31,133 @@ interface PendingApplication {
 
 export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<'applications' | 'teachers' | 'revenue' | 'complaints'>('applications');
-  
-  // Real initial verification queue
-  const [applications, setApplications] = useState<PendingApplication[]>([
-    {
-      id: 'app-101',
-      name: 'Dr. Suresh Narayanan',
-      email: 'suresh.n@example.com',
-      subjects: ['Physics', 'Mathematics'],
-      education: 'Ph.D. in Theoretical Physics (IIT Madras)',
-      experience: '8 years coaching AP & SAT Math',
-      hourlyRate: 30,
-      submittedAt: 'Today, 10:14 AM',
-      status: 'pending',
-    },
-    {
-      id: 'app-102',
-      name: 'Aditi Deshmukh',
-      email: 'aditi.d@example.com',
-      subjects: ['Chemistry', 'Biology'],
-      education: 'M.Sc. Organic Chemistry (University of Mumbai)',
-      experience: '5 years high school educator',
-      hourlyRate: 24,
-      submittedAt: 'Yesterday, 04:30 PM',
-      status: 'pending',
-    },
-    {
-      id: 'app-103',
-      name: 'Rohit Khandelwal',
-      email: 'rohit.k@example.com',
-      subjects: ['Computer Science'],
-      education: 'B.Tech CS (BITS Pilani)',
-      experience: '4 years Python & AP CS A tutor',
-      hourlyRate: 28,
-      submittedAt: 'Nov 12, 2026',
-      status: 'pending',
-    },
-  ]);
+  const [applications, setApplications] = useState<PendingApplication[]>([]);
+  const [activeTutors, setActiveTutors] = useState<TeacherProfile[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [activeTutors, setActiveTutors] = useState(mockTutors);
+  const supabase = createClient();
 
-  const handleApprove = (app: PendingApplication) => {
+  useEffect(() => {
+    async function loadAdminData() {
+      try {
+        // Fetch approved teachers
+        const { data: approvedData } = await supabase
+          .from('teacher_profiles')
+          .select(`
+            id,
+            user_id,
+            headline,
+            bio,
+            years_experience,
+            hourly_rate,
+            teaching_format,
+            status,
+            education,
+            rating,
+            review_count,
+            total_hours_taught,
+            city,
+            country,
+            profiles (
+              full_name,
+              avatar_url,
+              email
+            )
+          `)
+          .eq('status', 'approved');
+
+        if (approvedData && approvedData.length > 0) {
+          const mappedApproved: TeacherProfile[] = approvedData.map((t: any) => ({
+            id: t.id,
+            user_id: t.user_id,
+            full_name: t.profiles?.full_name || 'Educator',
+            avatar_url: t.profiles?.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+            headline: t.headline || 'Verified Educator',
+            bio: t.bio || '',
+            years_experience: t.years_experience || 0,
+            hourly_rate: Number(t.hourly_rate) || 25,
+            teaching_format: t.teaching_format || 'both',
+            status: t.status,
+            qualifications: [],
+            education: t.education || '',
+            teaching_methodology: '',
+            rating: Number(t.rating) || 5.0,
+            review_count: Number(t.review_count) || 0,
+            total_hours_taught: Number(t.total_hours_taught) || 0,
+            city: t.city || 'US',
+            country: t.country || 'US',
+            subjects: [],
+            grades: [],
+            languages: ['English'],
+          }));
+          setActiveTutors(mappedApproved);
+        } else {
+          setActiveTutors([]);
+        }
+
+        // Fetch pending teacher applications
+        const { data: pendingData } = await supabase
+          .from('teacher_profiles')
+          .select(`
+            id,
+            education,
+            years_experience,
+            hourly_rate,
+            created_at,
+            status,
+            profiles (
+              full_name,
+              email
+            )
+          `)
+          .eq('status', 'pending');
+
+        if (pendingData && pendingData.length > 0) {
+          const mappedPending: PendingApplication[] = pendingData.map((p: any) => ({
+            id: p.id,
+            name: p.profiles?.full_name || 'Teacher Applicant',
+            email: p.profiles?.email || 'applicant@classly.com',
+            subjects: ['Mathematics'],
+            education: p.education || 'University Degree',
+            experience: `${p.years_experience || 1} years teaching`,
+            hourlyRate: Number(p.hourly_rate) || 25,
+            submittedAt: new Date(p.created_at).toLocaleDateString(),
+            status: 'pending',
+          }));
+          setApplications(mappedPending);
+        } else {
+          setApplications([]);
+        }
+      } catch (err) {
+        console.error('Error loading admin records:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadAdminData();
+  }, []);
+
+  const handleApprove = async (app: PendingApplication) => {
+    try {
+      await supabase
+        .from('teacher_profiles')
+        .update({ status: 'approved' })
+        .eq('id', app.id);
+    } catch (e) {
+      console.error(e);
+    }
+
     setApplications((prev) =>
       prev.map((a) => (a.id === app.id ? { ...a, status: 'approved' } : a))
     );
-    // Add to active approved teachers
+
     setActiveTutors((prev) => [
       ...prev,
       {
-        id: `tutor-${Date.now()}`,
+        id: app.id,
         full_name: app.name,
-        avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+        avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
         headline: `${app.education} • Verified Educator`,
         bio: `${app.experience}. Specialized in ${app.subjects.join(', ')}.`,
         years_experience: 5,
@@ -95,8 +170,8 @@ export default function AdminDashboardPage() {
         rating: 5.0,
         review_count: 0,
         total_hours_taught: 0,
-        city: 'New Delhi',
-        country: 'India',
+        city: 'US',
+        country: 'US',
         subjects: app.subjects,
         grades: ['Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'],
         languages: ['English'],
@@ -104,7 +179,16 @@ export default function AdminDashboardPage() {
     ]);
   };
 
-  const handleReject = (id: string) => {
+  const handleReject = async (id: string) => {
+    try {
+      await supabase
+        .from('teacher_profiles')
+        .update({ status: 'rejected' })
+        .eq('id', id);
+    } catch (e) {
+      console.error(e);
+    }
+
     setApplications((prev) =>
       prev.map((app) => (app.id === id ? { ...app, status: 'rejected' } : app))
     );
@@ -137,7 +221,7 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Real Operational Metrics (No fabricated vanity stats) */}
+        {/* Real Operational Metrics */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-subtle">
             <span className="text-[11px] text-charcoal-500 font-semibold uppercase tracking-wider block">Pending Applications</span>
@@ -162,7 +246,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Admin Navigation Tabs */}
-        <div className="flex border-b border-gray-200 mb-6 gap-2 text-xs font-semibold">
+        <div className="flex border-b border-gray-200 mb-6 gap-2 text-xs font-semibold overflow-x-auto">
           {[
             { id: 'applications', label: 'Tutor Verification Queue', badge: pendingCount },
             { id: 'teachers', label: `Approved Educators (${activeTutors.length})` },
@@ -172,7 +256,7 @@ export default function AdminDashboardPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`pb-3 px-3 transition flex items-center gap-1.5 border-b-2 ${
+              className={`pb-3 px-3 transition flex items-center gap-1.5 border-b-2 whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'border-navy-800 text-navy-800 font-bold'
                   : 'border-transparent text-charcoal-500 hover:text-navy-800'
@@ -188,21 +272,25 @@ export default function AdminDashboardPage() {
           ))}
         </div>
 
-        {/* Tab 1: Applications Queue */}
+        {/* Tab 1: Applications Verification Queue */}
         {activeTab === 'applications' && (
           <div className="bg-white rounded-xl border border-gray-200 shadow-subtle overflow-hidden">
-            <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+            <div className="p-4 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
               <div>
-                <h3 className="font-bold text-sm text-navy-800">Educator Application Review Queue</h3>
+                <h3 className="font-bold text-sm text-navy-800">Educator Compliance Verification Queue</h3>
                 <p className="text-xs text-charcoal-500">
-                  Review applicant credentials, university transcripts, and proposed rates. Approving moves the teacher to the active directory.
+                  Review applicant transcripts, university degrees, and identity verification before approving public listing.
                 </p>
               </div>
             </div>
 
             {applications.length === 0 ? (
-              <div className="p-8 text-center text-xs text-charcoal-500">
-                No applications currently pending.
+              <div className="p-12 text-center text-xs text-charcoal-500">
+                <CheckCircle2 className="w-8 h-8 text-accent-500 mx-auto mb-2" />
+                <div className="font-bold text-navy-800 text-sm">Verification Queue Empty</div>
+                <p className="text-charcoal-400 mt-1 max-w-sm mx-auto">
+                  No educator applications currently awaiting compliance review. New teacher signups will populate here.
+                </p>
               </div>
             ) : (
               <table className="w-full text-xs text-left">
@@ -287,25 +375,35 @@ export default function AdminDashboardPage() {
         {activeTab === 'teachers' && (
           <div className="bg-white rounded-xl border border-gray-200 shadow-subtle p-5">
             <h3 className="font-bold text-sm text-navy-800 mb-3">Live Roster of Approved Educators ({activeTutors.length})</h3>
-            <div className="divide-y divide-gray-100 text-xs">
-              {activeTutors.map((t) => (
-                <div key={t.id} className="py-3 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="relative w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
-                      <Image src={t.avatar_url} alt={t.full_name} fill className="object-cover" />
+            {activeTutors.length === 0 ? (
+              <div className="p-10 text-center text-xs text-charcoal-500">
+                <Users className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                <div className="font-bold text-navy-800 text-sm">No Approved Educators Yet</div>
+                <p className="text-charcoal-400 mt-1 max-w-sm mx-auto">
+                  When teacher applications are approved from the verification queue, they will appear in this live marketplace roster.
+                </p>
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-100 text-xs">
+                {activeTutors.map((t) => (
+                  <div key={t.id} className="py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gray-100">
+                        <Image src={t.avatar_url} alt={t.full_name} fill className="object-cover" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-navy-800">{t.full_name}</div>
+                        <div className="text-[11px] text-charcoal-500">{t.headline}</div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="font-bold text-navy-800">{t.full_name} ({t.city}, {t.country})</div>
-                      <div className="text-[11px] text-charcoal-500">{t.headline}</div>
+                    <div className="text-right">
+                      <div className="font-bold text-navy-800">${t.hourly_rate}/hr</div>
+                      <div className="text-[11px] text-accent-600 font-semibold">Active & Approved</div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="font-bold text-navy-800">${t.hourly_rate}/hr</div>
-                    <div className="text-[11px] text-accent-600 font-semibold">Active & Approved</div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

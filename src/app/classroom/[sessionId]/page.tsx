@@ -21,14 +21,14 @@ import {
   X,
   Loader2
 } from 'lucide-react';
-import { mockTutors } from '@/lib/data/mockTutors';
 import { createClient } from '@/lib/supabase/client';
 
 export default function ClassroomPage() {
   const params = useParams();
   const router = useRouter();
   const sessionId = (params?.sessionId as string) || 'room-session-active';
-  const tutor = mockTutors[0];
+  const teacherName = 'Classly Instructor';
+  const teacherAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
   const supabase = createClient();
   const [user, setUser] = useState<any>(null);
 
@@ -184,7 +184,7 @@ export default function ClassroomPage() {
           </Link>
           <span className="text-navy-700 hidden sm:inline">|</span>
           <span className="text-xs text-gray-300 hidden sm:inline">
-            AP Calculus AB with {tutor.full_name}
+            Live 1-on-1 Session • Room #{sessionId.replace('room-', '')}
           </span>
         </div>
 
@@ -211,14 +211,14 @@ export default function ClassroomPage() {
             {/* Teacher Video Box */}
             <div className="relative rounded-xl overflow-hidden bg-navy-900 border border-navy-800 flex items-center justify-center shadow-subtle">
               <Image
-                src={tutor.avatar_url}
-                alt={tutor.full_name}
+                src={teacherAvatar}
+                alt={teacherName}
                 fill
                 className="object-cover opacity-90"
               />
               <div className="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-sm px-2.5 py-1 rounded text-xs font-medium text-white flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-accent-500"></span>
-                <span>{tutor.full_name} (Teacher)</span>
+                <span>{teacherName}</span>
               </div>
             </div>
 
@@ -388,7 +388,7 @@ export default function ClassroomPage() {
                 <div className="p-3 bg-navy-950 rounded-lg border border-navy-800 flex items-center justify-between">
                   <div>
                     <div className="font-semibold text-white">Calculus_Derivatives_Practice.pdf</div>
-                    <div className="text-[10px] text-gray-400">1.2 MB • Uploaded by {tutor.full_name}</div>
+                    <div className="text-[10px] text-gray-400">1.2 MB • Uploaded by Instructor</div>
                   </div>
                   <button onClick={() => alert('Downloading file')} className="text-accent-400 hover:underline">
                     <Download className="w-4 h-4" />
