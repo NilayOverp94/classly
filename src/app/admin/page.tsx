@@ -132,7 +132,8 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="text-right text-xs text-gray-300">
-            <span>Marketplace Mode: <strong className="text-accent-400">Live (US / India)</strong></span>
+            <div>Logged in: <strong className="text-white">milayraj713@gmail.com</strong></div>
+            <span>Marketplace Mode: <strong className="text-accent-400">Live Production</strong></span>
           </div>
         </div>
 

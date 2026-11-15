@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { 
   BarChart3, 
   Calendar, 
@@ -13,12 +14,36 @@ import {
   Video, 
   CheckCircle2, 
   ShieldCheck, 
-  BookOpen
+  BookOpen,
+  LogOut
 } from 'lucide-react';
 import { mockTutors } from '@/lib/data/mockTutors';
+import { createClient } from '@/lib/supabase/client';
 
 export default function TeacherDashboardPage() {
+  const router = useRouter();
+  const supabase = createClient();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const currentUser = session?.user;
+      if (currentUser) {
+        setUser(currentUser);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.push('/');
+    router.refresh();
+  };
+
   const tutor = mockTutors[0];
+  const teacherDisplayName = user?.user_metadata?.full_name || user?.user_metadata?.name || tutor.full_name;
   const [activeTab, setActiveTab] = useState<'overview' | 'classes' | 'availability' | 'create_class' | 'earnings' | 'students'>('overview');
   
   // Real class listings created by teacher
@@ -101,7 +126,7 @@ export default function TeacherDashboardPage() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-navy-800">{tutor.full_name}</h1>
+                <h1 className="text-xl font-bold text-navy-800">{teacherDisplayName}</h1>
                 <span className="text-[11px] font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
                   Verified Educator • Active
                 </span>
@@ -162,6 +187,16 @@ export default function TeacherDashboardPage() {
                 )}
               </button>
             ))}
+
+            <div className="pt-4 border-t border-gray-100 mt-4">
+              <button
+                onClick={handleSignOut}
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-red-600 hover:bg-red-50 transition cursor-pointer text-left"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Log Out</span>
+              </button>
+            </div>
           </aside>
 
           {/* Main Panel */}

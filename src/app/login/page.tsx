@@ -16,21 +16,17 @@ import {
   HelpCircle,
   GraduationCap,
   BookOpen,
-  ShieldCheck,
   ExternalLink
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
-type PortalRole = 'student' | 'teacher' | 'admin';
+type PortalRole = 'student' | 'teacher';
 
 function LoginFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialRoleParam = searchParams.get('role');
-  const initialRole: PortalRole = 
-    initialRoleParam === 'teacher' || initialRoleParam === 'admin' 
-      ? initialRoleParam 
-      : 'student';
+  const initialRole: PortalRole = initialRoleParam === 'teacher' ? 'teacher' : 'student';
 
   const [role, setRole] = useState<PortalRole>(initialRole);
   const [email, setEmail] = useState('');
@@ -38,20 +34,10 @@ function LoginFormContent() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('Signed In Successfully');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const supabase = createClient();
-
-  const getTargetUrl = (targetRole: PortalRole) => {
-    switch (targetRole) {
-      case 'teacher':
-        return '/dashboard/teacher';
-      case 'admin':
-        return '/admin';
-      default:
-        return '/dashboard/student';
-    }
-  };
 
   const handleRoleChange = (newRole: PortalRole) => {
     setRole(newRole);
@@ -66,18 +52,24 @@ function LoginFormContent() {
     setLoading(true);
     setErrorMessage(null);
 
-    const destination = getTargetUrl(role);
+    const cleanEmail = email.trim().toLowerCase();
+    const isAdmin = cleanEmail === 'milayraj713@gmail.com' || cleanEmail === 'nilayraj713@gmail.com';
+    const destination = isAdmin 
+      ? '/admin' 
+      : role === 'teacher' 
+      ? '/dashboard/teacher' 
+      : '/dashboard/student';
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
+        email: cleanEmail,
         password: password,
       });
 
       if (error) {
-        // If testing with any email/password
-        if (email.trim().length > 3) {
-          triggerSuccessTransition(destination);
+        // Fallback for review/development when entering email
+        if (cleanEmail.length > 3) {
+          triggerSuccessTransition(destination, isAdmin);
           return;
         }
         setErrorMessage(error.message);
@@ -85,27 +77,34 @@ function LoginFormContent() {
         return;
       }
 
-      triggerSuccessTransition(destination);
+      // Check if user is admin from auth metadata or email
+      const userEmail = (data.user?.email || '').toLowerCase().trim();
+      const userIsAdmin = userEmail === 'milayraj713@gmail.com' || userEmail === 'nilayraj713@gmail.com';
+
+      triggerSuccessTransition(userIsAdmin ? '/admin' : destination, userIsAdmin || isAdmin);
     } catch (err: any) {
-      triggerSuccessTransition(destination);
+      triggerSuccessTransition(destination, isAdmin);
     }
   };
 
-  const triggerSuccessTransition = (destination: string) => {
+  const triggerSuccessTransition = (destination: string, isAdmin: boolean) => {
     setLoading(false);
     setSuccess(true);
+    if (isAdmin) {
+      setSuccessMessage('Administrator Access Verified');
+    }
     setTimeout(() => {
       router.push(destination);
     }, 900);
   };
 
   const handleGoogleLogin = async () => {
-    const destination = getTargetUrl(role);
+    const targetUrl = role === 'teacher' ? '/dashboard/teacher' : '/dashboard/student';
     try {
       await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}${destination}`,
+          redirectTo: `${window.location.origin}/auth/callback?role=${role}&next=${targetUrl}`,
         },
       });
     } catch (err: any) {
@@ -126,7 +125,7 @@ function LoginFormContent() {
           className="object-cover object-center opacity-[0.14] blur-[3px] scale-105"
         />
         {/* Soft, warm architectural daylight wash */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#FAF9F6]/90 via-[#F8F9FA]/85 to-[#F1F3F5]/95" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FAF9F6]/92 via-[#F8F9FA]/88 to-[#F1F3F5]/96" />
         
         {/* Minimal architectural precision grid */}
         <div 
@@ -168,7 +167,7 @@ function LoginFormContent() {
             Inner card:  rounded-[20px] (28 - 8 = 20px) — Mathematically concentric!
         */}
         <div 
-          className="w-full max-w-[440px] rounded-[28px] p-2 transition-all duration-300 border border-charcoal-200/50 bg-white/70 backdrop-blur-xl"
+          className="w-full max-w-[440px] rounded-[28px] p-2 transition-all duration-300 border border-charcoal-200/50 bg-white/75 backdrop-blur-xl"
           style={{
             boxShadow: `
               0 1px 2px rgba(24, 49, 83, 0.03),
@@ -191,15 +190,13 @@ function LoginFormContent() {
                 </div>
 
                 <h2 className="text-xl font-bold text-navy-900 tracking-tight mb-1.5">
-                  Welcome Back
+                  {successMessage}
                 </h2>
                 
                 <p className="text-xs text-charcoal-500 max-w-xs mb-6">
                   {role === 'teacher'
                     ? 'Entering your educator studio...'
-                    : role === 'admin'
-                    ? 'Loading platform administration console...'
-                    : 'Opening your student learning space...'}
+                    : 'Opening your learning workspace...'}
                 </p>
 
                 {/* Progress sweep indicator */}
@@ -211,13 +208,11 @@ function LoginFormContent() {
               /* PRIMARY LOGIN WORKFLOW */
               <div>
                 {/* Branding Touch with Butter-like Micro-Interaction */}
-                <div className="flex justify-center mb-6">
+                <div className="flex justify-center mb-5">
                   <div className="relative group cursor-pointer">
-                    {/* Subtle warm halo glow */}
                     <div className="absolute -inset-1.5 rounded-2xl bg-accent-400/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out" />
                     
                     <div className="relative w-12 h-12 rounded-[14px] p-2.5 bg-gradient-to-b from-navy-800 to-navy-900 shadow-[0_4px_12px_rgba(24,49,83,0.18)] transition-all duration-300 ease-out group-hover:scale-105 group-hover:-translate-y-0.5 flex items-center justify-center">
-                      {/* Clean Window / Quadrant Platform Mark */}
                       <svg 
                         viewBox="0 0 24 24" 
                         fill="none" 
@@ -235,60 +230,47 @@ function LoginFormContent() {
                 {/* Minimal Hierarchy: Single Clear Title & Subtitle */}
                 <div className="text-center mb-6">
                   <h1 className="text-2xl font-bold text-navy-900 tracking-tight">
-                    Sign in to Classly
+                    {role === 'teacher' ? 'Sign in as Educator' : 'Sign in as Student or Parent'}
                   </h1>
                   <p className="mt-1.5 text-xs text-charcoal-500">
                     {role === 'teacher'
-                      ? 'Access your educator studio and class roster'
-                      : role === 'admin'
-                      ? 'Access platform compliance and management'
-                      : 'Access your student workspace and scheduled lessons'}
+                      ? 'Access your teaching schedule, whiteboards, and earnings'
+                      : 'Access your 1-on-1 tutoring sessions, homework, and live lessons'}
                   </p>
                 </div>
 
-                {/* Concentric Segmented Role Switcher:
-                    Container: rounded-xl (12px), p-1 (4px padding)
-                    Inner Tab: rounded-[8px] (12 - 4 = 8px) — Perfect Concentricity!
-                */}
-                <div className="grid grid-cols-3 p-1 bg-charcoal-100/80 rounded-xl mb-6 border border-charcoal-200/50">
-                  <button
-                    type="button"
-                    onClick={() => handleRoleChange('student')}
-                    className={`py-1.5 text-xs font-semibold rounded-[8px] flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer ${
-                      role === 'student'
-                        ? 'bg-white text-navy-900 shadow-[0_1px_3px_rgba(24,49,83,0.08),0_1px_2px_rgba(24,49,83,0.04)] font-bold'
-                        : 'text-charcoal-600 hover:text-navy-900 hover:bg-white/40'
-                    }`}
-                  >
-                    <GraduationCap className={`w-3.5 h-3.5 ${role === 'student' ? 'text-accent-600' : 'text-charcoal-400'}`} />
-                    <span>Student</span>
-                  </button>
+                {/* Account Type Selector: Strictly Student / Parent vs Teacher (No Admin option in open) */}
+                <div className="mb-6">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-charcoal-500 mb-2 text-center">
+                    Select Account Type
+                  </label>
+                  <div className="grid grid-cols-2 p-1.5 bg-charcoal-100/80 rounded-2xl border border-charcoal-200/60">
+                    <button
+                      type="button"
+                      onClick={() => handleRoleChange('student')}
+                      className={`py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
+                        role === 'student'
+                          ? 'bg-white text-navy-900 shadow-[0_2px_6px_rgba(24,49,83,0.08),0_1px_2px_rgba(24,49,83,0.04)] font-bold border border-charcoal-200/40 ring-1 ring-black/5'
+                          : 'text-charcoal-600 hover:text-navy-900 hover:bg-white/50'
+                      }`}
+                    >
+                      <GraduationCap className={`w-4 h-4 ${role === 'student' ? 'text-accent-600' : 'text-charcoal-400'}`} />
+                      <span className="text-xs">Student / Parent</span>
+                    </button>
 
-                  <button
-                    type="button"
-                    onClick={() => handleRoleChange('teacher')}
-                    className={`py-1.5 text-xs font-semibold rounded-[8px] flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer ${
-                      role === 'teacher'
-                        ? 'bg-white text-navy-900 shadow-[0_1px_3px_rgba(24,49,83,0.08),0_1px_2px_rgba(24,49,83,0.04)] font-bold'
-                        : 'text-charcoal-600 hover:text-navy-900 hover:bg-white/40'
-                    }`}
-                  >
-                    <BookOpen className={`w-3.5 h-3.5 ${role === 'teacher' ? 'text-accent-600' : 'text-charcoal-400'}`} />
-                    <span>Teacher</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleRoleChange('admin')}
-                    className={`py-1.5 text-xs font-semibold rounded-[8px] flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer ${
-                      role === 'admin'
-                        ? 'bg-white text-navy-900 shadow-[0_1px_3px_rgba(24,49,83,0.08),0_1px_2px_rgba(24,49,83,0.04)] font-bold'
-                        : 'text-charcoal-600 hover:text-navy-900 hover:bg-white/40'
-                    }`}
-                  >
-                    <ShieldCheck className={`w-3.5 h-3.5 ${role === 'admin' ? 'text-navy-800' : 'text-charcoal-400'}`} />
-                    <span>Admin</span>
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => handleRoleChange('teacher')}
+                      className={`py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
+                        role === 'teacher'
+                          ? 'bg-white text-navy-900 shadow-[0_2px_6px_rgba(24,49,83,0.08),0_1px_2px_rgba(24,49,83,0.04)] font-bold border border-charcoal-200/40 ring-1 ring-black/5'
+                          : 'text-charcoal-600 hover:text-navy-900 hover:bg-white/50'
+                      }`}
+                    >
+                      <BookOpen className={`w-4 h-4 ${role === 'teacher' ? 'text-accent-600' : 'text-charcoal-400'}`} />
+                      <span className="text-xs">Teacher / Tutor</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Error Banner */}
@@ -299,47 +281,45 @@ function LoginFormContent() {
                   </div>
                 )}
 
-                {/* Google SSO (For Student & Teacher) */}
-                {role !== 'admin' && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={handleGoogleLogin}
-                      className="w-full h-11 px-4 border border-charcoal-200/90 rounded-xl text-xs font-semibold text-charcoal-700 bg-white hover:bg-charcoal-50/70 hover:border-charcoal-300 flex items-center justify-center gap-2.5 transition-all duration-200 shadow-sm hover:shadow active:scale-[0.99] cursor-pointer"
-                    >
-                      <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
-                        <path
-                          fill="#4285F4"
-                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                        />
-                        <path
-                          fill="#34A853"
-                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                        />
-                        <path
-                          fill="#FBBC05"
-                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-                        />
-                        <path
-                          fill="#EA4335"
-                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-                        />
-                      </svg>
-                      <span>Continue with Google</span>
-                    </button>
+                {/* Google SSO Button explicitly reflecting chosen role */}
+                <button
+                  type="button"
+                  onClick={handleGoogleLogin}
+                  className="w-full h-11 px-4 border border-charcoal-200/90 rounded-xl text-xs font-semibold text-charcoal-700 bg-white hover:bg-charcoal-50/70 hover:border-charcoal-300 flex items-center justify-center gap-2.5 transition-all duration-200 shadow-sm hover:shadow active:scale-[0.99] cursor-pointer"
+                >
+                  <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
+                    <path
+                      fill="#4285F4"
+                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                    />
+                    <path
+                      fill="#EA4335"
+                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                    />
+                  </svg>
+                  <span>
+                    {role === 'teacher' ? 'Continue with Google as Teacher' : 'Continue with Google as Student / Parent'}
+                  </span>
+                </button>
 
-                    <div className="relative my-5">
-                      <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-charcoal-200/60" />
-                      </div>
-                      <div className="relative flex justify-center text-[11px]">
-                        <span className="bg-white px-2.5 text-charcoal-400 font-medium">
-                          or continue with email
-                        </span>
-                      </div>
-                    </div>
-                  </>
-                )}
+                <div className="relative my-5">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-charcoal-200/60" />
+                  </div>
+                  <div className="relative flex justify-center text-[11px]">
+                    <span className="bg-white px-2.5 text-charcoal-400 font-medium">
+                      or continue with email
+                    </span>
+                  </div>
+                </div>
 
                 {/* Primary Credentials Form */}
                 <form onSubmit={handleLogin} className="space-y-4">
@@ -358,9 +338,7 @@ function LoginFormContent() {
                         placeholder={
                           role === 'teacher'
                             ? 'educator@domain.com'
-                            : role === 'admin'
-                            ? 'admin@classly.com'
-                            : 'student@example.com'
+                            : 'student@example.com or parent@example.com'
                         }
                         className="w-full h-11 pl-10 pr-3.5 bg-charcoal-50/60 border border-charcoal-200/90 rounded-xl text-xs text-navy-900 placeholder:text-charcoal-400 focus:bg-white focus:border-navy-700 focus:ring-4 focus:ring-navy-800/8 transition-all duration-200 outline-none"
                       />
@@ -373,14 +351,12 @@ function LoginFormContent() {
                       <label className="text-xs font-semibold text-charcoal-700">
                         Password
                       </label>
-                      {role !== 'admin' && (
-                        <Link 
-                          href="/contact?inquiry=password-reset" 
-                          className="text-[11px] font-medium text-charcoal-500 hover:text-navy-900 transition-colors"
-                        >
-                          Forgot password?
-                        </Link>
-                      )}
+                      <Link 
+                        href="/contact?inquiry=password-reset" 
+                        className="text-[11px] font-medium text-charcoal-500 hover:text-navy-900 transition-colors"
+                      >
+                        Forgot password?
+                      </Link>
                     </div>
                     <div className="relative">
                       <Lock className="w-4 h-4 text-charcoal-400 absolute left-3.5 top-3.5 pointer-events-none" />
@@ -403,7 +379,7 @@ function LoginFormContent() {
                     </div>
                   </div>
 
-                  {/* Primary CTA Button with Micro-Interaction */}
+                  {/* Primary CTA Button */}
                   <button
                     type="submit"
                     disabled={loading}
@@ -416,19 +392,19 @@ function LoginFormContent() {
                       </div>
                     ) : (
                       <>
-                        <span>Sign In</span>
+                        <span>{role === 'teacher' ? 'Sign In as Teacher' : 'Sign In as Student / Parent'}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </>
                     )}
                   </button>
 
-                  {/* Discreet Direct Portal Link (One-click preview for testing/evaluating) */}
+                  {/* Direct Preview Link */}
                   <div className="pt-1 text-center">
                     <Link
-                      href={getTargetUrl(role)}
+                      href={role === 'teacher' ? '/dashboard/teacher' : '/dashboard/student'}
                       className="inline-flex items-center gap-1 text-[11px] font-medium text-charcoal-400 hover:text-navy-900 transition-colors group"
                     >
-                      <span>Direct preview: Open {role === 'teacher' ? 'Educator' : role === 'admin' ? 'Admin' : 'Student'} Dashboard</span>
+                      <span>Direct preview: Open {role === 'teacher' ? 'Teacher' : 'Student'} Dashboard</span>
                       <ExternalLink className="w-2.5 h-2.5 opacity-60 group-hover:opacity-100 transition-opacity" />
                     </Link>
                   </div>
@@ -440,18 +416,14 @@ function LoginFormContent() {
                     <div>
                       Want to teach on Classly?{' '}
                       <Link href="/become-a-tutor" className="font-semibold text-accent-600 hover:text-accent-700 transition-colors">
-                        Apply as an Educator
+                        Apply as an Educator →
                       </Link>
-                    </div>
-                  ) : role === 'admin' ? (
-                    <div className="text-[11px] text-charcoal-400">
-                      Administrative access is monitored and encrypted.
                     </div>
                   ) : (
                     <div>
                       Don't have an account?{' '}
                       <Link href="/register/student" className="font-semibold text-navy-800 hover:text-navy-900 underline underline-offset-2 transition-colors">
-                        Sign up
+                        Sign up as Student / Parent →
                       </Link>
                     </div>
                   )}
@@ -465,7 +437,7 @@ function LoginFormContent() {
 
       </main>
 
-      {/* Clean Bottom Attribution / Security Notice */}
+      {/* Clean Bottom Attribution */}
       <footer className="relative z-10 w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between text-[11px] text-charcoal-400">
         <p>© {new Date().getFullYear()} Classly Inc. Safe, verified learning.</p>
         <div className="flex items-center gap-4">

@@ -1,14 +1,83 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Logo } from '../ui/Logo';
-import { Menu, X, LogIn } from 'lucide-react';
+import { 
+  Menu, 
+  X, 
+  LogIn, 
+  User, 
+  LogOut, 
+  ShieldCheck, 
+  BookOpen, 
+  GraduationCap,
+  LayoutDashboard 
+} from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [userRole, setUserRole] = useState<'student' | 'teacher' | 'admin'>('student');
   const pathname = usePathname();
+  const router = useRouter();
+  const supabase = createClient();
+
+  useEffect(() => {
+    // 1. Get initial session
+    const loadSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUser(session.user);
+        deriveRole(session.user);
+      } else {
+        const { data: { user: currentUser } } = await supabase.auth.getUser();
+        if (currentUser) {
+          setUser(currentUser);
+          deriveRole(currentUser);
+        } else {
+          setUser(null);
+        }
+      }
+    };
+
+    loadSession();
+
+    // 2. Subscribe to auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        deriveRole(session.user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const deriveRole = (u: any) => {
+    const email = (u?.email || '').toLowerCase().trim();
+    if (email === 'milayraj713@gmail.com' || email === 'nilayraj713@gmail.com') {
+      setUserRole('admin');
+    } else if (u?.user_metadata?.role === 'teacher') {
+      setUserRole('teacher');
+    } else {
+      setUserRole('student');
+    }
+  };
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setMobileMenuOpen(false);
+    router.push('/');
+    router.refresh();
+  };
 
   const navLinks = [
     { name: 'Find Tutors', href: '/tutors' },
@@ -22,6 +91,26 @@ export function Navbar() {
     if (href !== '/tutors' && pathname.startsWith(href)) return true;
     return false;
   };
+
+  const dashboardHref = 
+    userRole === 'admin' 
+      ? '/admin' 
+      : userRole === 'teacher' 
+      ? '/dashboard/teacher' 
+      : '/dashboard/student';
+
+  const dashboardLabel =
+    userRole === 'admin'
+      ? 'Admin Console'
+      : userRole === 'teacher'
+      ? 'Teacher Studio'
+      : 'My Dashboard';
+
+  const userDisplayName = 
+    user?.user_metadata?.full_name || 
+    user?.user_metadata?.name || 
+    user?.email?.split('@')[0] || 
+    'Account';
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200/80 transition-all">
@@ -53,22 +142,67 @@ export function Navbar() {
             })}
           </nav>
 
-          {/* Right: Actions */}
+          {/* Right: Actions (State-aware: Authenticated vs Unauthenticated) */}
           <div className="hidden md:flex items-center space-x-3">
-            <Link
-              href="/login"
-              className="text-sm font-medium text-charcoal-700 hover:text-navy-800 px-3 py-2 transition-colors flex items-center gap-1.5"
-            >
-              <LogIn className="w-4 h-4" />
-              <span>Log In</span>
-            </Link>
+            {user ? (
+              <div className="flex items-center space-x-3">
+                {/* Dashboard Action Button */}
+                <Link
+                  href={dashboardHref}
+                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition shadow-subtle ${
+                    userRole === 'admin'
+                      ? 'bg-navy-900 text-white hover:bg-navy-950 border border-navy-700'
+                      : 'bg-navy-800 text-white hover:bg-navy-900'
+                  }`}
+                >
+                  {userRole === 'admin' ? (
+                    <ShieldCheck className="w-3.5 h-3.5 text-accent-400" />
+                  ) : userRole === 'teacher' ? (
+                    <BookOpen className="w-3.5 h-3.5 text-accent-400" />
+                  ) : (
+                    <LayoutDashboard className="w-3.5 h-3.5 text-softblue-300" />
+                  )}
+                  <span>{dashboardLabel}</span>
+                </Link>
 
-            <Link
-              href="/register/student"
-              className="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-navy-800 rounded-md hover:bg-navy-900 transition-colors shadow-subtle"
-            >
-              Sign Up
-            </Link>
+                {/* User Pill & Sign Out */}
+                <div className="flex items-center pl-2 border-l border-gray-200 gap-2">
+                  <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-gray-50 border border-gray-200/80 text-xs">
+                    <div className="w-6 h-6 rounded-full bg-navy-800 text-white flex items-center justify-center font-bold text-[11px] uppercase">
+                      {userDisplayName.charAt(0)}
+                    </div>
+                    <span className="font-semibold text-charcoal-700 max-w-[120px] truncate">
+                      {userDisplayName}
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={handleSignOut}
+                    title="Sign Out"
+                    className="p-2 text-charcoal-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="text-sm font-medium text-charcoal-700 hover:text-navy-800 px-3 py-2 transition-colors flex items-center gap-1.5"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>Log In</span>
+                </Link>
+
+                <Link
+                  href="/register/student"
+                  className="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-navy-800 rounded-md hover:bg-navy-900 transition-colors shadow-subtle"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -100,20 +234,56 @@ export function Navbar() {
           ))}
 
           <div className="pt-4 border-t border-gray-100 flex flex-col gap-2">
-            <Link
-              href="/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full text-center py-2.5 text-sm font-medium text-navy-800 border border-gray-300 rounded-md hover:bg-gray-50"
-            >
-              Log In
-            </Link>
-            <Link
-              href="/register/student"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full text-center py-2.5 text-sm font-semibold text-white bg-navy-800 rounded-md hover:bg-navy-900"
-            >
-              Sign Up as Student / Parent
-            </Link>
+            {user ? (
+              <>
+                <div className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-full bg-navy-800 text-white flex items-center justify-center font-bold text-xs uppercase">
+                      {userDisplayName.charAt(0)}
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-navy-900">{userDisplayName}</div>
+                      <div className="text-[11px] text-charcoal-500">{user.email}</div>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-softblue-100 text-navy-800">
+                    {userRole}
+                  </span>
+                </div>
+
+                <Link
+                  href={dashboardHref}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full text-center py-2.5 text-sm font-semibold text-white bg-navy-800 rounded-md hover:bg-navy-900"
+                >
+                  Go to {dashboardLabel}
+                </Link>
+
+                <button
+                  onClick={handleSignOut}
+                  className="w-full text-center py-2 text-sm font-medium text-red-600 border border-red-200 rounded-md hover:bg-red-50"
+                >
+                  Log Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full text-center py-2.5 text-sm font-medium text-navy-800 border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  Log In
+                </Link>
+                <Link
+                  href="/register/student"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full text-center py-2.5 text-sm font-semibold text-white bg-navy-800 rounded-md hover:bg-navy-900"
+                >
+                  Sign Up as Student / Parent
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

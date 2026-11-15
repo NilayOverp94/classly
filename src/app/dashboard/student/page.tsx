@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { 
   BookOpen, 
   Calendar, 
@@ -22,14 +23,56 @@ import {
 } from 'lucide-react';
 import { mockBookings } from '@/lib/data/mockBookings';
 import { mockTutors } from '@/lib/data/mockTutors';
+import { createClient } from '@/lib/supabase/client';
 
 export default function StudentDashboardPage() {
+  const router = useRouter();
+  const supabase = createClient();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const currentUser = session?.user;
+      if (currentUser) {
+        const email = (currentUser.email || '').toLowerCase().trim();
+        // Automatic Admin routing
+        if (email === 'milayraj713@gmail.com' || email === 'nilayraj713@gmail.com') {
+          router.replace('/admin');
+          return;
+        }
+        if (currentUser.user_metadata?.role === 'teacher') {
+          router.replace('/dashboard/teacher');
+          return;
+        }
+        setUser(currentUser);
+      }
+    };
+    checkAuth();
+  }, [router]);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.push('/');
+    router.refresh();
+  };
+
   const [activeTab, setActiveTab] = useState<
     'upcoming' | 'past' | 'tutors' | 'materials' | 'payments' | 'settings'
   >('upcoming');
 
   const upcomingBookings = mockBookings.filter((b) => b.status === 'confirmed');
   const pastBookings = mockBookings.filter((b) => b.status === 'completed');
+
+  const studentName = 
+    user?.user_metadata?.student_name ||
+    user?.user_metadata?.full_name || 
+    user?.user_metadata?.name || 
+    'Ethan Miller';
+
+  const parentName = 
+    user?.user_metadata?.full_name || 
+    'Jennifer Miller';
 
   return (
     <div className="bg-offwhite min-h-screen py-8 border-b border-gray-200">
@@ -49,14 +92,14 @@ export default function StudentDashboardPage() {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-bold text-navy-800">
-                  Ethan Miller
+                  {studentName}
                 </h1>
                 <span className="text-[11px] font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
                   Grade 8 • Active Student
                 </span>
               </div>
               <p className="text-xs text-charcoal-500 mt-0.5">
-                Account Supervised by <strong>Jennifer Miller</strong> (Parent) • Local Time: New York (EST)
+                Account Supervised by <strong>{parentName}</strong> (Parent) • Local Time: New York (EST)
               </p>
             </div>
           </div>
@@ -112,13 +155,13 @@ export default function StudentDashboardPage() {
             ))}
 
             <div className="pt-4 border-t border-gray-100 mt-4">
-              <Link
-                href="/login"
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-red-600 hover:bg-red-50"
+              <button
+                onClick={handleSignOut}
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-red-600 hover:bg-red-50 transition cursor-pointer text-left"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Log Out</span>
-              </Link>
+              </button>
             </div>
           </aside>
 
