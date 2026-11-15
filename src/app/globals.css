@@ -34,3 +34,36 @@ body {
   background: #94a3b8;
 }
 
+@keyframes checkPop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes progressSweep {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.animate-check-pop {
+  animation: checkPop 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-progress-sweep {
+  animation: progressSweep 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+
