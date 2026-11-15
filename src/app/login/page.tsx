@@ -67,13 +67,16 @@ function LoginFormContent() {
       });
 
       if (error) {
-        // Fallback for review/development when entering email
-        if (cleanEmail.length > 3) {
-          triggerSuccessTransition(destination, isAdmin);
-          return;
-        }
-        setErrorMessage(error.message);
         setLoading(false);
+        const isNotFound = 
+          error.message.toLowerCase().includes('invalid login credentials') || 
+          error.message.toLowerCase().includes('user not found');
+
+        if (isNotFound) {
+          setErrorMessage('Account not found. No account is associated with this email address.');
+        } else {
+          setErrorMessage(error.message);
+        }
         return;
       }
 
@@ -81,9 +84,22 @@ function LoginFormContent() {
       const userEmail = (data.user?.email || '').toLowerCase().trim();
       const userIsAdmin = userEmail === 'milayraj713@gmail.com' || userEmail === 'nilayraj713@gmail.com';
 
-      triggerSuccessTransition(userIsAdmin ? '/admin' : destination, userIsAdmin || isAdmin);
+      if (userIsAdmin) {
+        triggerSuccessTransition('/admin', true);
+        return;
+      }
+
+      // Check if user has completed required profile setup
+      const hasCompletedOnboarding = Boolean(data.user?.user_metadata?.onboarding_completed);
+      if (!hasCompletedOnboarding) {
+        triggerSuccessTransition(`/onboarding?role=${role}`, false);
+        return;
+      }
+
+      triggerSuccessTransition(destination, false);
     } catch (err: any) {
-      triggerSuccessTransition(destination, isAdmin);
+      setLoading(false);
+      setErrorMessage('Unable to connect to authentication server. Please try again.');
     }
   };
 
@@ -273,11 +289,21 @@ function LoginFormContent() {
                   </div>
                 </div>
 
-                {/* Error Banner */}
+                {/* Error Banner with Account Creation Prompt */}
                 {errorMessage && (
-                  <div className="mb-4 p-2.5 bg-red-50/90 border border-red-200/80 text-red-700 rounded-xl text-xs flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-500" />
-                    <span>{errorMessage}</span>
+                  <div className="mb-4 p-3 bg-red-50/95 border border-red-200/90 text-red-800 rounded-xl text-xs space-y-2">
+                    <div className="flex items-center gap-2 font-medium">
+                      <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600" />
+                      <span>{errorMessage}</span>
+                    </div>
+                    <div className="pl-6 pt-0.5">
+                      <Link
+                        href={role === 'teacher' ? '/become-a-tutor' : '/register/student'}
+                        className="inline-flex items-center gap-1 font-bold text-navy-900 underline hover:text-navy-950 transition"
+                      >
+                        <span>{role === 'teacher' ? 'Apply for an Educator Account →' : 'Register a Student / Parent Account →'}</span>
+                      </Link>
+                    </div>
                   </div>
                 )}
 
@@ -397,17 +423,6 @@ function LoginFormContent() {
                       </>
                     )}
                   </button>
-
-                  {/* Direct Preview Link */}
-                  <div className="pt-1 text-center">
-                    <Link
-                      href={role === 'teacher' ? '/dashboard/teacher' : '/dashboard/student'}
-                      className="inline-flex items-center gap-1 text-[11px] font-medium text-charcoal-400 hover:text-navy-900 transition-colors group"
-                    >
-                      <span>Direct preview: Open {role === 'teacher' ? 'Teacher' : 'Student'} Dashboard</span>
-                      <ExternalLink className="w-2.5 h-2.5 opacity-60 group-hover:opacity-100 transition-opacity" />
-                    </Link>
-                  </div>
                 </form>
 
                 {/* Minimal Footer Hierarchy */}

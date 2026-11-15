@@ -21,6 +21,12 @@ export async function GET(request: Request) {
         return NextResponse.redirect(`${origin}/admin`);
       }
 
+      // Check if user has completed required profile setup
+      const hasCompletedOnboarding = Boolean(data.user.user_metadata?.onboarding_completed);
+      if (!hasCompletedOnboarding) {
+        return NextResponse.redirect(`${origin}/onboarding?role=${role || 'student'}`);
+      }
+
       // Check role
       if (role === 'teacher' || data.user.user_metadata?.role === 'teacher') {
         return NextResponse.redirect(`${origin}/dashboard/teacher`);

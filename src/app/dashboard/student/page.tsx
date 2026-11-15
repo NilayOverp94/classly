@@ -45,6 +45,11 @@ export default function StudentDashboardPage() {
           router.replace('/dashboard/teacher');
           return;
         }
+        // If student hasn't completed required profile details
+        if (!currentUser.user_metadata?.onboarding_completed) {
+          router.replace('/onboarding?role=student');
+          return;
+        }
         setUser(currentUser);
       }
     };
