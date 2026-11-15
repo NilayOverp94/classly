@@ -245,7 +245,7 @@ function OnboardingContent() {
                       required
                       value={studentName}
                       onChange={(e) => setStudentName(e.target.value)}
-                      placeholder="e.g. Ethan Miller"
+                      placeholder="e.g. Alex Miller"
                       className="w-full h-10 px-3.5 bg-charcoal-50/60 border border-charcoal-200/90 rounded-xl text-xs text-navy-900 focus:bg-white focus:border-navy-700 focus:ring-4 focus:ring-navy-800/8 transition outline-none"
                     />
                   </div>

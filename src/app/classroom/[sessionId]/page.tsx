@@ -22,12 +22,23 @@ import {
   Loader2
 } from 'lucide-react';
 import { mockTutors } from '@/lib/data/mockTutors';
+import { createClient } from '@/lib/supabase/client';
 
 export default function ClassroomPage() {
   const params = useParams();
   const router = useRouter();
   const sessionId = (params?.sessionId as string) || 'room-session-active';
   const tutor = mockTutors[0];
+  const supabase = createClient();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data?.user) setUser(data.user);
+    });
+  }, []);
+
+  const participantName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'Student';
 
   // LiveKit Connection State
   const [liveKitToken, setLiveKitToken] = useState<string | null>(null);
@@ -42,10 +53,7 @@ export default function ClassroomPage() {
   const [activeSidePanel, setActiveSidePanel] = useState<'chat' | 'whiteboard' | 'files' | null>('whiteboard');
 
   // Chat State
-  const [messages, setMessages] = useState([
-    { id: '1', sender: tutor.full_name, role: 'teacher', text: 'Welcome Ethan! Let’s begin with problem 4 from yesterday’s calculus sheet.', time: '05:01 PM' },
-    { id: '2', sender: 'Ethan Miller', role: 'student', text: 'Hi Dr. Sharma, I have my notes open!', time: '05:02 PM' },
-  ]);
+  const [messages, setMessages] = useState<any[]>([]);
   const [inputMsg, setInputMsg] = useState('');
 
   // Whiteboard Canvas State
@@ -155,7 +163,7 @@ export default function ClassroomPage() {
       ...prev,
       {
         id: String(Date.now()),
-        sender: 'Ethan Miller',
+        sender: participantName,
         role: 'student',
         text: inputMsg.trim(),
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -218,15 +226,14 @@ export default function ClassroomPage() {
             <div className="relative rounded-xl overflow-hidden bg-navy-900 border border-navy-800 flex items-center justify-center shadow-subtle">
               {videoActive ? (
                 <>
-                  <Image
-                    src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=600&q=80"
-                    alt="Ethan Miller"
-                    fill
-                    className="object-cover"
-                  />
+                  <div className="w-full h-full bg-navy-800 flex items-center justify-center text-white">
+                    <div className="w-16 h-16 rounded-full bg-navy-700 flex items-center justify-center font-bold text-2xl uppercase">
+                      {participantName.charAt(0)}
+                    </div>
+                  </div>
                   <div className="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-sm px-2.5 py-1 rounded text-xs font-medium text-white flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                    <span>Ethan Miller (Student)</span>
+                    <span>{participantName} (Student)</span>
                   </div>
                 </>
               ) : (

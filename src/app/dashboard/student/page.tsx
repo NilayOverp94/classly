@@ -11,48 +11,66 @@ import {
   Video, 
   FileText, 
   CreditCard, 
-  Star, 
   Settings, 
   User, 
   ShieldCheck, 
   LogOut,
-  ChevronRight,
-  ExternalLink,
-  Download,
-  AlertCircle
+  ArrowRight,
+  Sparkles,
+  Inbox
 } from 'lucide-react';
-import { mockBookings } from '@/lib/data/mockBookings';
-import { mockTutors } from '@/lib/data/mockTutors';
 import { createClient } from '@/lib/supabase/client';
 
 export default function StudentDashboardPage() {
   const router = useRouter();
   const supabase = createClient();
   const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Real user bookings and state (clean initial state, NO hardcoded fake stats)
+  const [upcomingBookings, setUpcomingBookings] = useState<any[]>([]);
+  const [pastBookings, setPastBookings] = useState<any[]>([]);
+  const [bookedTutors, setBookedTutors] = useState<any[]>([]);
+  const [materials, setMaterials] = useState<any[]>([]);
+  const [paymentHistory, setPaymentHistory] = useState<any[]>([]);
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const currentUser = session?.user;
-      if (currentUser) {
-        const email = (currentUser.email || '').toLowerCase().trim();
-        // Automatic Admin routing
-        if (email === 'milayraj713@gmail.com' || email === 'nilayraj713@gmail.com') {
-          router.replace('/admin');
-          return;
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const currentUser = session?.user;
+        
+        if (!currentUser) {
+          const { data: { user: fetchedUser } } = await supabase.auth.getUser();
+          if (!fetchedUser) {
+            router.replace('/login');
+            return;
+          }
+          handleUserRouting(fetchedUser);
+        } else {
+          handleUserRouting(currentUser);
         }
-        if (currentUser.user_metadata?.role === 'teacher') {
-          router.replace('/dashboard/teacher');
-          return;
-        }
-        // If student hasn't completed required profile details
-        if (!currentUser.user_metadata?.onboarding_completed) {
-          router.replace('/onboarding?role=student');
-          return;
-        }
-        setUser(currentUser);
+      } catch (err) {
+        console.error('Auth verification error:', err);
+      } finally {
+        setLoading(false);
       }
     };
+
+    const handleUserRouting = (u: any) => {
+      const email = (u.email || '').toLowerCase().trim();
+      // Automatic Admin routing
+      if (email === 'milayraj713@gmail.com' || email === 'nilayraj713@gmail.com') {
+        router.replace('/admin');
+        return;
+      }
+      if (u.user_metadata?.role === 'teacher') {
+        router.replace('/dashboard/teacher');
+        return;
+      }
+      setUser(u);
+    };
+
     checkAuth();
   }, [router]);
 
@@ -66,45 +84,62 @@ export default function StudentDashboardPage() {
     'upcoming' | 'past' | 'tutors' | 'materials' | 'payments' | 'settings'
   >('upcoming');
 
-  const upcomingBookings = mockBookings.filter((b) => b.status === 'confirmed');
-  const pastBookings = mockBookings.filter((b) => b.status === 'completed');
+  if (loading) {
+    return (
+      <div className="bg-offwhite min-h-screen py-16 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-7 h-7 border-2 border-navy-800/20 border-t-navy-800 rounded-full animate-spin" />
+          <span className="text-xs text-charcoal-500 font-medium">Loading your student dashboard...</span>
+        </div>
+      </div>
+    );
+  }
 
-  const studentName = 
+  // Real user display info from authentication session
+  const displayName = 
     user?.user_metadata?.student_name ||
     user?.user_metadata?.full_name || 
     user?.user_metadata?.name || 
-    'Ethan Miller';
+    user?.email?.split('@')[0] || 
+    'Student';
 
-  const parentName = 
-    user?.user_metadata?.full_name || 
-    'Jennifer Miller';
+  const userEmail = user?.email || '';
+  const avatarUrl = user?.user_metadata?.avatar_url;
+  const gradeLevel = user?.user_metadata?.student_grade || 'K-12 Student';
 
   return (
     <div className="bg-offwhite min-h-screen py-8 border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Top Student / Parent Info Banner */}
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* Real User Profile Banner */}
+        <div className="bg-white p-6 rounded-2xl border border-gray-200/90 shadow-subtle mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
-              <Image
-                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80"
-                alt="Ethan Miller"
-                fill
-                className="object-cover"
-              />
+            <div className="relative w-16 h-16 rounded-full overflow-hidden bg-navy-800 text-white border border-gray-200 flex-shrink-0 flex items-center justify-center shadow-sm">
+              {avatarUrl ? (
+                <Image
+                  src={avatarUrl}
+                  alt={displayName}
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <span className="text-xl font-bold uppercase tracking-wider">
+                  {displayName.charAt(0)}
+                </span>
+              )}
             </div>
+
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-bold text-navy-800">
-                  {studentName}
+                  {displayName}
                 </h1>
                 <span className="text-[11px] font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
-                  Grade 8 • Active Student
+                  {gradeLevel}
                 </span>
               </div>
               <p className="text-xs text-charcoal-500 mt-0.5">
-                Account Supervised by <strong>{parentName}</strong> (Parent) • Local Time: New York (EST)
+                Logged in as <strong>{userEmail}</strong> • Active Learning Account
               </p>
             </div>
           </div>
@@ -112,9 +147,9 @@ export default function StudentDashboardPage() {
           <div className="flex items-center gap-3">
             <Link
               href="/tutors"
-              className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold shadow-subtle"
+              className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold shadow-subtle transition flex items-center gap-1.5"
             >
-              + Book New Lesson
+              <span>+ Book a Tutor</span>
             </Link>
           </div>
         </div>
@@ -131,8 +166,8 @@ export default function StudentDashboardPage() {
             {[
               { id: 'upcoming', label: 'Upcoming Lessons', icon: <Calendar className="w-4 h-4" />, count: upcomingBookings.length },
               { id: 'past', label: 'Lesson History', icon: <Clock className="w-4 h-4" /> },
-              { id: 'tutors', label: 'My Tutors', icon: <User className="w-4 h-4" /> },
-              { id: 'materials', label: 'Learning Materials', icon: <FileText className="w-4 h-4" /> },
+              { id: 'tutors', label: 'My Tutors', icon: <User className="w-4 h-4" />, count: bookedTutors.length },
+              { id: 'materials', label: 'Learning Materials', icon: <FileText className="w-4 h-4" />, count: materials.length },
               { id: 'payments', label: 'Payments & Receipts', icon: <CreditCard className="w-4 h-4" /> },
               { id: 'settings', label: 'Account & Safety Settings', icon: <Settings className="w-4 h-4" /> },
             ].map((item) => (
@@ -183,54 +218,68 @@ export default function StudentDashboardPage() {
                   <span className="text-xs text-charcoal-500">Live WebRTC Classrooms</span>
                 </div>
 
-                {upcomingBookings.map((b) => (
-                  <div
-                    key={b.id}
-                    className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle flex flex-col md:flex-row items-start md:items-center justify-between gap-5"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
-                        <Image
-                          src={b.teacher_avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
-                          alt={b.teacher_name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-base font-bold text-navy-800">{b.subject}</h3>
-                          <span className="px-2 py-0.5 rounded bg-accent-50 text-accent-700 text-[11px] font-semibold border border-accent-200">
-                            Confirmed
-                          </span>
+                {upcomingBookings.length > 0 ? (
+                  upcomingBookings.map((b) => (
+                    <div
+                      key={b.id}
+                      className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle flex flex-col md:flex-row items-start md:items-center justify-between gap-5"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
+                          <Image
+                            src={b.teacher_avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
+                            alt={b.teacher_name}
+                            fill
+                            className="object-cover"
+                          />
                         </div>
-                        <p className="text-xs text-charcoal-600 mt-0.5">
-                          with <strong>{b.teacher_name}</strong> • 1-on-1 Session ({b.duration_minutes} mins)
-                        </p>
-                        <div className="flex items-center gap-2 text-xs text-charcoal-500 mt-2">
-                          <Clock className="w-3.5 h-3.5 text-accent-500" />
-                          <span>Tomorrow at 05:00 PM EST</span>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-base font-bold text-navy-800">{b.subject}</h3>
+                            <span className="px-2 py-0.5 rounded bg-accent-50 text-accent-700 text-[11px] font-semibold border border-accent-200">
+                              Confirmed
+                            </span>
+                          </div>
+                          <p className="text-xs text-charcoal-600 mt-0.5">
+                            with <strong>{b.teacher_name}</strong> • 1-on-1 Session ({b.duration_minutes} mins)
+                          </p>
+                          <div className="flex items-center gap-2 text-xs text-charcoal-500 mt-2">
+                            <Clock className="w-3.5 h-3.5 text-accent-500" />
+                            <span>{b.start_time || 'Scheduled Session'}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="w-full md:w-auto flex flex-col sm:flex-row items-center gap-2.5">
-                      <Link
-                        href={`/classroom/${b.meeting_room_id}`}
-                        className="w-full md:w-auto px-5 py-2.5 bg-accent-500 hover:bg-accent-600 text-white rounded-lg text-xs font-bold transition shadow-subtle flex items-center justify-center gap-2"
-                      >
-                        <Video className="w-4 h-4" />
-                        <span>Join Live Classroom</span>
-                      </Link>
-                      <button
-                        onClick={() => alert('Rescheduling requests are accommodated up to 24 hours prior to class.')}
-                        className="w-full md:w-auto px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium text-charcoal-700 hover:bg-gray-100"
-                      >
-                        Reschedule
-                      </button>
+                      <div className="w-full md:w-auto flex flex-col sm:flex-row items-center gap-2.5">
+                        <Link
+                          href={`/classroom/${b.meeting_room_id}`}
+                          className="w-full md:w-auto px-5 py-2.5 bg-accent-500 hover:bg-accent-600 text-white rounded-lg text-xs font-bold transition shadow-subtle flex items-center justify-center gap-2"
+                        >
+                          <Video className="w-4 h-4" />
+                          <span>Join Live Classroom</span>
+                        </Link>
+                      </div>
                     </div>
+                  ))
+                ) : (
+                  /* Clean Empty State */
+                  <div className="bg-white p-12 rounded-2xl border border-gray-200/90 shadow-subtle text-center">
+                    <div className="w-12 h-12 rounded-full bg-softblue-50 text-navy-800 flex items-center justify-center mx-auto mb-3">
+                      <Calendar className="w-6 h-6 text-navy-700" />
+                    </div>
+                    <h3 className="text-base font-bold text-navy-800">No Upcoming Lessons Scheduled</h3>
+                    <p className="text-xs text-charcoal-500 max-w-sm mx-auto mt-1 mb-5">
+                      You don't have any tutoring sessions scheduled yet. Find a verified educator and book your first lesson.
+                    </p>
+                    <Link
+                      href="/tutors"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-navy-800 hover:bg-navy-900 text-white rounded-xl text-xs font-bold transition shadow-sm"
+                    >
+                      <span>Find a Tutor</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
                   </div>
-                ))}
+                )}
               </div>
             )}
 
@@ -240,23 +289,28 @@ export default function StudentDashboardPage() {
                 <h2 className="text-base font-bold text-navy-800 mb-2">
                   Completed Lessons & Attendance
                 </h2>
-                {pastBookings.map((b) => (
-                  <div key={b.id} className="bg-white p-5 rounded-xl border border-gray-200 shadow-subtle flex items-center justify-between">
-                    <div>
-                      <div className="font-bold text-sm text-navy-800">{b.subject} with {b.teacher_name}</div>
-                      <div className="text-xs text-charcoal-500 mt-0.5">Completed • 60 mins • Implicit differentiation & calculus</div>
+                
+                {pastBookings.length > 0 ? (
+                  pastBookings.map((b) => (
+                    <div key={b.id} className="bg-white p-5 rounded-xl border border-gray-200 shadow-subtle flex items-center justify-between">
+                      <div>
+                        <div className="font-bold text-sm text-navy-800">{b.subject} with {b.teacher_name}</div>
+                        <div className="text-xs text-charcoal-500 mt-0.5">Completed • {b.duration_minutes} mins</div>
+                      </div>
+                      <span className="text-xs font-semibold text-gray-500">${b.price} Paid</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs font-semibold text-gray-500">$32.00 Paid</span>
-                      <button
-                        onClick={() => alert('Thank you for providing feedback!')}
-                        className="px-3 py-1.5 bg-softblue-100 text-navy-800 text-xs font-semibold rounded hover:bg-softblue-200"
-                      >
-                        Leave Review
-                      </button>
+                  ))
+                ) : (
+                  <div className="bg-white p-12 rounded-2xl border border-gray-200/90 shadow-subtle text-center">
+                    <div className="w-12 h-12 rounded-full bg-gray-50 text-charcoal-400 flex items-center justify-center mx-auto mb-3">
+                      <Clock className="w-6 h-6" />
                     </div>
+                    <h3 className="text-base font-bold text-navy-800">No Past Lessons Yet</h3>
+                    <p className="text-xs text-charcoal-500 max-w-sm mx-auto mt-1">
+                      Once you complete lessons with your educators, your session history and recordings will appear here.
+                    </p>
                   </div>
-                ))}
+                )}
               </div>
             )}
 
@@ -264,25 +318,44 @@ export default function StudentDashboardPage() {
             {activeTab === 'tutors' && (
               <div className="space-y-4">
                 <h2 className="text-base font-bold text-navy-800 mb-2">Booked Tutors</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {mockTutors.slice(0, 2).map((t) => (
-                    <div key={t.id} className="p-4 bg-white rounded-xl border border-gray-200 shadow-subtle flex items-center gap-3">
-                      <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-                        <Image src={t.avatar_url} alt={t.full_name} fill className="object-cover" />
+
+                {bookedTutors.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {bookedTutors.map((t) => (
+                      <div key={t.id} className="p-4 bg-white rounded-xl border border-gray-200 shadow-subtle flex items-center gap-3">
+                        <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                          <Image src={t.avatar_url} alt={t.full_name} fill className="object-cover" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-bold text-xs text-navy-800 truncate">{t.full_name}</div>
+                          <div className="text-[11px] text-charcoal-500">{t.subjects?.join(', ')}</div>
+                        </div>
+                        <Link
+                          href={`/booking/${t.id}`}
+                          className="px-3 py-1.5 bg-navy-800 text-white rounded text-xs font-semibold"
+                        >
+                          Book
+                        </Link>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-bold text-xs text-navy-800 truncate">{t.full_name}</div>
-                        <div className="text-[11px] text-charcoal-500">{t.subjects.join(', ')}</div>
-                      </div>
-                      <Link
-                        href={`/booking/${t.id}`}
-                        className="px-3 py-1.5 bg-navy-800 text-white rounded text-xs font-semibold"
-                      >
-                        Book
-                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="bg-white p-12 rounded-2xl border border-gray-200/90 shadow-subtle text-center">
+                    <div className="w-12 h-12 rounded-full bg-gray-50 text-charcoal-400 flex items-center justify-center mx-auto mb-3">
+                      <User className="w-6 h-6" />
                     </div>
-                  ))}
-                </div>
+                    <h3 className="text-base font-bold text-navy-800">No Tutors Booked Yet</h3>
+                    <p className="text-xs text-charcoal-500 max-w-sm mx-auto mt-1 mb-4">
+                      Tutors you connect with will be saved here for one-click re-booking and direct messaging.
+                    </p>
+                    <Link
+                      href="/tutors"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold transition"
+                    >
+                      <span>Browse Verified Tutors</span>
+                    </Link>
+                  </div>
+                )}
               </div>
             )}
 
@@ -290,30 +363,29 @@ export default function StudentDashboardPage() {
             {activeTab === 'materials' && (
               <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle space-y-4">
                 <h2 className="text-base font-bold text-navy-800">Class Notes & Homework Sheets</h2>
-                <div className="space-y-2 text-xs">
-                  {[
-                    { name: 'AP Calculus AB - Chapter 3 Derivatives Formula Sheet.pdf', date: 'Oct 28', size: '1.4 MB', author: 'Dr. Aarav Sharma' },
-                    { name: 'Practice Worksheet - Related Rates & Optimization Problems.pdf', date: 'Oct 24', size: '820 KB', author: 'Dr. Aarav Sharma' },
-                    { name: 'AP Physics 1 Rotational Motion Problem Set.pdf', date: 'Oct 19', size: '2.1 MB', author: 'Priya Nambiar' },
-                  ].map((doc, idx) => (
-                    <div key={idx} className="p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <FileText className="w-4 h-4 text-navy-800" />
-                        <div>
+                
+                {materials.length > 0 ? (
+                  <div className="space-y-2 text-xs">
+                    {materials.map((doc, idx) => (
+                      <div key={idx} className="p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <FileText className="w-4 h-4 text-navy-800" />
                           <div className="font-semibold text-navy-800">{doc.name}</div>
-                          <div className="text-[11px] text-charcoal-500">Shared by {doc.author} • {doc.date}</div>
                         </div>
                       </div>
-                      <button
-                        onClick={() => alert(`Downloading ${doc.name}`)}
-                        className="flex items-center gap-1 text-xs font-semibold text-accent-600 hover:text-accent-700"
-                      >
-                        <Download className="w-3.5 h-3.5" />
-                        <span>Download</span>
-                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="py-10 text-center">
+                    <div className="w-12 h-12 rounded-full bg-gray-50 text-charcoal-400 flex items-center justify-center mx-auto mb-3">
+                      <FileText className="w-6 h-6" />
                     </div>
-                  ))}
-                </div>
+                    <h3 className="text-sm font-bold text-navy-800">No Shared Study Materials Yet</h3>
+                    <p className="text-xs text-charcoal-500 max-w-sm mx-auto mt-1">
+                      Whiteboard exports, formula sheets, and homework worksheets provided by your educators will be accessible here.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 
@@ -321,51 +393,53 @@ export default function StudentDashboardPage() {
             {activeTab === 'payments' && (
               <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle space-y-4">
                 <h2 className="text-base font-bold text-navy-800">Payment History & Tax Invoices</h2>
-                <table className="w-full text-xs text-left">
-                  <thead>
-                    <tr className="border-b border-gray-200 text-charcoal-400 font-semibold uppercase text-[10px]">
-                      <th className="pb-2">Date</th>
-                      <th className="pb-2">Description</th>
-                      <th className="pb-2">Amount</th>
-                      <th className="pb-2">Status</th>
-                      <th className="pb-2 text-right">Invoice</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    <tr>
-                      <td className="py-3 text-charcoal-600">Nov 12, 2026</td>
-                      <td className="py-3 font-semibold text-navy-800">1-on-1 Lesson with Dr. Aarav Sharma</td>
-                      <td className="py-3 font-bold text-navy-800">$32.00</td>
-                      <td className="py-3"><span className="text-accent-600 font-semibold">Paid</span></td>
-                      <td className="py-3 text-right">
-                        <button onClick={() => alert('Receipt #REC-8921 downloaded')} className="text-navy-800 hover:underline font-semibold">Download</button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 text-charcoal-600">Nov 04, 2026</td>
-                      <td className="py-3 font-semibold text-navy-800">1-on-1 Lesson with Priya Nambiar</td>
-                      <td className="py-3 font-bold text-navy-800">$28.00</td>
-                      <td className="py-3"><span className="text-accent-600 font-semibold">Paid</span></td>
-                      <td className="py-3 text-right">
-                        <button onClick={() => alert('Receipt #REC-8730 downloaded')} className="text-navy-800 hover:underline font-semibold">Download</button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                
+                {paymentHistory.length > 0 ? (
+                  <table className="w-full text-xs text-left">
+                    <thead>
+                      <tr className="border-b border-gray-200 text-charcoal-400 font-semibold uppercase text-[10px]">
+                        <th className="pb-2">Date</th>
+                        <th className="pb-2">Description</th>
+                        <th className="pb-2">Amount</th>
+                        <th className="pb-2">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {paymentHistory.map((item, idx) => (
+                        <tr key={idx}>
+                          <td className="py-3 text-charcoal-600">{item.date}</td>
+                          <td className="py-3 font-semibold text-navy-800">{item.description}</td>
+                          <td className="py-3 font-bold text-navy-800">${item.amount}</td>
+                          <td className="py-3"><span className="text-accent-600 font-semibold">{item.status}</span></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div className="py-10 text-center">
+                    <div className="w-12 h-12 rounded-full bg-gray-50 text-charcoal-400 flex items-center justify-center mx-auto mb-3">
+                      <CreditCard className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-sm font-bold text-navy-800">No Payment Records Yet</h3>
+                    <p className="text-xs text-charcoal-500 max-w-sm mx-auto mt-1">
+                      Receipts and invoices will be automatically generated and stored here when you book a lesson.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 
             {/* TAB: Settings */}
             {activeTab === 'settings' && (
               <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle space-y-4 text-xs">
-                <h2 className="text-base font-bold text-navy-800">Parental Control & Safety Settings</h2>
+                <h2 className="text-base font-bold text-navy-800">Account & Safety Settings</h2>
                 <div className="p-4 bg-softblue-50 rounded-lg border border-softblue-200">
                   <div className="flex items-center gap-2 font-bold text-navy-800 mb-1">
                     <ShieldCheck className="w-4 h-4 text-accent-500" />
-                    <span>Parent Supervised Mode Active</span>
+                    <span>Protected K-12 Student Account</span>
                   </div>
                   <p className="text-[11px] text-charcoal-600">
-                    All financial transactions, tutor bookings, and outbound contact requires authorization from parent email (jennifer.miller@example.com).
+                    All tutor interactions, session links, and billing receipts are managed securely under <strong>{userEmail}</strong>.
                   </p>
                 </div>
               </div>
@@ -379,4 +453,3 @@ export default function StudentDashboardPage() {
     </div>
   );
 }
-

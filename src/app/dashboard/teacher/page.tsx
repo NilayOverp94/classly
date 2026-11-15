@@ -46,31 +46,8 @@ export default function TeacherDashboardPage() {
   const teacherDisplayName = user?.user_metadata?.full_name || user?.user_metadata?.name || tutor.full_name;
   const [activeTab, setActiveTab] = useState<'overview' | 'classes' | 'availability' | 'create_class' | 'earnings' | 'students'>('overview');
   
-  // Real class listings created by teacher
-  const [teacherClasses, setTeacherClasses] = useState([
-    {
-      id: 'cls-1',
-      title: 'AP Calculus AB Free-Response Workshop',
-      subject: 'Mathematics',
-      gradeLevel: 'Grade 11 - 12',
-      price: 24,
-      dateTime: 'Tomorrow at 05:00 PM EST',
-      durationMinutes: 60,
-      maxStudents: 6,
-      enrolledCount: 2,
-    },
-    {
-      id: 'cls-2',
-      title: 'Pre-Calculus Polynomial Functions & Graphs',
-      subject: 'Mathematics',
-      gradeLevel: 'Grade 10 - 11',
-      price: 20,
-      dateTime: 'Friday at 06:30 PM EST',
-      durationMinutes: 60,
-      maxStudents: 8,
-      enrolledCount: 3,
-    },
-  ]);
+  // Real class listings created by teacher (starts empty)
+  const [teacherClasses, setTeacherClasses] = useState<any[]>([]);
 
   // Class creation state
   const [newClass, setNewClass] = useState({
@@ -230,30 +207,48 @@ export default function TeacherDashboardPage() {
                   </div>
                 </div>
 
-                {/* Next Class Launch Card */}
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h2 className="text-base font-bold text-navy-800">Next Scheduled Class</h2>
-                      <p className="text-xs text-charcoal-500">{teacherClasses[0]?.title} • 60 mins</p>
+                {/* Next Class Launch Card or Empty State */}
+                {teacherClasses.length > 0 ? (
+                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h2 className="text-base font-bold text-navy-800">Next Scheduled Class</h2>
+                        <p className="text-xs text-charcoal-500">{teacherClasses[0]?.title} • {teacherClasses[0]?.durationMinutes} mins</p>
+                      </div>
+                      <span className="px-2.5 py-1 bg-accent-50 text-accent-700 font-semibold text-xs rounded border border-accent-200">
+                        {teacherClasses[0]?.dateTime}
+                      </span>
                     </div>
-                    <span className="px-2.5 py-1 bg-accent-50 text-accent-700 font-semibold text-xs rounded border border-accent-200">
-                      Tomorrow 05:00 PM EST
-                    </span>
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                      <div className="text-xs text-charcoal-600">
+                        Class Type: <strong>Group Class</strong> • Rate: <strong>${teacherClasses[0]?.price}</strong>
+                      </div>
+                      <Link
+                        href={`/classroom/room-${teacherClasses[0]?.id}`}
+                        className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-subtle"
+                      >
+                        <Video className="w-4 h-4" />
+                        <span>Open Classroom</span>
+                      </Link>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                    <div className="text-xs text-charcoal-600">
-                      US Time: <strong>05:00 PM EST</strong> • Local India Time: <strong>03:30 AM IST (Next Day)</strong>
+                ) : (
+                  <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-subtle text-center">
+                    <div className="w-12 h-12 rounded-full bg-softblue-50 text-navy-800 flex items-center justify-center mx-auto mb-3">
+                      <Calendar className="w-6 h-6 text-navy-700" />
                     </div>
-                    <Link
-                      href="/classroom/room-session-active"
-                      className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-subtle"
+                    <h3 className="font-bold text-navy-800 text-sm">No Scheduled Classes Yet</h3>
+                    <p className="text-xs text-charcoal-500 max-w-sm mx-auto mt-1 mb-4">
+                      Publish a group masterclass or set your weekly availability slots to begin accepting students.
+                    </p>
+                    <button
+                      onClick={() => setActiveTab('create_class')}
+                      className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold"
                     >
-                      <Video className="w-4 h-4" />
-                      <span>Open Classroom</span>
-                    </Link>
+                      + Create Your First Class
+                    </button>
                   </div>
-                </div>
+                )}
 
               </div>
             )}
@@ -271,29 +266,41 @@ export default function TeacherDashboardPage() {
                   </button>
                 </div>
 
-                {teacherClasses.map((cls) => (
-                  <div key={cls.id} className="bg-white p-5 rounded-xl border border-gray-200 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-bold text-sm text-navy-800">{cls.title}</h3>
-                        <span className="px-2 py-0.5 bg-softblue-100 text-navy-800 rounded text-[10px] font-semibold">
-                          {cls.subject}
-                        </span>
+                {teacherClasses.length > 0 ? (
+                  teacherClasses.map((cls) => (
+                    <div key={cls.id} className="bg-white p-5 rounded-xl border border-gray-200 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold text-sm text-navy-800">{cls.title}</h3>
+                          <span className="px-2 py-0.5 bg-softblue-100 text-navy-800 rounded text-[10px] font-semibold">
+                            {cls.subject}
+                          </span>
+                        </div>
+                        <p className="text-xs text-charcoal-500 mt-1">
+                          {cls.dateTime} • {cls.gradeLevel} • ${cls.price}/student • Enrolled: {cls.enrolledCount}/{cls.maxStudents}
+                        </p>
                       </div>
-                      <p className="text-xs text-charcoal-500 mt-1">
-                        {cls.dateTime} • {cls.gradeLevel} • ${cls.price}/student • Enrolled: {cls.enrolledCount}/{cls.maxStudents}
-                      </p>
-                    </div>
 
-                    <Link
-                      href={`/classroom/room-${cls.id}`}
-                      className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5"
+                      <Link
+                        href={`/classroom/room-${cls.id}`}
+                        className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5"
+                      >
+                        <Video className="w-3.5 h-3.5" />
+                        <span>Start Class</span>
+                      </Link>
+                    </div>
+                  ))
+                ) : (
+                  <div className="bg-white p-10 rounded-xl border border-gray-200 shadow-subtle text-center">
+                    <p className="text-xs text-charcoal-500 mb-3">No classes published yet.</p>
+                    <button
+                      onClick={() => setActiveTab('create_class')}
+                      className="px-4 py-2 bg-navy-800 text-white rounded-lg text-xs font-semibold"
                     >
-                      <Video className="w-3.5 h-3.5" />
-                      <span>Start Class</span>
-                    </Link>
+                      Create a Class
+                    </button>
                   </div>
-                ))}
+                )}
               </div>
             )}
 
@@ -471,16 +478,12 @@ export default function TeacherDashboardPage() {
             {activeTab === 'students' && (
               <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle space-y-4">
                 <h2 className="text-base font-bold text-navy-800">Student Roster</h2>
-                <div className="divide-y divide-gray-100 text-xs">
-                  <div className="py-3 flex items-center justify-between">
-                    <div>
-                      <div className="font-bold text-navy-800">Ethan Miller (Grade 8)</div>
-                      <div className="text-[11px] text-charcoal-500">Parent: Jennifer Miller • AP Calculus prep</div>
-                    </div>
-                    <Link href="/classroom/room-session-active" className="text-navy-800 font-semibold hover:underline">
-                      Classroom Link
-                    </Link>
-                  </div>
+                <div className="py-8 text-center text-xs text-charcoal-500">
+                  <Users className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                  <div className="font-bold text-navy-800 text-sm">No Enrolled Students Yet</div>
+                  <p className="max-w-xs mx-auto mt-1">
+                    Once students book 1-on-1 sessions or enroll in your published classes, their contact details and learning goals will appear here.
+                  </p>
                 </div>
               </div>
             )}
