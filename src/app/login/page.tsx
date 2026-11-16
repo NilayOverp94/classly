@@ -16,11 +16,13 @@ import {
   HelpCircle,
   GraduationCap,
   BookOpen,
-  ExternalLink
+  User,
+  Sparkles
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 type PortalRole = 'student' | 'teacher';
+type AuthMode = 'signin' | 'signup';
 
 function LoginFormContent() {
   const router = useRouter();
@@ -28,7 +30,9 @@ function LoginFormContent() {
   const initialRoleParam = searchParams.get('role');
   const initialRole: PortalRole = initialRoleParam === 'teacher' ? 'teacher' : 'student';
 
+  const [mode, setMode] = useState<AuthMode>('signin');
   const [role, setRole] = useState<PortalRole>(initialRole);
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -47,12 +51,31 @@ function LoginFormContent() {
     window.history.replaceState({}, '', url.toString());
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleModeChange = (newMode: AuthMode) => {
+    setMode(newMode);
+    setErrorMessage(null);
+  };
+
+  const triggerSuccessTransition = (destination: string, isAdmin: boolean, customMsg?: string) => {
+    setLoading(false);
+    setSuccess(true);
+    if (isAdmin) {
+      setSuccessMessage('Administrator Access Verified');
+    } else if (customMsg) {
+      setSuccessMessage(customMsg);
+    }
+    setTimeout(() => {
+      router.push(destination);
+    }, 900);
+  };
+
+  const handleManualAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrorMessage(null);
 
     const cleanEmail = email.trim().toLowerCase();
+    const cleanPassword = password.trim();
     const isAdmin = cleanEmail === 'milayraj713@gmail.com' || cleanEmail === 'nilayraj713@gmail.com';
     const destination = isAdmin 
       ? '/admin' 
@@ -60,58 +83,104 @@ function LoginFormContent() {
       ? '/dashboard/teacher' 
       : '/dashboard/student';
 
+    // 1. SIGN UP (CREATE ACCOUNT)
+    if (mode === 'signup') {
+      if (cleanPassword.length < 6) {
+        setLoading(false);
+        setErrorMessage('Password must be at least 6 characters long.');
+        return;
+      }
+
+      try {
+        const regRes = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: cleanEmail,
+            password: cleanPassword,
+            fullName: fullName.trim() || (role === 'teacher' ? 'Educator' : 'Student'),
+            role: role,
+          }),
+        });
+
+        const regData = await regRes.json();
+
+        if (!regRes.ok) {
+          setLoading(false);
+          setErrorMessage(regData.error || 'Failed to create account.');
+          return;
+        }
+
+        // Immediately authenticate with newly created credentials
+        const { data, error: signInErr } = await supabase.auth.signInWithPassword({
+          email: cleanEmail,
+          password: cleanPassword,
+        });
+
+        if (signInErr) {
+          setLoading(false);
+          setErrorMessage('Account created! Please sign in with your email and password.');
+          setMode('signin');
+          return;
+        }
+
+        triggerSuccessTransition(destination, isAdmin, 'Account Created Successfully!');
+        return;
+
+      } catch (err: any) {
+        setLoading(false);
+        setErrorMessage('Registration server error. Please try again.');
+        return;
+      }
+    }
+
+    // 2. SIGN IN (MANUAL LOGIN)
     try {
+      // First attempt: standard signInWithPassword
       const { data, error } = await supabase.auth.signInWithPassword({
         email: cleanEmail,
-        password: password,
+        password: cleanPassword,
       });
 
-      if (error) {
-        setLoading(false);
-        const isNotFound = 
-          error.message.toLowerCase().includes('invalid login credentials') || 
-          error.message.toLowerCase().includes('user not found');
+      if (!error && data?.user) {
+        triggerSuccessTransition(destination, isAdmin, 'Signed In Successfully');
+        return;
+      }
 
-        if (isNotFound) {
-          setErrorMessage('Account not found. No account is associated with this email address.');
-        } else {
-          setErrorMessage(error.message);
+      // If signInWithPassword failed, call our resolver to check if user exists (e.g. Google-only account)
+      const resolveRes = await fetch('/api/auth/resolve-manual-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleanEmail, password: cleanPassword }),
+      });
+
+      const resolveData = await resolveRes.json();
+
+      if (resolveRes.ok && resolveData.linked) {
+        // Password was linked to the account! Retry sign-in
+        const retry = await supabase.auth.signInWithPassword({
+          email: cleanEmail,
+          password: cleanPassword,
+        });
+
+        if (!retry.error && retry.data?.user) {
+          triggerSuccessTransition(destination, isAdmin, 'Signed In Successfully');
+          return;
         }
-        return;
       }
 
-      // Check if user is admin from auth metadata or email
-      const userEmail = (data.user?.email || '').toLowerCase().trim();
-      const userIsAdmin = userEmail === 'milayraj713@gmail.com' || userEmail === 'nilayraj713@gmail.com';
+      setLoading(false);
 
-      if (userIsAdmin) {
-        triggerSuccessTransition('/admin', true);
-        return;
+      if (resolveData.notFound) {
+        setErrorMessage('No account found under this email address. Switch to "Create Account" above to register.');
+      } else {
+        setErrorMessage(resolveData.error || error?.message || 'Incorrect email or password.');
       }
 
-      // Check if user has completed required profile setup
-      const hasCompletedOnboarding = Boolean(data.user?.user_metadata?.onboarding_completed);
-      if (!hasCompletedOnboarding) {
-        triggerSuccessTransition(`/onboarding?role=${role}`, false);
-        return;
-      }
-
-      triggerSuccessTransition(destination, false);
     } catch (err: any) {
       setLoading(false);
       setErrorMessage('Unable to connect to authentication server. Please try again.');
     }
-  };
-
-  const triggerSuccessTransition = (destination: string, isAdmin: boolean) => {
-    setLoading(false);
-    setSuccess(true);
-    if (isAdmin) {
-      setSuccessMessage('Administrator Access Verified');
-    }
-    setTimeout(() => {
-      router.push(destination);
-    }, 900);
   };
 
   const handleGoogleLogin = async () => {
@@ -221,10 +290,11 @@ function LoginFormContent() {
                 </div>
               </div>
             ) : (
-              /* PRIMARY LOGIN WORKFLOW */
+              /* PRIMARY AUTHENTICATION WORKFLOW */
               <div>
+                
                 {/* Branding Touch with Butter-like Micro-Interaction */}
-                <div className="flex justify-center mb-5">
+                <div className="flex justify-center mb-4">
                   <div className="relative group cursor-pointer">
                     <div className="absolute -inset-1.5 rounded-2xl bg-accent-400/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out" />
                     
@@ -243,31 +313,58 @@ function LoginFormContent() {
                   </div>
                 </div>
 
-                {/* Minimal Hierarchy: Single Clear Title & Subtitle */}
-                <div className="text-center mb-6">
+                {/* Mode Switcher: Sign In vs Create Account */}
+                <div className="flex items-center justify-center mb-5">
+                  <div className="grid grid-cols-2 p-1 bg-charcoal-100 rounded-xl border border-charcoal-200/60 w-full max-w-[280px]">
+                    <button
+                      type="button"
+                      onClick={() => handleModeChange('signin')}
+                      className={`py-1.5 text-xs font-bold rounded-lg transition-all ${
+                        mode === 'signin'
+                          ? 'bg-white text-navy-900 shadow-sm border border-charcoal-200/50'
+                          : 'text-charcoal-500 hover:text-navy-900'
+                      }`}
+                    >
+                      Sign In
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleModeChange('signup')}
+                      className={`py-1.5 text-xs font-bold rounded-lg transition-all ${
+                        mode === 'signup'
+                          ? 'bg-white text-navy-900 shadow-sm border border-charcoal-200/50'
+                          : 'text-charcoal-500 hover:text-navy-900'
+                      }`}
+                    >
+                      Create Account
+                    </button>
+                  </div>
+                </div>
+
+                {/* Title & Subtitle */}
+                <div className="text-center mb-5">
                   <h1 className="text-2xl font-bold text-navy-900 tracking-tight">
-                    {role === 'teacher' ? 'Sign in as Educator' : 'Sign in as Student or Parent'}
+                    {mode === 'signin'
+                      ? (role === 'teacher' ? 'Educator Sign In' : 'Student & Parent Sign In')
+                      : (role === 'teacher' ? 'Create Educator Account' : 'Create Student Account')}
                   </h1>
-                  <p className="mt-1.5 text-xs text-charcoal-500">
+                  <p className="mt-1 text-xs text-charcoal-500">
                     {role === 'teacher'
                       ? 'Access your teaching schedule, whiteboards, and earnings'
                       : 'Access your 1-on-1 tutoring sessions, homework, and live lessons'}
                   </p>
                 </div>
 
-                {/* Account Type Selector: Strictly Student / Parent vs Teacher (No Admin option in open) */}
-                <div className="mb-6">
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-charcoal-500 mb-2 text-center">
-                    Select Account Type
-                  </label>
-                  <div className="grid grid-cols-2 p-1.5 bg-charcoal-100/80 rounded-2xl border border-charcoal-200/60">
+                {/* Account Type Selector: Strictly Student / Parent vs Teacher */}
+                <div className="mb-5">
+                  <div className="grid grid-cols-2 p-1 bg-charcoal-100/80 rounded-2xl border border-charcoal-200/60">
                     <button
                       type="button"
                       onClick={() => handleRoleChange('student')}
-                      className={`py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
+                      className={`py-2 px-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
                         role === 'student'
-                          ? 'bg-white text-navy-900 shadow-[0_2px_6px_rgba(24,49,83,0.08),0_1px_2px_rgba(24,49,83,0.04)] font-bold border border-charcoal-200/40 ring-1 ring-black/5'
-                          : 'text-charcoal-600 hover:text-navy-900 hover:bg-white/50'
+                          ? 'bg-white text-navy-900 shadow-[0_2px_6px_rgba(24,49,83,0.08)] font-bold border border-charcoal-200/40'
+                          : 'text-charcoal-600 hover:text-navy-900'
                       }`}
                     >
                       <GraduationCap className={`w-4 h-4 ${role === 'student' ? 'text-accent-600' : 'text-charcoal-400'}`} />
@@ -277,10 +374,10 @@ function LoginFormContent() {
                     <button
                       type="button"
                       onClick={() => handleRoleChange('teacher')}
-                      className={`py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
+                      className={`py-2 px-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
                         role === 'teacher'
-                          ? 'bg-white text-navy-900 shadow-[0_2px_6px_rgba(24,49,83,0.08),0_1px_2px_rgba(24,49,83,0.04)] font-bold border border-charcoal-200/40 ring-1 ring-black/5'
-                          : 'text-charcoal-600 hover:text-navy-900 hover:bg-white/50'
+                          ? 'bg-white text-navy-900 shadow-[0_2px_6px_rgba(24,49,83,0.08)] font-bold border border-charcoal-200/40'
+                          : 'text-charcoal-600 hover:text-navy-900'
                       }`}
                     >
                       <BookOpen className={`w-4 h-4 ${role === 'teacher' ? 'text-accent-600' : 'text-charcoal-400'}`} />
@@ -289,25 +386,26 @@ function LoginFormContent() {
                   </div>
                 </div>
 
-                {/* Error Banner with Account Creation Prompt */}
+                {/* Error Banner */}
                 {errorMessage && (
                   <div className="mb-4 p-3 bg-red-50/95 border border-red-200/90 text-red-800 rounded-xl text-xs space-y-2">
                     <div className="flex items-center gap-2 font-medium">
                       <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600" />
                       <span>{errorMessage}</span>
                     </div>
-                    <div className="pl-6 pt-0.5">
-                      <Link
-                        href={role === 'teacher' ? '/become-a-tutor' : '/register/student'}
-                        className="inline-flex items-center gap-1 font-bold text-navy-900 underline hover:text-navy-950 transition"
+                    {mode === 'signin' && errorMessage.includes('No account found') && (
+                      <button
+                        type="button"
+                        onClick={() => handleModeChange('signup')}
+                        className="text-[11px] font-bold text-navy-900 underline hover:text-navy-950 block pl-6"
                       >
-                        <span>{role === 'teacher' ? 'Apply for an Educator Account →' : 'Register a Student / Parent Account →'}</span>
-                      </Link>
-                    </div>
+                        Create an account now with this email →
+                      </button>
+                    )}
                   </div>
                 )}
 
-                {/* Google SSO Button explicitly reflecting chosen role */}
+                {/* Google SSO Button */}
                 <button
                   type="button"
                   onClick={handleGoogleLogin}
@@ -332,11 +430,11 @@ function LoginFormContent() {
                     />
                   </svg>
                   <span>
-                    {role === 'teacher' ? 'Continue with Google as Teacher' : 'Continue with Google as Student / Parent'}
+                    {role === 'teacher' ? 'Continue with Google as Teacher' : 'Continue with Google as Student'}
                   </span>
                 </button>
 
-                <div className="relative my-5">
+                <div className="relative my-4">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-charcoal-200/60" />
                   </div>
@@ -348,10 +446,31 @@ function LoginFormContent() {
                 </div>
 
                 {/* Primary Credentials Form */}
-                <form onSubmit={handleLogin} className="space-y-4">
+                <form onSubmit={handleManualAuth} className="space-y-3.5">
+                  
+                  {/* Full Name (Sign Up only) */}
+                  {mode === 'signup' && (
+                    <div>
+                      <label className="block text-xs font-semibold text-charcoal-700 mb-1">
+                        Full Name
+                      </label>
+                      <div className="relative">
+                        <User className="w-4 h-4 text-charcoal-400 absolute left-3.5 top-3.5 pointer-events-none" />
+                        <input
+                          type="text"
+                          required
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
+                          placeholder={role === 'teacher' ? 'e.g. Dr. Sarah Jenkins' : 'e.g. Jane Miller'}
+                          className="w-full h-11 pl-10 pr-3.5 bg-charcoal-50/60 border border-charcoal-200/90 rounded-xl text-xs text-navy-900 placeholder:text-charcoal-400 focus:bg-white focus:border-navy-700 focus:ring-4 focus:ring-navy-800/8 transition-all duration-200 outline-none"
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   {/* Email Input */}
                   <div>
-                    <label className="block text-xs font-semibold text-charcoal-700 mb-1.5">
+                    <label className="block text-xs font-semibold text-charcoal-700 mb-1">
                       Email address
                     </label>
                     <div className="relative">
@@ -373,22 +492,25 @@ function LoginFormContent() {
 
                   {/* Password Input */}
                   <div>
-                    <div className="flex justify-between items-center mb-1.5">
+                    <div className="flex justify-between items-center mb-1">
                       <label className="text-xs font-semibold text-charcoal-700">
                         Password
                       </label>
-                      <Link 
-                        href="/contact?inquiry=password-reset" 
-                        className="text-[11px] font-medium text-charcoal-500 hover:text-navy-900 transition-colors"
-                      >
-                        Forgot password?
-                      </Link>
+                      {mode === 'signin' && (
+                        <Link 
+                          href="/contact?inquiry=password-reset" 
+                          className="text-[11px] font-medium text-charcoal-500 hover:text-navy-900 transition-colors"
+                        >
+                          Forgot password?
+                        </Link>
+                      )}
                     </div>
                     <div className="relative">
                       <Lock className="w-4 h-4 text-charcoal-400 absolute left-3.5 top-3.5 pointer-events-none" />
                       <input
                         type={showPassword ? 'text' : 'password'}
                         required
+                        minLength={6}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
@@ -403,6 +525,11 @@ function LoginFormContent() {
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </div>
+                    {mode === 'signup' && (
+                      <span className="text-[10px] text-charcoal-400 mt-1 block">
+                        Must be at least 6 characters
+                      </span>
+                    )}
                   </div>
 
                   {/* Primary CTA Button */}
@@ -414,32 +541,44 @@ function LoginFormContent() {
                     {loading ? (
                       <div className="flex items-center gap-2">
                         <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        <span>Verifying credentials...</span>
+                        <span>{mode === 'signup' ? 'Creating account...' : 'Verifying credentials...'}</span>
                       </div>
                     ) : (
                       <>
-                        <span>{role === 'teacher' ? 'Sign In as Teacher' : 'Sign In as Student / Parent'}</span>
+                        <span>
+                          {mode === 'signup' 
+                            ? (role === 'teacher' ? 'Create Educator Account' : 'Create Student Account')
+                            : (role === 'teacher' ? 'Sign In as Teacher' : 'Sign In as Student / Parent')}
+                        </span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </>
                     )}
                   </button>
                 </form>
 
-                {/* Minimal Footer Hierarchy */}
-                <div className="mt-6 pt-4 border-t border-charcoal-200/50 text-center text-xs text-charcoal-500">
-                  {role === 'teacher' ? (
+                {/* Footer Switcher */}
+                <div className="mt-5 pt-4 border-t border-charcoal-200/50 text-center text-xs text-charcoal-500">
+                  {mode === 'signin' ? (
                     <div>
-                      Want to teach on Classly?{' '}
-                      <Link href="/become-a-tutor" className="font-semibold text-accent-600 hover:text-accent-700 transition-colors">
-                        Apply as an Educator →
-                      </Link>
+                      Don't have an account?{' '}
+                      <button
+                        type="button"
+                        onClick={() => handleModeChange('signup')}
+                        className="font-bold text-navy-800 hover:text-navy-950 underline underline-offset-2 transition-colors cursor-pointer"
+                      >
+                        Create an account →
+                      </button>
                     </div>
                   ) : (
                     <div>
-                      Don't have an account?{' '}
-                      <Link href="/register/student" className="font-semibold text-navy-800 hover:text-navy-900 underline underline-offset-2 transition-colors">
-                        Sign up as Student / Parent →
-                      </Link>
+                      Already have an account?{' '}
+                      <button
+                        type="button"
+                        onClick={() => handleModeChange('signin')}
+                        className="font-bold text-navy-800 hover:text-navy-950 underline underline-offset-2 transition-colors cursor-pointer"
+                      >
+                        Sign In →
+                      </button>
                     </div>
                   )}
                 </div>

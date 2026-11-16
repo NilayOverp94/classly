@@ -30,29 +30,46 @@ export default function StudentRegisterPage() {
     setLoading(true);
     setErrorMessage(null);
 
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPassword = password.trim();
+
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email: email.trim(),
-        password: password,
-        options: {
-          data: {
-            role: 'parent',
-            full_name: parentName.trim(),
-            student_name: studentName.trim(),
-            student_grade: studentGrade,
-            learning_goals: learningGoals.trim(),
-          },
-        },
+      const regRes = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: cleanEmail,
+          password: cleanPassword,
+          fullName: parentName.trim(),
+          role: 'student',
+          studentName: studentName.trim(),
+          studentGrade: studentGrade,
+          learningGoals: learningGoals.trim(),
+        }),
       });
 
-      if (error) {
-        // Fallback for development if signups are restricted in Supabase settings
-        console.warn('Supabase auth signup notice:', error.message);
+      const regData = await regRes.json();
+
+      if (!regRes.ok) {
+        setErrorMessage(regData.error || 'Failed to complete registration.');
+        setLoading(false);
+        return;
+      }
+
+      // Establish authenticated session
+      const { error: signInErr } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password: cleanPassword,
+      });
+
+      if (signInErr) {
+        router.push('/login?role=student');
+        return;
       }
 
       router.push('/dashboard/student');
     } catch (err: any) {
-      router.push('/dashboard/student');
+      setErrorMessage('Registration server error. Please try again.');
     } finally {
       setLoading(false);
     }
