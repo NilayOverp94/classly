@@ -2,92 +2,130 @@ import React from 'react';
 import Link from 'next/link';
 import { 
   Calculator, 
-  FlaskConical, 
-  BookOpen, 
-  Atom, 
-  TestTube, 
-  Dna, 
-  Code, 
-  Landmark,
-  ArrowRight
+  Code2, 
+  ArrowRight,
+  BookOpen,
+  Sparkles,
+  CheckCircle2
 } from 'lucide-react';
-import { mockSubjects } from '@/lib/data/mockSubjects';
-
-const iconMap: Record<string, React.ReactNode> = {
-  Calculator: <Calculator className="w-6 h-6 text-navy-800" />,
-  FlaskConical: <FlaskConical className="w-6 h-6 text-navy-800" />,
-  BookOpen: <BookOpen className="w-6 h-6 text-navy-800" />,
-  Atom: <Atom className="w-6 h-6 text-navy-800" />,
-  TestTube: <TestTube className="w-6 h-6 text-navy-800" />,
-  Dna: <Dna className="w-6 h-6 text-navy-800" />,
-  Code: <Code className="w-6 h-6 text-navy-800" />,
-  Landmark: <Landmark className="w-6 h-6 text-navy-800" />,
-};
 
 export function PopularSubjects() {
+  const tracks = [
+    {
+      id: 'subj-math',
+      name: 'Mathematics',
+      headline: 'From Pre-Algebra to AP Calculus AB & BC',
+      description: 'Master step-by-step mathematical reasoning, homework problem solving, and score higher on school exams and standardized AP tests.',
+      icon: <Calculator className="w-6 h-6 text-navy-900" />,
+      grades: 'Grades 5 – 12',
+      topics: ['Algebra I & II', 'Geometry', 'Trigonometry', 'Pre-Calculus', 'AP Calculus AB/BC', 'AP Statistics'],
+      accentColor: 'from-amber-50 to-orange-50/30',
+      badgeBg: 'bg-amber-100/80 text-amber-900 border-amber-200',
+    },
+    {
+      id: 'subj-cs',
+      name: 'Computer Science',
+      headline: 'Python, AP Computer Science A & Algorithms',
+      description: 'Hands-on programming from scratch to syntax. Build games, master data structures, debug live code, and prepare for AP CS exams.',
+      icon: <Code2 className="w-6 h-6 text-navy-900" />,
+      grades: 'Grades 6 – 12',
+      topics: ['Python Basics & OOP', 'AP Computer Science A', 'Java Programming', 'Algorithms & Logic', 'Web Development'],
+      accentColor: 'from-softblue-50 to-blue-50/30',
+      badgeBg: 'bg-softblue-100 text-navy-900 border-softblue-200',
+    },
+  ];
+
   return (
-    <section className="py-16 lg:py-20 bg-white border-b border-gray-200/70">
+    <section className="py-16 lg:py-24 bg-white border-b border-gray-200/70">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
           <div>
-            <h2 className="text-xs font-semibold text-accent-600 uppercase tracking-wider mb-2">
-              Curriculum Mastery
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-accent-600 uppercase tracking-wider mb-2">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Specialized K-12 Curriculum</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black text-navy-950 tracking-tight">
+              Core Academic Tracks
             </h2>
-            <p className="text-3xl font-bold text-navy-800 tracking-tight">
-              Popular Subjects
-            </p>
-            <p className="mt-2 text-charcoal-600 text-sm max-w-xl">
-              From middle school fundamentals to advanced AP courses, our teachers personalize instruction for every grade level.
+            <p className="mt-2 text-charcoal-600 text-sm sm:text-base max-w-xl">
+              We focus deeply on two high-impact subjects with personalized one-to-one tutoring and small group classes.
             </p>
           </div>
           <Link
             href="/subjects"
-            className="mt-4 md:mt-0 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-navy-900 group"
+            className="mt-4 md:mt-0 inline-flex items-center gap-1.5 text-sm font-bold text-navy-800 hover:text-accent-600 group transition-colors"
           >
-            <span>Browse all subjects & curriculum</span>
+            <span>View detailed curriculum syllabi</span>
             <ArrowRight className="w-4 h-4 text-accent-500 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
 
         {/* Subjects Grid (Focused 2 Core Tracks) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {mockSubjects.map((subject) => (
-            <Link
-              key={subject.id}
-              href={`/tutors?subject=${encodeURIComponent(subject.name)}`}
-              className="group p-6 sm:p-7 rounded-2xl border border-gray-200/90 bg-white hover:border-navy-300 hover:shadow-card transition-all duration-200 flex flex-col justify-between"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          {tracks.map((track) => (
+            <div
+              key={track.id}
+              className={`p-7 sm:p-8 rounded-3xl border border-gray-200/90 bg-gradient-to-b ${track.accentColor} shadow-card hover:shadow-lift hover:border-navy-300 transition-all duration-300 flex flex-col justify-between`}
             >
               <div>
-                <div className="w-12 h-12 rounded-xl bg-softblue-100 flex items-center justify-center mb-5 group-hover:bg-navy-800 transition-colors">
-                  <div className="group-hover:text-white transition-colors [&>svg]:group-hover:text-white">
-                    {iconMap[subject.iconName] || <Calculator className="w-6 h-6 text-navy-800" />}
+                
+                {/* Header row */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-white border border-gray-200/80 shadow-subtle flex items-center justify-center">
+                    {track.icon}
+                  </div>
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full border ${track.badgeBg}`}>
+                    {track.grades}
+                  </span>
+                </div>
+
+                <h3 className="text-2xl font-black text-navy-950 tracking-tight mb-1">
+                  {track.name}
+                </h3>
+                <div className="text-xs font-semibold text-accent-700 mb-3">
+                  {track.headline}
+                </div>
+                
+                <p className="text-sm text-charcoal-600 leading-relaxed mb-6">
+                  {track.description}
+                </p>
+
+                {/* Topic tags */}
+                <div className="mb-6">
+                  <div className="text-xs font-bold text-charcoal-400 uppercase tracking-wider mb-2.5">
+                    Topics & Courses Covered:
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {track.topics.map((topic) => (
+                      <span
+                        key={topic}
+                        className="px-2.5 py-1 rounded-lg bg-white/80 border border-gray-200/70 text-navy-900 font-semibold text-xs shadow-subtle"
+                      >
+                        {topic}
+                      </span>
+                    ))}
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between mb-1.5">
-                  <h3 className="text-xl font-bold text-navy-800 group-hover:text-navy-900">
-                    {subject.name}
-                  </h3>
-                  <span className="text-[11px] font-semibold text-accent-700 bg-accent-50 px-2.5 py-0.5 rounded-full border border-accent-200">
-                    Grades 5 – 12
-                  </span>
-                </div>
-                
-                <p className="text-xs text-charcoal-600 leading-relaxed mb-4">
-                  {subject.description}
-                </p>
               </div>
 
-              <div className="pt-4 border-t border-gray-100 flex items-center justify-between text-xs font-medium text-charcoal-500">
-                <span className="font-semibold text-navy-800">1-on-1 & Small Group Classes</span>
-                <span className="text-navy-800 group-hover:text-accent-600 font-bold group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
-                  <span>Explore Track</span>
-                  <span>&rarr;</span>
+              {/* Action Footer */}
+              <div className="pt-6 border-t border-gray-200/60 flex items-center justify-between">
+                <span className="text-xs font-semibold text-charcoal-500">
+                  1-on-1 & Small Group Sessions
                 </span>
+                <Link
+                  href={`/tutors?subject=${encodeURIComponent(track.name)}`}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-navy-800 hover:bg-navy-900 text-white font-bold text-xs shadow-sm transition group"
+                >
+                  <span>Explore Tutors</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-accent-400 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
               </div>
-            </Link>
+
+            </div>
           ))}
         </div>
 
@@ -95,4 +133,3 @@ export function PopularSubjects() {
     </section>
   );
 }
-
