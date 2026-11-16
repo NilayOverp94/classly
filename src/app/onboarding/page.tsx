@@ -341,11 +341,7 @@ function OnboardingContent() {
                       className="w-full h-10 px-3 bg-charcoal-50/60 border border-charcoal-200/90 rounded-xl text-xs text-navy-900 focus:bg-white focus:border-navy-700 focus:ring-4 focus:ring-navy-800/8 transition outline-none"
                     >
                       <option value="Mathematics">Mathematics</option>
-                      <option value="Physics">Physics</option>
-                      <option value="Chemistry">Chemistry</option>
-                      <option value="Biology">Biology</option>
                       <option value="Computer Science">Computer Science</option>
-                      <option value="English Literature">English Literature</option>
                     </select>
                   </div>
 

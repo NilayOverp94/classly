@@ -55,12 +55,7 @@ export function Hero() {
                     className="w-full bg-gray-50 border border-gray-200 rounded-md px-3 py-2.5 text-sm font-medium text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white transition"
                   >
                     <option value="Mathematics">Mathematics (Pre-Algebra to AP Calculus)</option>
-                    <option value="Physics">Physics (High School & AP)</option>
-                    <option value="Chemistry">Chemistry (Honors & AP)</option>
-                    <option value="Biology">Biology (AP & Life Sciences)</option>
-                    <option value="English">English Language & Literature</option>
                     <option value="Computer Science">Computer Science & Python</option>
-                    <option value="History">History & Social Studies</option>
                   </select>
                 </div>
 
@@ -145,8 +140,8 @@ export function Hero() {
               
               <div className="relative rounded-2xl overflow-hidden border border-gray-200/90 shadow-lift bg-white aspect-[4/3] sm:aspect-[5/4]">
                 <Image
-                  src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1000&q=80"
-                  alt="Teacher mentoring student in online classroom"
+                  src="/images/home-hero.jpg"
+                  alt="Classly classroom learning session"
                   fill
                   className="object-cover"
                   priority

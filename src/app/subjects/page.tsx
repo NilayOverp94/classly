@@ -21,7 +21,7 @@ import {
 interface DetailedSubject {
   id: string;
   name: string;
-  category: 'Mathematics' | 'Science' | 'Computer Science' | 'Humanities';
+  category: 'Mathematics' | 'Computer Science';
   headline: string;
   description: string;
   topics: string[];
@@ -41,36 +41,6 @@ const detailedSubjects: DetailedSubject[] = [
     iconName: 'Calculator',
   },
   {
-    id: 'subj-physics',
-    name: 'Physics',
-    category: 'Science',
-    headline: 'Conceptual, Honors & AP Physics 1, 2, C',
-    description: 'Understand Newtonian mechanics, thermodynamics, electromagnetism, and wave optics through intuitive real-world simulations and free-response problem sets.',
-    topics: ['Kinematics & Dynamics', 'Work, Energy & Power', 'Rotational Mechanics', 'Electricity & Magnetism', 'AP Physics 1 & 2', 'AP Physics C Mechanics'],
-    grades: 'Grades 8 – 12',
-    iconName: 'Atom',
-  },
-  {
-    id: 'subj-chemistry',
-    name: 'Chemistry',
-    category: 'Science',
-    headline: 'Honors Chemistry & AP Chemistry',
-    description: 'Demystify stoichiometry, molecular orbital theory, chemical equilibrium, thermochemistry, and reaction kinetics with structured worksheets.',
-    topics: ['Atomic Structure & Periodic Trends', 'Stoichiometry & Dimensional Analysis', 'Chemical Equilibrium', 'Acids, Bases & Buffers', 'Thermodynamics & Kinetics', 'Organic Chemistry Basics'],
-    grades: 'Grades 9 – 12',
-    iconName: 'TestTube',
-  },
-  {
-    id: 'subj-biology',
-    name: 'Biology',
-    category: 'Science',
-    headline: 'Life Sciences & AP Biology',
-    description: 'Explore cellular energetics, Mendelian genetics, molecular biotechnology, evolutionary biology, and ecology with interactive concept maps.',
-    topics: ['Cell Structure & Transport', 'Cellular Respiration & Photosynthesis', 'Genetics & Heredity', 'Gene Expression & Regulation', 'Ecology & Natural Selection'],
-    grades: 'Grades 7 – 12',
-    iconName: 'Dna',
-  },
-  {
     id: 'subj-cs',
     name: 'Computer Science',
     category: 'Computer Science',
@@ -79,36 +49,6 @@ const detailedSubjects: DetailedSubject[] = [
     topics: ['Python for Beginners', 'AP Computer Science A (Java)', 'Data Structures & Algorithms', 'Object-Oriented Design', 'Web Basics (HTML/CSS/JS)', 'Logic & Problem Solving'],
     grades: 'Grades 6 – 12',
     iconName: 'Code',
-  },
-  {
-    id: 'subj-english',
-    name: 'English Language Arts',
-    category: 'Humanities',
-    headline: 'Critical Reading, AP Lit & Essay Composition',
-    description: 'Develop persuasive thesis construction, literary analysis, grammatical precision, and close-reading strategies for middle school and high school exams.',
-    topics: ['Reading Comprehension', 'Persuasive & Expository Writing', 'AP English Language', 'AP English Literature', 'SAT/ACT Verbal Strategies', 'Vocabulary & Rhetoric'],
-    grades: 'Grades 6 – 12',
-    iconName: 'BookOpen',
-  },
-  {
-    id: 'subj-history',
-    name: 'History & Social Studies',
-    category: 'Humanities',
-    headline: 'US History, AP World History & Civics',
-    description: 'Master historical contextualization, DBQ (Document-Based Question) structure, and chronological cause-and-effect reasoning.',
-    topics: ['AP US History (APUSH)', 'AP World History (Modern)', 'European History', 'Civics & US Government', 'Historical Essay Writing'],
-    grades: 'Grades 7 – 12',
-    iconName: 'Landmark',
-  },
-  {
-    id: 'subj-general-science',
-    name: 'Integrated Science',
-    category: 'Science',
-    headline: 'Middle School Physical & Earth Science',
-    description: 'Build robust foundational scientific inquiry skills covering earth systems, states of matter, simple machines, and experimental design.',
-    topics: ['Earth & Space Science', 'Forces & Motion', 'Weather & Climate', 'Matter & Energy', 'Scientific Method & Lab Skills'],
-    grades: 'Grades 5 – 8',
-    iconName: 'FlaskConical',
   },
 ];
 
@@ -176,11 +116,9 @@ export default function SubjectsDirectoryPage() {
 
           <div className="flex flex-wrap gap-2 pt-1 text-xs font-semibold">
             {[
-              { id: 'all', label: 'All Subjects' },
+              { id: 'all', label: 'All Tracks' },
               { id: 'Mathematics', label: 'Mathematics' },
-              { id: 'Science', label: 'Science & Physics' },
-              { id: 'Computer Science', label: 'Coding & CS' },
-              { id: 'Humanities', label: 'English & Humanities' },
+              { id: 'Computer Science', label: 'Computer Science & Coding' },
             ].map((cat) => (
               <button
                 key={cat.id}
