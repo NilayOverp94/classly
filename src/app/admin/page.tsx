@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { 
   Users, 
   ShieldCheck, 
@@ -30,6 +31,7 @@ interface PendingApplication {
 }
 
 export default function AdminDashboardPage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<'applications' | 'teachers' | 'revenue' | 'complaints'>('applications');
   const [applications, setApplications] = useState<PendingApplication[]>([]);
   const [activeTutors, setActiveTutors] = useState<TeacherProfile[]>([]);
@@ -40,6 +42,16 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     async function loadAdminData() {
       try {
+        // Authenticate admin user
+        const { data: { user } } = await supabase.auth.getUser();
+        const userEmail = (user?.email || '').toLowerCase().trim();
+        const isAdmin = userEmail === 'milayraj713@gmail.com' || userEmail === 'nilayraj713@gmail.com';
+
+        if (!user || !isAdmin) {
+          router.replace('/login');
+          return;
+        }
+
         // Fetch approved teachers
         const { data: approvedData } = await supabase
           .from('teacher_profiles')

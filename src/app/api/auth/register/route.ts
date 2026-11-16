@@ -23,6 +23,12 @@ export async function POST(request: Request) {
 
     const isAdmin = cleanEmail === 'milayraj713@gmail.com' || cleanEmail === 'nilayraj713@gmail.com';
 
+    if (isAdmin) {
+      return NextResponse.json({
+        error: 'This email is reserved for platform administration. Please switch to Sign In.',
+      }, { status: 403 });
+    }
+
     // 1. Check if user already exists
     const adminUrl = `${SUPABASE_URL}/auth/v1/admin/users`;
     const checkRes = await fetch(adminUrl, {

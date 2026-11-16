@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://isooxdepfamnufwglosa.supabase.co';
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const ADMIN_PASSWORD = 'Tejaswik123';
 
 export async function POST(request: Request) {
   try {
@@ -13,6 +14,17 @@ export async function POST(request: Request) {
 
     if (!cleanEmail || !cleanPassword) {
       return NextResponse.json({ error: 'Email and password are required.' }, { status: 400 });
+    }
+
+    const isAdmin = cleanEmail === 'milayraj713@gmail.com' || cleanEmail === 'nilayraj713@gmail.com';
+
+    // Strict validation for admin accounts: MUST match the exact admin password
+    if (isAdmin) {
+      if (cleanPassword !== ADMIN_PASSWORD) {
+        return NextResponse.json({
+          error: 'Invalid administrator credentials. Incorrect password.',
+        }, { status: 401 });
+      }
     }
 
     // 1. Fetch user list from admin API
@@ -39,15 +51,13 @@ export async function POST(request: Request) {
       }, { status: 404 });
     }
 
-    // 2. Check if user is unconfirmed (e.g. from a previous standard signup)
+    // 2. Check if user is unconfirmed or Google-only
     const isUnconfirmed = !existingUser.email_confirmed_at;
-
-    // 3. Check if user only has Google provider
     const providers = existingUser.app_metadata?.providers || [];
     const isGoogleOnly = providers.includes('google') && !providers.includes('email');
 
-    // If user is Google-only OR unconfirmed, update their password and confirm them so manual login works immediately!
-    if (isGoogleOnly || isUnconfirmed) {
+    // If admin or Google-only or unconfirmed, ensure correct password is set
+    if (isAdmin || isGoogleOnly || isUnconfirmed) {
       const updateRes = await fetch(`${adminUrl}/${existingUser.id}`, {
         method: 'PUT',
         headers: {
@@ -56,7 +66,7 @@ export async function POST(request: Request) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          password: cleanPassword,
+          password: isAdmin ? ADMIN_PASSWORD : cleanPassword,
           email_confirm: true,
         }),
       });
@@ -65,7 +75,7 @@ export async function POST(request: Request) {
         return NextResponse.json({
           success: true,
           linked: true,
-          message: 'Password successfully configured for manual login.',
+          message: 'Password successfully configured.',
         });
       }
     }

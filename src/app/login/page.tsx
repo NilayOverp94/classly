@@ -85,6 +85,12 @@ function LoginFormContent() {
 
     // 1. SIGN UP (CREATE ACCOUNT)
     if (mode === 'signup') {
+      if (isAdmin) {
+        setLoading(false);
+        setErrorMessage('This email is reserved for platform administration. Please switch to Sign In.');
+        return;
+      }
+
       if (cleanPassword.length < 6) {
         setLoading(false);
         setErrorMessage('Password must be at least 6 characters long.');
@@ -135,6 +141,14 @@ function LoginFormContent() {
     }
 
     // 2. SIGN IN (MANUAL LOGIN)
+    if (isAdmin) {
+      if (cleanPassword !== 'Tejaswik123') {
+        setLoading(false);
+        setErrorMessage('Invalid administrator credentials. Incorrect password.');
+        return;
+      }
+    }
+
     try {
       // First attempt: standard signInWithPassword
       const { data, error } = await supabase.auth.signInWithPassword({
