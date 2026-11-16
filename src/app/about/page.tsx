@@ -27,7 +27,7 @@ export default function AboutPage() {
             Why We Started Classly
           </h2>
           <p className="text-sm text-charcoal-700 leading-relaxed">
-            Every parent knows that when a student struggles with Algebra II, AP Physics, or essay composition, standard classroom instruction often moves too fast to address individual learning hurdles. At the same time, finding reliable local tutoring in the US often costs $70 to $120 per hour — placing dedicated academic support out of reach for many hardworking families.
+            Every parent knows that when a student struggles with Algebra II, AP Calculus, or Python programming, standard classroom instruction often moves too fast to address individual learning hurdles. At the same time, finding reliable local tutoring in the US often costs $70 to $120 per hour — placing dedicated academic support out of reach for many hardworking families.
           </p>
           <p className="text-sm text-charcoal-700 leading-relaxed">
             Meanwhile, India is home to an extraordinary pool of brilliant educators: university medalists, IIT and BITS engineering graduates, and career senior secondary teachers who master STEM subjects with deep conceptual rigor.

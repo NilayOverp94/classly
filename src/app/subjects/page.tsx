@@ -107,7 +107,7 @@ export default function SubjectsDirectoryPage() {
             <Search className="w-4 h-4 text-charcoal-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search by topic (e.g. 'Calculus', 'Organic Chemistry', 'Python', 'APUSH', 'Essay Writing')..."
+              placeholder="Search by topic (e.g. 'Calculus', 'Python', 'Algebra I & II', 'Geometry', 'Data Structures')..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white"

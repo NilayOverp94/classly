@@ -44,7 +44,7 @@ export default function HowItWorksPage() {
               </div>
               <h3 className="font-bold text-base text-navy-800">1. Search & Filter Tutors</h3>
               <p className="text-xs text-charcoal-600 leading-relaxed">
-                Filter by subject (e.g. AP Calculus, High School Physics, Python), grade level, price range, and student reviews. Watch video introductions and review teaching methodologies before booking.
+                Filter by subject track (e.g. Pre-Algebra, AP Calculus, Python, AP Computer Science A), grade level, price range, and student reviews. Watch video introductions and review teaching methodologies before booking.
               </p>
             </div>
 

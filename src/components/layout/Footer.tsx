@@ -87,17 +87,12 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/tutors?subject=Mathematics" className="hover:text-white transition-colors">
-                  Math Tutors
-                </Link>
-              </li>
-              <li>
-                <Link href="/tutors?subject=Physics" className="hover:text-white transition-colors">
-                  Science & Physics
+                  Mathematics & AP Calculus
                 </Link>
               </li>
               <li>
                 <Link href="/tutors?subject=Computer+Science" className="hover:text-white transition-colors">
-                  Coding & AP CS
+                  Computer Science & Python
                 </Link>
               </li>
               <li>
