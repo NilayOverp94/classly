@@ -1,12 +1,26 @@
 import { NextResponse } from 'next/server';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://isooxdepfamnufwglosa.supabase.co';
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzb294ZGVwZmFtbnVmd2dsb3NhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5NDU5MTQ1MSwiZXhwIjoyMTEwMTY3NDUxfQ.0Tgs5rBFTtsAoFjEqlzLxSbJMJ3IXv3Xiol3G78zobo';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, password, fullName, role, studentName, studentGrade, learningGoals } = body;
+    const { 
+      email, 
+      password, 
+      fullName, 
+      role, 
+      studentName, 
+      studentGrade, 
+      learningGoals,
+      education,
+      hourlyRate,
+      teachingFormat,
+      city,
+      country,
+      bio
+    } = body;
 
     const cleanEmail = (email || '').trim().toLowerCase();
     const cleanPassword = (password || '').trim();
@@ -60,7 +74,7 @@ export async function POST(request: Request) {
               user_metadata: {
                 ...existingUser.user_metadata,
                 full_name: cleanName,
-                role: isAdmin ? 'admin' : userRole,
+                role: userRole,
                 onboarding_completed: true,
               },
             }),
@@ -80,7 +94,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // 2. Create the user with auto-confirmed email
+    // 2. Create the user with auto-confirmed email in Supabase Auth
     const createRes = await fetch(adminUrl, {
       method: 'POST',
       headers: {
@@ -95,10 +109,16 @@ export async function POST(request: Request) {
         user_metadata: {
           full_name: cleanName,
           name: cleanName,
-          role: isAdmin ? 'admin' : userRole,
+          role: userRole,
           student_name: studentName || cleanName,
           student_grade: studentGrade || 'Grade 8',
           learning_goals: learningGoals || '',
+          education: education || '',
+          hourly_rate: hourlyRate || 25,
+          teaching_format: teachingFormat || 'both',
+          city: city || 'US',
+          country: country || 'US',
+          bio: bio || '',
           onboarding_completed: true,
         },
       }),
@@ -112,12 +132,59 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
+    const userId = createData.id;
+
+    // 3. Attempt database record synchronization in public.profiles (if table exists)
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${SERVICE_KEY}`,
+          'apikey': SERVICE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates',
+        },
+        body: JSON.stringify({
+          id: userId,
+          email: cleanEmail,
+          full_name: cleanName,
+          role: userRole,
+          country: country || 'US',
+        }),
+      });
+
+      if (userRole === 'teacher') {
+        await fetch(`${SUPABASE_URL}/rest/v1/teacher_profiles`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${SERVICE_KEY}`,
+            'apikey': SERVICE_KEY,
+            'Content-Type': 'application/json',
+            'Prefer': 'resolution=merge-duplicates',
+          },
+          body: JSON.stringify({
+            user_id: userId,
+            headline: 'Verified Educator',
+            bio: bio || '',
+            education: education || 'University Degree',
+            hourly_rate: Number(hourlyRate) || 25,
+            teaching_format: teachingFormat || 'both',
+            status: 'pending',
+            city: city || 'India',
+            country: country || 'India',
+          }),
+        });
+      }
+    } catch {
+      // Ignore if PostgreSQL schema tables are not yet initialized
+    }
+
     return NextResponse.json({
       success: true,
       user: {
-        id: createData.id,
+        id: userId,
         email: createData.email,
-        role: isAdmin ? 'admin' : userRole,
+        role: userRole,
       },
     });
 

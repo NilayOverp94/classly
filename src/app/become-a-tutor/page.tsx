@@ -10,14 +10,17 @@ import {
   BarChart3, 
   ShieldCheck, 
   CheckCircle2, 
-  ArrowRight,
-  Upload,
-  Clock,
-  UserCheck,
-  AlertCircle
+  ArrowRight, 
+  Upload, 
+  Clock, 
+  UserCheck, 
+  AlertCircle 
 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 export default function BecomeATutorPage() {
+  const supabase = createClient();
+
   // Interactive Earnings Calculator State
   const [calcHourlyRate, setCalcHourlyRate] = useState<number>(25);
   const [calcHoursPerWeek, setCalcHoursPerWeek] = useState<number>(15);
@@ -27,11 +30,14 @@ export default function BecomeATutorPage() {
   const [showApplyModal, setShowApplyModal] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Form fields
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
+    password: '',
     phone: '',
     city: 'New Delhi',
     country: 'India',
@@ -55,13 +61,51 @@ export default function BecomeATutorPage() {
     }
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError(null);
+
     if (currentStep < 4) {
       setCurrentStep((prev) => prev + 1);
     } else {
-      // Final submission
-      setIsSubmitted(true);
+      setSubmitting(true);
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+            fullName: formData.fullName,
+            role: 'teacher',
+            education: formData.education,
+            hourlyRate: formData.hourlyRate,
+            teachingFormat: formData.teachingFormat,
+            city: formData.city,
+            country: formData.country,
+            bio: formData.bio,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          setSubmitError(data.error || 'Failed to submit application.');
+          setSubmitting(false);
+          return;
+        }
+
+        // Authenticate the newly created educator
+        await supabase.auth.signInWithPassword({
+          email: formData.email.trim().toLowerCase(),
+          password: formData.password.trim(),
+        });
+
+        setIsSubmitted(true);
+      } catch (err: any) {
+        setSubmitError('Server connection error. Please try again.');
+      } finally {
+        setSubmitting(false);
+      }
     }
   };
 
@@ -380,6 +424,12 @@ export default function BecomeATutorPage() {
                 </div>
               ) : (
                 <form onSubmit={handleFormSubmit} className="space-y-4">
+                  {submitError && (
+                    <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-xs flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                      <span>{submitError}</span>
+                    </div>
+                  )}
                   
                   {/* STEP 1: Personal Info */}
                   {currentStep === 1 && (
@@ -393,6 +443,20 @@ export default function BecomeATutorPage() {
                           value={formData.fullName}
                           onChange={handleInputChange}
                           placeholder="e.g. Dr. Ramesh Gupta"
+                          className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:ring-2 focus:ring-navy-600 focus:bg-white text-navy-800"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block font-semibold text-charcoal-700 mb-1">Create Account Password *</label>
+                        <input
+                          type="password"
+                          name="password"
+                          required
+                          minLength={6}
+                          value={formData.password}
+                          onChange={handleInputChange}
+                          placeholder="At least 6 characters (for signing into your Teacher Studio)"
                           className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:ring-2 focus:ring-navy-600 focus:bg-white text-navy-800"
                         />
                       </div>
@@ -607,9 +671,10 @@ export default function BecomeATutorPage() {
 
                     <button
                       type="submit"
-                      className="px-6 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-bold transition shadow-subtle"
+                      disabled={submitting}
+                      className="px-6 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-bold transition shadow-subtle disabled:opacity-75"
                     >
-                      {currentStep === 4 ? 'Submit Application' : 'Next Step →'}
+                      {submitting ? 'Creating Educator Account...' : currentStep === 4 ? 'Submit Application' : 'Next Step →'}
                     </button>
                   </div>
 
