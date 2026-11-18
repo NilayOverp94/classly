@@ -19,7 +19,7 @@ const INSTRUCTORS: Instructor[] = [
     rolePrefix: 'Bosscoder, Ex-',
     companyLogo: '/images/faculty/logos/microsoft.webp',
     companyAlt: 'Microsoft',
-    image: '/images/faculty/rajat-garg.webp',
+    image: '/images/faculty/rajat-garg.png',
     linkedin: 'https://www.linkedin.com/in/rajatgarg',
   },
   {
@@ -27,7 +27,7 @@ const INSTRUCTORS: Instructor[] = [
     rolePrefix: 'Bosscoder, Ex-',
     companyLogo: '/images/faculty/logos/samsung.webp',
     companyAlt: 'Samsung',
-    image: '/images/faculty/manish-garg.webp',
+    image: '/images/faculty/manish-garg.png',
     linkedin: 'https://www.linkedin.com/in/manish-garg',
   },
   {
@@ -35,7 +35,7 @@ const INSTRUCTORS: Instructor[] = [
     rolePrefix: 'SDE,',
     companyLogo: '/images/faculty/logos/microsoft.webp',
     companyAlt: 'Microsoft',
-    image: '/images/faculty/ashish-prasad.webp',
+    image: '/images/faculty/ashish-prasad.png',
     linkedin: 'https://www.linkedin.com/in/ashish-prasad',
   },
   {
@@ -43,7 +43,7 @@ const INSTRUCTORS: Instructor[] = [
     rolePrefix: 'SDE II,',
     companyLogo: '/images/faculty/logos/amazon.webp',
     companyAlt: 'Amazon',
-    image: '/images/faculty/geetika-singh.webp',
+    image: '/images/faculty/geetika-singh.png',
     linkedin: 'https://www.linkedin.com/in/geetika-singh',
   },
   {
@@ -51,7 +51,7 @@ const INSTRUCTORS: Instructor[] = [
     rolePrefix: 'Data Engineer,',
     companyLogo: '/images/faculty/logos/fractal.webp',
     companyAlt: 'Fractal Analytics',
-    image: '/images/faculty/mudita-sharma.webp',
+    image: '/images/faculty/mudita-sharma.png',
     linkedin: 'https://www.linkedin.com/in/mudita-sharma',
   },
   {
@@ -59,7 +59,7 @@ const INSTRUCTORS: Instructor[] = [
     rolePrefix: 'Data Engineer II,',
     companyLogo: '/images/faculty/logos/mastercard.webp',
     companyAlt: 'Mastercard',
-    image: '/images/faculty/gaurav.webp',
+    image: '/images/faculty/gaurav.png',
     linkedin: 'https://www.linkedin.com/in/gaurav',
   },
 ];
@@ -129,15 +129,15 @@ export function TopInstructorsMarquee() {
               key={`${inst.name}-${idx}`}
               className="w-[260px] sm:w-[280px] lg:w-[295px] flex-shrink-0 group cursor-pointer transition-transform duration-300 hover:-translate-y-1.5"
             >
-              <div className="relative rounded-[22px] overflow-hidden border border-gray-200/90 shadow-subtle group-hover:shadow-lift transition-shadow duration-300 bg-[#E8EBED]">
+              <div className="relative rounded-[22px] overflow-hidden border border-navy-800 shadow-subtle group-hover:shadow-lift transition-shadow duration-300 bg-[#0B121E]">
                 
                 {/* Instructor Studio Portrait */}
-                <div className="relative w-full h-[270px] sm:h-[295px] bg-[#E8EBED] overflow-hidden flex items-end justify-center">
+                <div className="relative w-full h-[280px] sm:h-[305px] lg:h-[315px] bg-black overflow-hidden flex items-end justify-center">
                   <Image
                     src={inst.image}
                     alt={inst.name}
                     fill
-                    className="object-cover object-bottom transition-transform duration-500 group-hover:scale-[1.03]"
+                    className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
                     sizes="(max-width: 640px) 260px, (max-width: 1024px) 280px, 295px"
                   />
                 </div>
