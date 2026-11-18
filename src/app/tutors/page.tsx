@@ -43,55 +43,10 @@ function TutorsContent() {
   useEffect(() => {
     async function fetchApprovedTutors() {
       try {
-        const { data, error } = await supabase
-          .from('teacher_profiles')
-          .select(`
-            id,
-            user_id,
-            headline,
-            bio,
-            years_experience,
-            hourly_rate,
-            teaching_format,
-            status,
-            education,
-            rating,
-            review_count,
-            total_hours_taught,
-            city,
-            country,
-            profiles (
-              full_name,
-              avatar_url
-            )
-          `)
-          .eq('status', 'approved');
-
-        if (!error && data && data.length > 0) {
-          const mapped: TeacherProfile[] = data.map((t: any) => ({
-            id: t.id,
-            user_id: t.user_id,
-            full_name: t.profiles?.full_name || 'Educator',
-            avatar_url: t.profiles?.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-            headline: t.headline || 'Verified Classly Educator',
-            bio: t.bio || '',
-            years_experience: t.years_experience || 0,
-            hourly_rate: Number(t.hourly_rate) || 25,
-            teaching_format: t.teaching_format || 'both',
-            status: t.status,
-            qualifications: [],
-            education: t.education || '',
-            teaching_methodology: '',
-            rating: Number(t.rating) || 5.0,
-            review_count: Number(t.review_count) || 0,
-            total_hours_taught: Number(t.total_hours_taught) || 0,
-            city: t.city || 'US',
-            country: t.country || 'US',
-            subjects: [],
-            grades: [],
-            languages: ['English'],
-          }));
-          setTutors(mapped);
+        const res = await fetch('/api/tutors', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          setTutors(data.tutors || []);
         } else {
           setTutors([]);
         }

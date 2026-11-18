@@ -30,6 +30,7 @@ export default function BecomeATutorPage() {
   const [showApplyModal, setShowApplyModal] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [applicationId, setApplicationId] = useState<string>('TUT-2769');
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -70,20 +71,23 @@ export default function BecomeATutorPage() {
     } else {
       setSubmitting(true);
       try {
-        const res = await fetch('/api/auth/register', {
+        const res = await fetch('/api/teacher/apply', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             email: formData.email,
             password: formData.password,
             fullName: formData.fullName,
-            role: 'teacher',
-            education: formData.education,
-            hourlyRate: formData.hourlyRate,
-            teachingFormat: formData.teachingFormat,
+            phone: formData.phone,
             city: formData.city,
             country: formData.country,
+            subjects: formData.subjects,
+            grades: formData.grades,
+            experienceYears: formData.experienceYears,
+            education: formData.education,
             bio: formData.bio,
+            hourlyRate: formData.hourlyRate,
+            teachingFormat: formData.teachingFormat,
           }),
         });
 
@@ -94,11 +98,17 @@ export default function BecomeATutorPage() {
           return;
         }
 
-        // Authenticate the newly created educator
-        await supabase.auth.signInWithPassword({
-          email: formData.email.trim().toLowerCase(),
-          password: formData.password.trim(),
-        });
+        if (data.applicationId) {
+          setApplicationId(data.applicationId);
+        }
+
+        // Authenticate the educator if password was provided
+        if (formData.password) {
+          await supabase.auth.signInWithPassword({
+            email: formData.email.trim().toLowerCase(),
+            password: formData.password.trim(),
+          });
+        }
 
         setIsSubmitted(true);
       } catch (err: any) {
@@ -394,7 +404,7 @@ export default function BecomeATutorPage() {
                     Application Successfully Submitted!
                   </h4>
                   <p className="text-xs text-charcoal-600 max-w-md mx-auto mb-6 leading-relaxed">
-                    Thank you, <strong>{formData.fullName}</strong>. Your teacher application has been safely registered with ID <strong>#TUT-{Math.floor(1000 + Math.random() * 9000)}</strong>.
+                    Thank you, <strong>{formData.fullName}</strong>. Your teacher application has been safely registered with ID <strong>#{applicationId}</strong>.
                   </p>
                   
                   <div className="p-4 bg-softblue-50 border border-softblue-200 rounded-lg text-left text-xs text-charcoal-700 max-w-md mx-auto mb-6 space-y-2">

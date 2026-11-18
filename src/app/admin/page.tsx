@@ -36,6 +36,7 @@ export default function AdminDashboardPage() {
   const [applications, setApplications] = useState<PendingApplication[]>([]);
   const [activeTutors, setActiveTutors] = useState<TeacherProfile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [adminEmail, setAdminEmail] = useState<string>('milayraj713@gmail.com');
 
   const supabase = createClient();
 
@@ -52,94 +53,19 @@ export default function AdminDashboardPage() {
           return;
         }
 
-        // Fetch approved teachers
-        const { data: approvedData } = await supabase
-          .from('teacher_profiles')
-          .select(`
-            id,
-            user_id,
-            headline,
-            bio,
-            years_experience,
-            hourly_rate,
-            teaching_format,
-            status,
-            education,
-            rating,
-            review_count,
-            total_hours_taught,
-            city,
-            country,
-            profiles (
-              full_name,
-              avatar_url,
-              email
-            )
-          `)
-          .eq('status', 'approved');
+        setAdminEmail(userEmail);
 
-        if (approvedData && approvedData.length > 0) {
-          const mappedApproved: TeacherProfile[] = approvedData.map((t: any) => ({
-            id: t.id,
-            user_id: t.user_id,
-            full_name: t.profiles?.full_name || 'Educator',
-            avatar_url: t.profiles?.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-            headline: t.headline || 'Verified Educator',
-            bio: t.bio || '',
-            years_experience: t.years_experience || 0,
-            hourly_rate: Number(t.hourly_rate) || 25,
-            teaching_format: t.teaching_format || 'both',
-            status: t.status,
-            qualifications: [],
-            education: t.education || '',
-            teaching_methodology: '',
-            rating: Number(t.rating) || 5.0,
-            review_count: Number(t.review_count) || 0,
-            total_hours_taught: Number(t.total_hours_taught) || 0,
-            city: t.city || 'US',
-            country: t.country || 'US',
-            subjects: [],
-            grades: [],
-            languages: ['English'],
-          }));
-          setActiveTutors(mappedApproved);
+        // Fetch pending and approved teachers from dedicated Admin API
+        const res = await fetch('/api/admin/teachers', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          setApplications(data.pending || []);
+          setActiveTutors(data.approved || []);
         } else {
+          setApplications([]);
           setActiveTutors([]);
         }
 
-        // Fetch pending teacher applications
-        const { data: pendingData } = await supabase
-          .from('teacher_profiles')
-          .select(`
-            id,
-            education,
-            years_experience,
-            hourly_rate,
-            created_at,
-            status,
-            profiles (
-              full_name,
-              email
-            )
-          `)
-          .eq('status', 'pending');
-
-        if (pendingData && pendingData.length > 0) {
-          const mappedPending: PendingApplication[] = pendingData.map((p: any) => ({
-            id: p.id,
-            name: p.profiles?.full_name || 'Teacher Applicant',
-            email: p.profiles?.email || 'applicant@classly.com',
-            subjects: ['Mathematics'],
-            education: p.education || 'University Degree',
-            experience: `${p.years_experience || 1} years teaching`,
-            hourlyRate: Number(p.hourly_rate) || 25,
-            submittedAt: new Date(p.created_at).toLocaleDateString(),
-            status: 'pending',
-          }));
-          setApplications(mappedPending);
-        } else {
-          setApplications([]);
-        }
       } catch (err) {
         console.error('Error loading admin records:', err);
       } finally {
@@ -152,58 +78,60 @@ export default function AdminDashboardPage() {
 
   const handleApprove = async (app: PendingApplication) => {
     try {
-      await supabase
-        .from('teacher_profiles')
-        .update({ status: 'approved' })
-        .eq('id', app.id);
+      const res = await fetch('/api/admin/teachers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: app.id, action: 'approve' }),
+      });
+
+      if (res.ok) {
+        setApplications((prev) => prev.filter((a) => a.id !== app.id));
+        setActiveTutors((prev) => [
+          ...prev,
+          {
+            id: app.id,
+            user_id: app.id,
+            full_name: app.name,
+            avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+            headline: `${app.education} • Verified Educator`,
+            bio: `${app.experience}. Specialized in ${app.subjects.join(', ')}.`,
+            years_experience: 5,
+            hourly_rate: app.hourlyRate,
+            teaching_format: 'both',
+            status: 'approved',
+            qualifications: [app.education],
+            education: app.education,
+            teaching_methodology: 'Structured problem deconstruction and practice sets.',
+            rating: 5.0,
+            review_count: 0,
+            total_hours_taught: 0,
+            city: 'India',
+            country: 'India',
+            subjects: app.subjects,
+            grades: ['Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'],
+            languages: ['English'],
+          } as any,
+        ]);
+      }
     } catch (e) {
-      console.error(e);
+      console.error('Error approving teacher:', e);
     }
-
-    setApplications((prev) =>
-      prev.map((a) => (a.id === app.id ? { ...a, status: 'approved' } : a))
-    );
-
-    setActiveTutors((prev) => [
-      ...prev,
-      {
-        id: app.id,
-        full_name: app.name,
-        avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-        headline: `${app.education} • Verified Educator`,
-        bio: `${app.experience}. Specialized in ${app.subjects.join(', ')}.`,
-        years_experience: 5,
-        hourly_rate: app.hourlyRate,
-        teaching_format: 'both',
-        status: 'approved',
-        qualifications: [app.education],
-        education: app.education,
-        teaching_methodology: 'Structured problem deconstruction and practice sets.',
-        rating: 5.0,
-        review_count: 0,
-        total_hours_taught: 0,
-        city: 'US',
-        country: 'US',
-        subjects: app.subjects,
-        grades: ['Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'],
-        languages: ['English'],
-      },
-    ]);
   };
 
   const handleReject = async (id: string) => {
     try {
-      await supabase
-        .from('teacher_profiles')
-        .update({ status: 'rejected' })
-        .eq('id', id);
-    } catch (e) {
-      console.error(e);
-    }
+      const res = await fetch('/api/admin/teachers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: id, action: 'reject' }),
+      });
 
-    setApplications((prev) =>
-      prev.map((app) => (app.id === id ? { ...app, status: 'rejected' } : app))
-    );
+      if (res.ok) {
+        setApplications((prev) => prev.filter((app) => app.id !== id));
+      }
+    } catch (e) {
+      console.error('Error rejecting teacher:', e);
+    }
   };
 
   const pendingCount = applications.filter((a) => a.status === 'pending').length;
@@ -228,7 +156,7 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="text-right text-xs text-gray-300">
-            <div>Logged in: <strong className="text-white">milayraj713@gmail.com</strong></div>
+            <div>Logged in: <strong className="text-white">{adminEmail}</strong></div>
             <span>Marketplace Mode: <strong className="text-accent-400">Live Production</strong></span>
           </div>
         </div>
