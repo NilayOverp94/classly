@@ -51,6 +51,28 @@ function BookingContent() {
       }
 
       try {
+        // 1. Fetch from /api/tutors first (which queries Supabase auth and returns approved educators)
+        const res = await fetch('/api/tutors', { cache: 'no-store' });
+        if (res.ok) {
+          const json = await res.json();
+          const matched = (json.tutors || []).find(
+            (t: any) => t.id === tutorId || t.user_id === tutorId
+          );
+          if (matched) {
+            if (!matched.availability || matched.availability.length === 0) {
+              matched.availability = [
+                { day: 'Monday', slots: ['05:00 PM EST', '06:30 PM EST'] },
+                { day: 'Wednesday', slots: ['05:00 PM EST', '07:00 PM EST'] },
+                { day: 'Saturday', slots: ['10:00 AM EST', '01:00 PM EST'] },
+              ];
+            }
+            setTutor(matched);
+            setLoading(false);
+            return;
+          }
+        }
+
+        // 2. Fallback to teacher_profiles table if present
         const { data, error } = await supabase
           .from('teacher_profiles')
           .select(`
@@ -73,17 +95,18 @@ function BookingContent() {
               avatar_url
             )
           `)
-          .eq('id', tutorId)
-          .single();
+          .or(`id.eq.${tutorId},user_id.eq.${tutorId}`)
+          .maybeSingle();
 
         if (!error && data) {
           const rawProfiles: any = data.profiles;
           const userProfile = Array.isArray(rawProfiles) ? rawProfiles[0] : rawProfiles;
+          const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userProfile?.full_name || 'Educator')}&background=0B121E&color=ffffff&size=256&bold=true`;
           const profile: TeacherProfile = {
             id: data.id,
             user_id: data.user_id,
             full_name: userProfile?.full_name || 'Verified Educator',
-            avatar_url: userProfile?.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+            avatar_url: userProfile?.avatar_url || defaultAvatar,
             headline: data.headline || 'Classly Verified Educator',
             bio: data.bio || '',
             years_experience: data.years_experience || 0,
@@ -346,6 +369,7 @@ function BookingContent() {
                     alt={tutor.full_name}
                     fill
                     className="object-cover"
+                    unoptimized={true}
                   />
                 </div>
                 <div>
