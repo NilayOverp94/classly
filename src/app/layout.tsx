@@ -7,6 +7,16 @@ export const metadata: Metadata = {
   title: 'Classly — Learn Together. Grow Anywhere.',
   description: 'Online tutoring marketplace connecting K-12 students with rigorously verified, experienced educators for 1-on-1 tutoring and interactive online masterclasses.',
   keywords: ['online tutoring', 'K-12 math tutor', 'AP calculus tutor', 'physics tutor', 'find a tutor', 'US online learning'],
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.png', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-icon.png' },
+    ],
+    shortcut: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

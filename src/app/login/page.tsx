@@ -310,19 +310,17 @@ function LoginFormContent() {
                 {/* Branding Touch with Butter-like Micro-Interaction */}
                 <div className="flex justify-center mb-4">
                   <div className="relative group cursor-pointer">
-                    <div className="absolute -inset-1.5 rounded-2xl bg-accent-400/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out" />
+                    <div className="absolute -inset-1.5 rounded-2xl bg-amber-400/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out" />
                     
-                    <div className="relative w-12 h-12 rounded-[14px] p-2.5 bg-gradient-to-b from-navy-800 to-navy-900 shadow-[0_4px_12px_rgba(24,49,83,0.18)] transition-all duration-300 ease-out group-hover:scale-105 group-hover:-translate-y-0.5 flex items-center justify-center">
-                      <svg 
-                        viewBox="0 0 24 24" 
-                        fill="none" 
-                        className="w-6 h-6 transition-transform duration-300 ease-out group-hover:rotate-[-2deg]"
-                      >
-                        <rect x="3.5" y="3.5" width="7.5" height="7.5" rx="1.8" fill="white" fillOpacity="0.95" />
-                        <rect x="13" y="3.5" width="7.5" height="7.5" rx="1.8" fill="#45A879" />
-                        <rect x="3.5" y="13" width="7.5" height="7.5" rx="1.8" fill="#5E8FBE" />
-                        <rect x="13" y="13" width="7.5" height="7.5" rx="1.8" fill="white" fillOpacity="0.95" />
-                      </svg>
+                    <div className="relative w-14 h-14 rounded-[16px] p-2 bg-white border border-charcoal-200/80 shadow-[0_4px_16px_rgba(24,49,83,0.08)] transition-all duration-300 ease-out group-hover:scale-105 group-hover:-translate-y-0.5 flex items-center justify-center">
+                      <Image
+                        src="/images/logo-mark.png"
+                        alt="Classly"
+                        width={42}
+                        height={42}
+                        priority
+                        className="object-contain"
+                      />
                     </div>
                   </div>
                 </div>
