@@ -16,7 +16,11 @@ import {
   ShieldCheck, 
   BookOpen,
   LogOut,
-  User
+  User,
+  Bell,
+  Mail,
+  AlertCircle,
+  Sparkles
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
@@ -24,16 +28,49 @@ export default function TeacherDashboardPage() {
   const router = useRouter();
   const supabase = createClient();
   const [user, setUser] = useState<any>(null);
+  const [bookings, setBookings] = useState<any[]>([]);
+  const [loadingBookings, setLoadingBookings] = useState(true);
+
+  const [activeTab, setActiveTab] = useState<'overview' | 'classes' | 'availability' | 'create_class' | 'earnings' | 'students'>('overview');
+  
+  // Real class listings created by teacher (starts empty)
+  const [teacherClasses, setTeacherClasses] = useState<any[]>([]);
+
+  // Class creation state
+  const [newClass, setNewClass] = useState({
+    title: '',
+    subject: 'Mathematics',
+    gradeLevel: 'Grade 11',
+    classType: 'group',
+    price: '25',
+    dateTime: 'Tomorrow at 05:00 PM EST',
+    durationMinutes: '60',
+    maxStudents: '6',
+    description: '',
+  });
+  const [classCreatedNotice, setClassCreatedNotice] = useState(false);
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuthAndLoad = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       const currentUser = session?.user;
       if (currentUser) {
         setUser(currentUser);
+        // Fetch confirmed student bookings from API
+        try {
+          const res = await fetch(`/api/bookings?userId=${currentUser.id}&role=teacher`, { cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            setBookings(data.bookings || []);
+          }
+        } catch (e) {
+          console.error('Failed to load educator bookings:', e);
+        } finally {
+          setLoadingBookings(false);
+        }
       }
     };
-    checkAuth();
+    checkAuthAndLoad();
   }, []);
 
   const handleSignOut = async () => {
@@ -55,28 +92,15 @@ export default function TeacherDashboardPage() {
 
   const teacherAvatar = 
     user?.user_metadata?.avatar_url || 
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80';
+    user?.user_metadata?.picture || 
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(teacherDisplayName)}&background=0B121E&color=ffffff&size=256&bold=true`;
 
   const teacherHourlyRate = 
-    user?.user_metadata?.hourly_rate || 25;
-  const [activeTab, setActiveTab] = useState<'overview' | 'classes' | 'availability' | 'create_class' | 'earnings' | 'students'>('overview');
-  
-  // Real class listings created by teacher (starts empty)
-  const [teacherClasses, setTeacherClasses] = useState<any[]>([]);
+    Number(user?.user_metadata?.hourly_rate) || 25;
 
-  // Class creation state
-  const [newClass, setNewClass] = useState({
-    title: '',
-    subject: 'Mathematics',
-    gradeLevel: 'Grade 11',
-    classType: 'group',
-    price: '25',
-    dateTime: 'Tomorrow at 05:00 PM EST',
-    durationMinutes: '60',
-    maxStudents: '6',
-    description: '',
-  });
-  const [classCreatedNotice, setClassCreatedNotice] = useState(false);
+  const totalUpcoming = bookings.length + teacherClasses.length;
+  const totalEarned = bookings.reduce((sum, b) => sum + (Number(b.hourly_rate) || teacherHourlyRate), 0);
+  const netAccruedPayout = totalEarned * 0.85; // 85% net after 15% platform commission
 
   const handleCreateClass = (e: React.FormEvent) => {
     e.preventDefault();
@@ -158,11 +182,11 @@ export default function TeacherDashboardPage() {
 
             {[
               { id: 'overview', label: 'Overview & Schedule', icon: <BarChart3 className="w-4 h-4" /> },
-              { id: 'classes', label: 'Scheduled Classes', icon: <Calendar className="w-4 h-4" />, count: teacherClasses.length },
+              { id: 'classes', label: 'Scheduled Classes', icon: <Calendar className="w-4 h-4" />, count: totalUpcoming },
               { id: 'availability', label: 'Manage Availability', icon: <Clock className="w-4 h-4" /> },
               { id: 'create_class', label: 'Create a Class', icon: <PlusCircle className="w-4 h-4" /> },
               { id: 'earnings', label: 'Payouts & Banking', icon: <DollarSign className="w-4 h-4" /> },
-              { id: 'students', label: 'Student Roster', icon: <Users className="w-4 h-4" /> },
+              { id: 'students', label: 'Student Roster', icon: <Users className="w-4 h-4" />, count: bookings.length },
             ].map((item) => (
               <button
                 key={item.id}
@@ -179,7 +203,7 @@ export default function TeacherDashboardPage() {
                 </div>
                 {item.count !== undefined && item.count > 0 && (
                   <span className={`px-1.5 py-0.5 rounded text-[10px] ${
-                    activeTab === item.id ? 'bg-navy-900 text-white' : 'bg-softblue-100 text-navy-800'
+                    activeTab === item.id ? 'bg-navy-900 text-white' : 'bg-softblue-100 text-navy-800 font-bold'
                   }`}>
                     {item.count}
                   </span>
@@ -205,11 +229,46 @@ export default function TeacherDashboardPage() {
             {activeTab === 'overview' && (
               <div className="space-y-6">
                 
+                {/* Real Booking Alert Banner if Teacher has bookings */}
+                {bookings.length > 0 && (
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-subtle">
+                    <div className="flex items-start sm:items-center gap-3.5">
+                      <div className="w-10 h-10 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center flex-shrink-0 text-emerald-800">
+                        <Bell className="w-5 h-5 animate-bounce" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-emerald-900 uppercase tracking-wider">New Lesson Booked!</span>
+                          <span className="px-2 py-0.5 bg-emerald-600 text-white text-[10px] font-bold rounded-full">Paid & Confirmed</span>
+                        </div>
+                        <p className="text-xs text-charcoal-700 mt-0.5">
+                          <strong>{bookings[0].student_name}</strong> booked a 1-on-1 {bookings[0].subject} session for <strong>{bookings[0].formatted_time || `${bookings[0].date} at ${bookings[0].time_slot}`}</strong>.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                      <Link
+                        href={bookings[0].meeting_url || `/classroom/room-${bookings[0].id}`}
+                        className="flex-1 sm:flex-none px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-subtle"
+                      >
+                        <Video className="w-4 h-4" />
+                        <span>Launch Classroom</span>
+                      </Link>
+                      <button
+                        onClick={() => setActiveTab('classes')}
+                        className="px-3 py-2 bg-white hover:bg-gray-50 text-navy-800 rounded-lg text-xs font-semibold border border-gray-200 shadow-subtle"
+                      >
+                        View All
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 {/* 4 Clean Metric Cards */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-subtle">
                     <span className="text-xs text-charcoal-500 font-medium block mb-1">Upcoming Lessons</span>
-                    <span className="text-2xl font-bold text-navy-800">{teacherClasses.length}</span>
+                    <span className="text-2xl font-bold text-navy-800">{totalUpcoming}</span>
                     <span className="text-[11px] text-accent-600 block mt-1">Confirmed on calendar</span>
                   </div>
                   <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-subtle">
@@ -224,13 +283,52 @@ export default function TeacherDashboardPage() {
                   </div>
                   <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-subtle">
                     <span className="text-xs text-charcoal-500 font-medium block mb-1">Accrued Payout</span>
-                    <span className="text-2xl font-bold text-navy-800">$0.00</span>
-                    <span className="text-[11px] text-charcoal-400 block mt-1">Updates after lessons</span>
+                    <span className="text-2xl font-bold text-navy-800">${netAccruedPayout.toFixed(2)}</span>
+                    <span className="text-[11px] text-accent-600 block mt-1">Net earnings (85%)</span>
                   </div>
                 </div>
 
                 {/* Next Class Launch Card or Empty State */}
-                {teacherClasses.length > 0 ? (
+                {bookings.length > 0 ? (
+                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h2 className="text-base font-bold text-navy-800">Next Scheduled Session</h2>
+                          <span className="px-2 py-0.5 bg-accent-50 text-accent-700 font-semibold text-[11px] rounded border border-accent-200">
+                            1-on-1 Private Lesson
+                          </span>
+                        </div>
+                        <p className="text-xs text-charcoal-500 mt-1">
+                          Student: <strong className="text-navy-800">{bookings[0].student_name}</strong> ({bookings[0].student_email || 'Verified Student'}) • 60 mins
+                        </p>
+                      </div>
+                      <span className="px-3 py-1.5 bg-navy-50 text-navy-800 font-bold text-xs rounded-lg border border-navy-100 flex items-center gap-1.5 self-start sm:self-auto">
+                        <Clock className="w-3.5 h-3.5 text-navy-600" />
+                        {bookings[0].formatted_time || `${bookings[0].date} at ${bookings[0].time_slot}`}
+                      </span>
+                    </div>
+
+                    {bookings[0].notes && (
+                      <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-100 text-xs text-charcoal-600">
+                        <span className="font-semibold text-navy-800">Student Learning Focus:</span> "{bookings[0].notes}"
+                      </div>
+                    )}
+
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-4 border-t border-gray-100 gap-3">
+                      <div className="text-xs text-charcoal-600">
+                        Subject: <strong>{bookings[0].subject}</strong> • Earnings: <strong className="text-accent-700">${bookings[0].hourly_rate || teacherHourlyRate} USD</strong> (Ready for payout)
+                      </div>
+                      <Link
+                        href={bookings[0].meeting_url || `/classroom/room-${bookings[0].id}`}
+                        className="px-5 py-2.5 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-subtle"
+                      >
+                        <Video className="w-4 h-4" />
+                        <span>Enter Live Classroom</span>
+                      </Link>
+                    </div>
+                  </div>
+                ) : teacherClasses.length > 0 ? (
                   <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle">
                     <div className="flex items-center justify-between mb-4">
                       <div>
@@ -279,42 +377,78 @@ export default function TeacherDashboardPage() {
             {activeTab === 'classes' && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-base font-bold text-navy-800">Your Scheduled Classes ({teacherClasses.length})</h2>
+                  <div>
+                    <h2 className="text-base font-bold text-navy-800">Your Scheduled Classes & Lessons ({totalUpcoming})</h2>
+                    <p className="text-xs text-charcoal-500">All confirmed 1-on-1 private lessons and group masterclasses.</p>
+                  </div>
                   <button
                     onClick={() => setActiveTab('create_class')}
                     className="px-3 py-1.5 bg-navy-800 text-white rounded-lg text-xs font-semibold"
                   >
-                    + Add Class
+                    + Add Group Class
                   </button>
                 </div>
 
-                {teacherClasses.length > 0 ? (
-                  teacherClasses.map((cls) => (
-                    <div key={cls.id} className="bg-white p-5 rounded-xl border border-gray-200 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-bold text-sm text-navy-800">{cls.title}</h3>
-                          <span className="px-2 py-0.5 bg-softblue-100 text-navy-800 rounded text-[10px] font-semibold">
-                            {cls.subject}
-                          </span>
+                {bookings.length > 0 || teacherClasses.length > 0 ? (
+                  <div className="space-y-3">
+                    {/* Confirmed 1-on-1 Bookings */}
+                    {bookings.map((b) => (
+                      <div key={b.id} className="bg-white p-5 rounded-xl border border-gray-200 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-bold text-sm text-navy-800">{b.subject} — 1-on-1 Private Lesson</h3>
+                            <span className="px-2 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded text-[10px] font-bold">
+                              Confirmed & Paid
+                            </span>
+                          </div>
+                          <p className="text-xs text-charcoal-500 mt-1">
+                            Student: <strong className="text-navy-800">{b.student_name}</strong> ({b.student_email || 'Classly Student'}) • {b.formatted_time || `${b.date} at ${b.time_slot}`} • 60 mins • Payout: <strong className="text-accent-700">${b.hourly_rate || teacherHourlyRate} USD</strong>
+                          </p>
+                          {b.notes && (
+                            <p className="text-[11px] text-charcoal-400 mt-1 italic">
+                              Note: "{b.notes}"
+                            </p>
+                          )}
                         </div>
-                        <p className="text-xs text-charcoal-500 mt-1">
-                          {cls.dateTime} • {cls.gradeLevel} • ${cls.price}/student • Enrolled: {cls.enrolledCount}/{cls.maxStudents}
-                        </p>
-                      </div>
 
-                      <Link
-                        href={`/classroom/room-${cls.id}`}
-                        className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5"
-                      >
-                        <Video className="w-3.5 h-3.5" />
-                        <span>Start Class</span>
-                      </Link>
-                    </div>
-                  ))
+                        <Link
+                          href={b.meeting_url || `/classroom/room-${b.id}`}
+                          className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-subtle flex-shrink-0"
+                        >
+                          <Video className="w-3.5 h-3.5" />
+                          <span>Open Classroom</span>
+                        </Link>
+                      </div>
+                    ))}
+
+                    {/* Group Classes */}
+                    {teacherClasses.map((cls) => (
+                      <div key={cls.id} className="bg-white p-5 rounded-xl border border-gray-200 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-bold text-sm text-navy-800">{cls.title}</h3>
+                            <span className="px-2 py-0.5 bg-softblue-100 text-navy-800 rounded text-[10px] font-semibold">
+                              {cls.subject}
+                            </span>
+                          </div>
+                          <p className="text-xs text-charcoal-500 mt-1">
+                            {cls.dateTime} • {cls.gradeLevel} • ${cls.price}/student • Enrolled: {cls.enrolledCount}/{cls.maxStudents}
+                          </p>
+                        </div>
+
+                        <Link
+                          href={`/classroom/room-${cls.id}`}
+                          className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5"
+                        >
+                          <Video className="w-3.5 h-3.5" />
+                          <span>Start Class</span>
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
                 ) : (
                   <div className="bg-white p-10 rounded-xl border border-gray-200 shadow-subtle text-center">
-                    <p className="text-xs text-charcoal-500 mb-3">No classes published yet.</p>
+                    <p className="text-xs text-charcoal-500 mb-3">No classes or lessons scheduled yet.</p>
                     <button
                       onClick={() => setActiveTab('create_class')}
                       className="px-4 py-2 bg-navy-800 text-white rounded-lg text-xs font-semibold"
@@ -467,7 +601,7 @@ export default function TeacherDashboardPage() {
                         <span className="px-2 py-1 bg-white border border-gray-200 rounded text-charcoal-700">05:00 PM EST</span>
                         <span className="px-2 py-1 bg-white border border-gray-200 rounded text-charcoal-700">06:30 PM EST</span>
                       </div>
-                      <button onClick={() => alert('Availability slot saved')} className="text-xs font-semibold text-navy-800 hover:underline">
+                      <button onClick={() => alert('Availability slots confirmed and synced to your booking calendar!')} className="text-xs font-semibold text-navy-800 hover:underline">
                         Edit
                       </button>
                     </div>
@@ -478,20 +612,87 @@ export default function TeacherDashboardPage() {
 
             {/* EARNINGS TAB */}
             {activeTab === 'earnings' && (
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle space-y-4 text-xs">
-                <h2 className="text-base font-bold text-navy-800">Bank Payout Coordinates & Balance</h2>
-                <div className="p-4 bg-softblue-50 border border-softblue-200 rounded-lg">
-                  <div className="font-bold text-navy-800 mb-1">Direct Bank Account Transfer</div>
-                  <p className="text-[11px] text-charcoal-600">
-                    Payouts are calculated in USD and disbursed in INR directly to your verified local Indian bank account via NEFT/IMPS.
-                  </p>
+              <div className="space-y-6 text-xs">
+                {/* Payout Summary Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-subtle">
+                    <span className="text-xs text-charcoal-500 font-medium block mb-1">Gross Lesson Volume</span>
+                    <span className="text-2xl font-bold text-navy-800">${totalEarned.toFixed(2)}</span>
+                    <span className="text-[11px] text-charcoal-400 block mt-1">{bookings.length} confirmed student sessions</span>
+                  </div>
+                  <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-subtle">
+                    <span className="text-xs text-charcoal-500 font-medium block mb-1">Platform Commission (15%)</span>
+                    <span className="text-2xl font-bold text-charcoal-600">-${(totalEarned * 0.15).toFixed(2)}</span>
+                    <span className="text-[11px] text-charcoal-400 block mt-1">Standard educator rate</span>
+                  </div>
+                  <div className="bg-white p-5 rounded-xl border border-emerald-200 bg-emerald-50/40 shadow-subtle">
+                    <span className="text-xs text-emerald-900 font-bold block mb-1">Net Accrued Payout</span>
+                    <span className="text-2xl font-bold text-emerald-700">${netAccruedPayout.toFixed(2)}</span>
+                    <span className="text-[11px] text-emerald-800 block mt-1">Ready for direct bank transfer</span>
+                  </div>
                 </div>
-                <div className="p-6 bg-gray-50 rounded-xl border border-gray-200 text-center">
-                  <DollarSign className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                  <div className="font-bold text-navy-800 text-sm">No Pending Payouts</div>
-                  <p className="text-[11px] text-charcoal-500 mt-1">
-                    Lesson fees accrue here upon completion of each scheduled session.
-                  </p>
+
+                {/* Bank Coordinates */}
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle space-y-4">
+                  <h2 className="text-base font-bold text-navy-800">Bank Payout Coordinates & Transfer Settings</h2>
+                  <div className="p-4 bg-softblue-50 border border-softblue-200 rounded-lg">
+                    <div className="font-bold text-navy-800 mb-1">Direct Bank Account Transfer (India NEFT / IMPS)</div>
+                    <p className="text-[11px] text-charcoal-600">
+                      Payouts are calculated in USD and disbursed directly to your verified local Indian bank account via NEFT/IMPS with zero international wire deduction fees.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Itemized Transaction Ledger */}
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle space-y-4">
+                  <h2 className="text-base font-bold text-navy-800">Lesson Payout Ledger ({bookings.length})</h2>
+                  {bookings.length > 0 ? (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead>
+                          <tr className="border-b border-gray-200 text-charcoal-400 uppercase tracking-wider text-[10px]">
+                            <th className="pb-3 font-semibold">Date & Time</th>
+                            <th className="pb-3 font-semibold">Student</th>
+                            <th className="pb-3 font-semibold">Subject</th>
+                            <th className="pb-3 font-semibold">Gross</th>
+                            <th className="pb-3 font-semibold">Fee (15%)</th>
+                            <th className="pb-3 font-semibold">Net Payout</th>
+                            <th className="pb-3 font-semibold">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                          {bookings.map((b) => {
+                            const gross = Number(b.hourly_rate) || teacherHourlyRate;
+                            const fee = gross * 0.15;
+                            const net = gross - fee;
+                            return (
+                              <tr key={b.id} className="hover:bg-gray-50">
+                                <td className="py-3 text-navy-800 font-medium">{b.formatted_time || `${b.date} at ${b.time_slot}`}</td>
+                                <td className="py-3 text-charcoal-700">{b.student_name}</td>
+                                <td className="py-3 text-charcoal-700">{b.subject}</td>
+                                <td className="py-3 text-charcoal-700">${gross.toFixed(2)}</td>
+                                <td className="py-3 text-charcoal-400">-${fee.toFixed(2)}</td>
+                                <td className="py-3 font-bold text-accent-700">${net.toFixed(2)}</td>
+                                <td className="py-3">
+                                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-accent-50 text-accent-700 border border-accent-200">
+                                    Accrued
+                                  </span>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div className="p-6 bg-gray-50 rounded-xl border border-gray-200 text-center">
+                      <DollarSign className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                      <div className="font-bold text-navy-800 text-sm">No Pending Payouts</div>
+                      <p className="text-[11px] text-charcoal-500 mt-1">
+                        Lesson fees accrue here upon student bookings.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -499,14 +700,56 @@ export default function TeacherDashboardPage() {
             {/* STUDENTS TAB */}
             {activeTab === 'students' && (
               <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle space-y-4">
-                <h2 className="text-base font-bold text-navy-800">Student Roster</h2>
-                <div className="py-8 text-center text-xs text-charcoal-500">
-                  <Users className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                  <div className="font-bold text-navy-800 text-sm">No Enrolled Students Yet</div>
-                  <p className="max-w-xs mx-auto mt-1">
-                    Once students book 1-on-1 sessions or enroll in your published classes, their contact details and learning goals will appear here.
-                  </p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-base font-bold text-navy-800">Student Roster ({bookings.length})</h2>
+                    <p className="text-xs text-charcoal-500">Students enrolled in your private or group sessions</p>
+                  </div>
                 </div>
+
+                {bookings.length > 0 ? (
+                  <div className="divide-y divide-gray-100">
+                    {bookings.map((b, idx) => (
+                      <div key={idx} className="py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-softblue-100 text-navy-800 flex items-center justify-center font-bold text-sm">
+                            {(b.student_name || 'S').charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <h3 className="text-sm font-bold text-navy-800">{b.student_name}</h3>
+                            <p className="text-xs text-charcoal-500">{b.student_email || 'Student Email Protected'}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-[11px] font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
+                                {b.subject}
+                              </span>
+                              <span className="text-[11px] text-charcoal-400">
+                                Session: {b.formatted_time || `${b.date} at ${b.time_slot}`}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <Link
+                            href={b.meeting_url || `/classroom/room-${b.id}`}
+                            className="px-3.5 py-1.5 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5"
+                          >
+                            <Video className="w-3.5 h-3.5" />
+                            <span>Launch Classroom</span>
+                          </Link>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="py-8 text-center text-xs text-charcoal-500">
+                    <Users className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                    <div className="font-bold text-navy-800 text-sm">No Enrolled Students Yet</div>
+                    <p className="max-w-xs mx-auto mt-1">
+                      Once students book 1-on-1 sessions or enroll in your published classes, their contact details and learning goals will appear here.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 

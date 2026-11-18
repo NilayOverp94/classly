@@ -27,11 +27,12 @@ function BookingContent() {
   const initialDay = searchParams.get('day') || 'Monday';
 
   const [tutor, setTutor] = useState<TeacherProfile | null>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   // Booking selections
   const [selectedFormat, setSelectedFormat] = useState<string>(initialFormat);
-  const [selectedDate, setSelectedDate] = useState<string>('2026-11-18');
+  const [selectedDate, setSelectedDate] = useState<string>('2026-11-20');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('05:00 PM EST');
   const [userTimezone, setUserTimezone] = useState<string>('America/New_York');
   const [studentNotes, setStudentNotes] = useState<string>('');
@@ -42,6 +43,16 @@ function BookingContent() {
   const [confirmedBookingId, setConfirmedBookingId] = useState<string>('');
 
   const supabase = createClient();
+
+  useEffect(() => {
+    async function fetchAuthUser() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setCurrentUser(user);
+      }
+    }
+    fetchAuthUser();
+  }, []);
 
   useEffect(() => {
     async function loadTutor() {
@@ -181,16 +192,50 @@ function BookingContent() {
   const platformFee = 4.50; // Platform technology & classroom fee
   const totalAmount = hourlyRate + platformFee;
 
-  const handleCheckout = (e: React.FormEvent) => {
+  const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!tutor) return;
     setIsProcessing(true);
 
-    setTimeout(() => {
-      setIsProcessing(false);
-      const bookingId = `book-${Math.floor(100000 + Math.random() * 900000)}`;
-      setConfirmedBookingId(bookingId);
+    try {
+      const studentName = 
+        currentUser?.user_metadata?.student_name ||
+        currentUser?.user_metadata?.full_name ||
+        currentUser?.user_metadata?.name ||
+        currentUser?.email?.split('@')[0] ||
+        'Student / Parent';
+
+      const studentEmail = currentUser?.email || 'student@classly.com';
+      const studentId = currentUser?.id || '';
+
+      const res = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tutorId: tutor.id,
+          format: selectedFormat,
+          date: selectedDate,
+          timeSlot: selectedTimeSlot,
+          studentNotes: studentNotes.trim(),
+          studentName,
+          studentEmail,
+          studentId,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to complete booking reservation.');
+      }
+
+      setConfirmedBookingId(data.booking.id);
       setBookingConfirmed(true);
-    }, 1200);
+    } catch (err: any) {
+      console.error('Booking checkout error:', err);
+      alert(err.message || 'Payment processing failed. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (

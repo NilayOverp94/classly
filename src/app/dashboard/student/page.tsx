@@ -57,7 +57,7 @@ export default function StudentDashboardPage() {
       }
     };
 
-    const handleUserRouting = (u: any) => {
+    const handleUserRouting = async (u: any) => {
       const email = (u.email || '').toLowerCase().trim();
       // Automatic Admin routing
       if (email === 'milayraj713@gmail.com' || email === 'nilayraj713@gmail.com') {
@@ -69,6 +69,41 @@ export default function StudentDashboardPage() {
         return;
       }
       setUser(u);
+
+      // Fetch confirmed student bookings from API
+      try {
+        const res = await fetch(`/api/bookings?userId=${u.id}&role=student`, { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          const bookingsList: any[] = data.bookings || [];
+          setUpcomingBookings(bookingsList);
+
+          // Populate booked tutors
+          const tutorMap = new Map();
+          bookingsList.forEach((b: any) => {
+            if (b.teacher_id && !tutorMap.has(b.teacher_id)) {
+              tutorMap.set(b.teacher_id, {
+                id: b.teacher_id,
+                full_name: b.teacher_name,
+                avatar_url: b.teacher_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(b.teacher_name)}&background=0B121E&color=ffffff&size=256&bold=true`,
+                subjects: [b.subject],
+              });
+            }
+          });
+          setBookedTutors(Array.from(tutorMap.values()));
+
+          // Populate payments & receipts
+          const payments = bookingsList.map((b: any) => ({
+            date: b.date || (b.created_at ? new Date(b.created_at).toLocaleDateString() : 'Recent'),
+            description: `1-on-1 ${b.subject} Session with ${b.teacher_name}`,
+            amount: b.total_amount ? Number(b.total_amount).toFixed(2) : ((Number(b.hourly_rate) || 25) + 4.5).toFixed(2),
+            status: 'Paid & Confirmed',
+          }));
+          setPaymentHistory(payments);
+        }
+      } catch (err) {
+        console.error('Failed to load student bookings:', err);
+      }
     };
 
     checkAuth();
@@ -245,15 +280,15 @@ export default function StudentDashboardPage() {
                           </p>
                           <div className="flex items-center gap-2 text-xs text-charcoal-500 mt-2">
                             <Clock className="w-3.5 h-3.5 text-accent-500" />
-                            <span>{b.start_time || 'Scheduled Session'}</span>
+                            <span>{b.formatted_time || b.start_time || `${b.date} at ${b.time_slot}`}</span>
                           </div>
                         </div>
                       </div>
 
                       <div className="w-full md:w-auto flex flex-col sm:flex-row items-center gap-2.5">
                         <Link
-                          href={`/classroom/${b.meeting_room_id}`}
-                          className="w-full md:w-auto px-5 py-2.5 bg-accent-500 hover:bg-accent-600 text-white rounded-lg text-xs font-bold transition shadow-subtle flex items-center justify-center gap-2"
+                          href={b.meeting_url || `/classroom/room-${b.id}`}
+                          className="w-full md:w-auto px-5 py-2.5 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-bold transition shadow-subtle flex items-center justify-center gap-2"
                         >
                           <Video className="w-4 h-4" />
                           <span>Join Live Classroom</span>
