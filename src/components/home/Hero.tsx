@@ -13,7 +13,8 @@ import {
   Video,
   Calculator,
   Code2,
-  Users
+  Users,
+  ChevronDown
 } from 'lucide-react';
 
 export function Hero() {
@@ -81,54 +82,60 @@ export function Hero() {
             </p>
 
             {/* Search and Discovery Filter Box */}
-            <div className="mt-8 bg-white p-3.5 sm:p-5 rounded-2xl border border-gray-200/90 shadow-card max-w-xl">
-              <form onSubmit={handleSearch} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div className="mt-8 bg-white p-4 sm:p-5 rounded-2xl border border-gray-200/90 shadow-card max-w-2xl">
+              <form onSubmit={handleSearch} className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-3.5 sm:items-end">
                 
                 {/* Subject Selector */}
-                <div className="flex-1 min-w-0">
-                  <label htmlFor="hero-subject" className="block text-xs font-bold text-charcoal-500 uppercase tracking-wider mb-1">
+                <div className="sm:col-span-5">
+                  <label htmlFor="hero-subject" className="block text-[11px] font-bold text-charcoal-500 uppercase tracking-wider mb-1.5">
                     Subject Track
                   </label>
-                  <select
-                    id="hero-subject"
-                    value={selectedSubject}
-                    onChange={(e) => setSelectedSubject(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-800 focus:bg-white transition"
-                  >
-                    <option value="Mathematics">Mathematics (Pre-Algebra to AP Calculus)</option>
-                    <option value="Computer Science">Computer Science & Python Coding</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      id="hero-subject"
+                      value={selectedSubject}
+                      onChange={(e) => setSelectedSubject(e.target.value)}
+                      className="w-full h-11 appearance-none bg-gray-50/80 hover:bg-gray-50 border border-gray-200 rounded-xl pl-3.5 pr-9 text-sm font-semibold text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-800 focus:bg-white transition cursor-pointer"
+                    >
+                      <option value="Mathematics">Mathematics</option>
+                      <option value="Computer Science">Computer Science</option>
+                    </select>
+                    <ChevronDown className="w-4 h-4 text-charcoal-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
                 </div>
 
                 {/* Grade Selector */}
-                <div className="sm:w-44">
-                  <label htmlFor="hero-grade" className="block text-xs font-bold text-charcoal-500 uppercase tracking-wider mb-1">
+                <div className="sm:col-span-4">
+                  <label htmlFor="hero-grade" className="block text-[11px] font-bold text-charcoal-500 uppercase tracking-wider mb-1.5">
                     Grade Level
                   </label>
-                  <select
-                    id="hero-grade"
-                    value={selectedGrade}
-                    onChange={(e) => setSelectedGrade(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-800 focus:bg-white transition"
-                  >
-                    <option value="Grade 5">Grade 5 (Middle)</option>
-                    <option value="Grade 6">Grade 6 (Middle)</option>
-                    <option value="Grade 7">Grade 7 (Middle)</option>
-                    <option value="Grade 8">Grade 8 (Middle)</option>
-                    <option value="Grade 9">Grade 9 (Freshman)</option>
-                    <option value="Grade 10">Grade 10 (Sophomore)</option>
-                    <option value="Grade 11">Grade 11 (Junior)</option>
-                    <option value="Grade 12">Grade 12 (Senior)</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      id="hero-grade"
+                      value={selectedGrade}
+                      onChange={(e) => setSelectedGrade(e.target.value)}
+                      className="w-full h-11 appearance-none bg-gray-50/80 hover:bg-gray-50 border border-gray-200 rounded-xl pl-3.5 pr-9 text-sm font-semibold text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-800 focus:bg-white transition cursor-pointer"
+                    >
+                      <option value="Grade 5">Grade 5 (Middle)</option>
+                      <option value="Grade 6">Grade 6 (Middle)</option>
+                      <option value="Grade 7">Grade 7 (Middle)</option>
+                      <option value="Grade 8">Grade 8 (Middle)</option>
+                      <option value="Grade 9">Grade 9 (Freshman)</option>
+                      <option value="Grade 10">Grade 10 (Sophomore)</option>
+                      <option value="Grade 11">Grade 11 (Junior)</option>
+                      <option value="Grade 12">Grade 12 (Senior)</option>
+                    </select>
+                    <ChevronDown className="w-4 h-4 text-charcoal-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
                 </div>
 
                 {/* Search Button */}
-                <div className="sm:self-end">
+                <div className="sm:col-span-3">
                   <button
                     type="submit"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-navy-800 hover:bg-navy-900 text-white font-bold rounded-xl transition shadow-sm text-sm"
+                    className="w-full h-11 inline-flex items-center justify-center gap-2 px-4 bg-navy-800 hover:bg-navy-900 text-white font-bold rounded-xl transition shadow-sm hover:shadow active:scale-[0.99] text-sm whitespace-nowrap"
                   >
-                    <Search className="w-4 h-4" />
+                    <Search className="w-4 h-4 flex-shrink-0" />
                     <span>Find Tutor</span>
                   </button>
                 </div>
@@ -216,22 +223,23 @@ export function Hero() {
                 <circle cx="120" cy="360" r="3.5" fill="#F59E0B" />
               </svg>
 
-              {/* Capsule 1 (Top-Left): Focused Student Writing / Math Study */}
-              <div className="absolute top-0 left-0 sm:left-4 w-[250px] sm:w-[280px] h-[175px] sm:h-[195px] rounded-[32px] overflow-hidden border-2 border-white shadow-lift bg-navy-100 z-10 transition-transform duration-300 hover:scale-[1.02]">
+              {/* Capsule 1 (Top-Left): Focused Student with Mathematics Curriculum Workbook */}
+              <div className="absolute top-0 left-0 sm:left-4 w-[250px] sm:w-[280px] h-[180px] sm:h-[200px] rounded-[32px] overflow-hidden border-2 border-white shadow-lift bg-navy-100 z-10 transition-transform duration-300 hover:scale-[1.02]">
                 <Image
-                  src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80"
+                  src="/images/hero-student-curriculum.jpg"
                   alt="Student focused on Mathematics curriculum workbook"
                   fill
-                  className="object-cover"
+                  className="object-cover object-top"
                   priority
                 />
-                {/* Floating Badge Pill 1 */}
-                <div className="absolute -top-1 -right-1 sm:top-2 sm:right-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-navy-950 font-bold text-[11px] sm:text-xs shadow-md border border-amber-300">
-                    <Calculator className="w-3.5 h-3.5 text-navy-900" />
-                    <span>Academic Curriculum</span>
-                  </span>
-                </div>
+              </div>
+
+              {/* Floating Badge Pill 1: Positioned below the capsule along the dashed curve so the student's head and face remain completely visible */}
+              <div className="absolute top-[162px] sm:top-[178px] left-1 sm:left-6 z-30">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-navy-950 font-bold text-[11px] sm:text-xs shadow-md border border-amber-300">
+                  <Calculator className="w-3.5 h-3.5 text-navy-900" />
+                  <span>Academic Curriculum</span>
+                </span>
               </div>
 
               {/* Capsule 2 (Center-Right): Enthusiastic Young Student Breakthrough */}
