@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { Logo } from '../ui/Logo';
 import { 
@@ -125,6 +126,11 @@ export function Navbar() {
     user?.email?.split('@')[0] || 
     'Account';
 
+  const userAvatarUrl = 
+    user?.user_metadata?.avatar_url || 
+    user?.user_metadata?.picture || 
+    '';
+
   // Navigation Links Architecture:
   // - Guest (Before Login): shows marketing, discovery, and educator recruitment links
   // - Authenticated (After Login): clean, dedicated product discovery only (marketing clutter removed)
@@ -205,8 +211,18 @@ export function Navbar() {
                     className="flex items-center gap-2 pl-2.5 pr-2 py-1 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200/90 text-xs transition cursor-pointer group"
                     aria-expanded={profileDropdownOpen}
                   >
-                    <div className="w-6 h-6 rounded-full bg-navy-800 text-white flex items-center justify-center font-bold text-[11px] uppercase shadow-subtle">
-                      {userDisplayName.charAt(0)}
+                    <div className="relative w-6 h-6 rounded-full overflow-hidden bg-navy-800 text-white flex items-center justify-center font-bold text-[11px] uppercase shadow-subtle flex-shrink-0">
+                      {userAvatarUrl ? (
+                        <Image
+                          src={userAvatarUrl}
+                          alt={userDisplayName}
+                          fill
+                          className="object-cover"
+                          unoptimized={true}
+                        />
+                      ) : (
+                        <span>{userDisplayName.charAt(0)}</span>
+                      )}
                     </div>
                     <span className="font-bold text-navy-900 max-w-[110px] truncate">
                       {userDisplayName}
@@ -223,13 +239,30 @@ export function Navbar() {
                       
                       {/* Dropdown Header */}
                       <div className="px-4 py-3 border-b border-gray-100">
-                        <div className="font-bold text-sm text-navy-900 truncate">
-                          {userDisplayName}
+                        <div className="flex items-center gap-2.5 mb-1.5">
+                          <div className="relative w-8 h-8 rounded-full overflow-hidden bg-navy-800 text-white flex items-center justify-center font-bold text-xs uppercase shadow-subtle flex-shrink-0">
+                            {userAvatarUrl ? (
+                              <Image
+                                src={userAvatarUrl}
+                                alt={userDisplayName}
+                                fill
+                                className="object-cover"
+                                unoptimized={true}
+                              />
+                            ) : (
+                              <span>{userDisplayName.charAt(0)}</span>
+                            )}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="font-bold text-sm text-navy-900 truncate">
+                              {userDisplayName}
+                            </div>
+                            <div className="text-[11px] text-charcoal-500 truncate">
+                              {user.email}
+                            </div>
+                          </div>
                         </div>
-                        <div className="text-[11px] text-charcoal-500 truncate mt-0.5">
-                          {user.email}
-                        </div>
-                        <div className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
+                        <div className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
                           <ShieldCheck className="w-3 h-3 text-accent-500" />
                           <span>{userRole === 'admin' ? 'Super Administrator' : userRole === 'teacher' ? 'Accredited Tutor' : 'Student & Parent'}</span>
                         </div>

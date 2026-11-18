@@ -62,17 +62,18 @@ export default function TutorProfilePage() {
               avatar_url
             )
           `)
-          .eq('id', tutorId)
-          .single();
+          .or(`id.eq.${tutorId},user_id.eq.${tutorId}`)
+          .maybeSingle();
 
         if (!error && data) {
           const rawProfiles: any = data.profiles;
           const userProfile = Array.isArray(rawProfiles) ? rawProfiles[0] : rawProfiles;
+          const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userProfile?.full_name || 'Educator')}&background=0B121E&color=ffffff&size=256&bold=true`;
           const profile: TeacherProfile = {
             id: data.id,
             user_id: data.user_id,
             full_name: userProfile?.full_name || 'Verified Educator',
-            avatar_url: userProfile?.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+            avatar_url: userProfile?.avatar_url || defaultAvatar,
             headline: data.headline || 'Classly Verified Educator',
             bio: data.bio || '',
             years_experience: data.years_experience || 0,
@@ -99,6 +100,18 @@ export default function TutorProfilePage() {
           setTutor(profile);
           setSelectedDay('Monday');
         } else {
+          // Fallback: check /api/tutors to find educator by ID
+          const res = await fetch('/api/tutors', { cache: 'no-store' });
+          if (res.ok) {
+            const json = await res.json();
+            const matched = (json.tutors || []).find((t: any) => t.id === tutorId || t.user_id === tutorId);
+            if (matched) {
+              setTutor(matched);
+              setSelectedDay('Monday');
+              setLoading(false);
+              return;
+            }
+          }
           setTutor(null);
         }
       } catch (err) {
@@ -174,6 +187,7 @@ export default function TutorProfilePage() {
                     alt={tutor.full_name}
                     fill
                     className="object-cover"
+                    unoptimized={true}
                     priority
                   />
                 </div>

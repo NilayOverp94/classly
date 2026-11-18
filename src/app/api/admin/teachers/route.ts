@@ -45,13 +45,16 @@ export async function GET() {
 
       if (!isTeacher) continue;
 
+      const applicantName = meta.full_name || meta.name || 'Educator Applicant';
+      const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(applicantName)}&background=0B121E&color=ffffff&size=256&bold=true`;
+
       const teacherObj = {
         id: u.id,
         user_id: u.id,
-        name: meta.full_name || meta.name || 'Educator Applicant',
-        full_name: meta.full_name || meta.name || 'Educator Applicant',
+        name: applicantName,
+        full_name: applicantName,
         email: u.email,
-        avatar_url: meta.avatar_url || meta.picture || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+        avatar_url: meta.avatar_url || meta.picture || defaultAvatar,
         headline: meta.headline || 'Verified Educator',
         bio: meta.bio || 'Experienced educator focused on mastery of Mathematics and Computer Science.',
         subjects: meta.teaching_subjects || meta.subjects || ['Mathematics'],

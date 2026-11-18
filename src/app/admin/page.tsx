@@ -22,6 +22,7 @@ interface PendingApplication {
   id: string;
   name: string;
   email: string;
+  avatar_url?: string;
   subjects: string[];
   education: string;
   experience: string;
@@ -92,7 +93,7 @@ export default function AdminDashboardPage() {
             id: app.id,
             user_id: app.id,
             full_name: app.name,
-            avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+            avatar_url: app.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(app.name)}&background=0B121E&color=ffffff&size=256&bold=true`,
             headline: `${app.education} • Verified Educator`,
             bio: `${app.experience}. Specialized in ${app.subjects.join(', ')}.`,
             years_experience: 5,

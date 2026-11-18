@@ -415,6 +415,7 @@ function TutorsContent() {
                         alt={tutor.full_name}
                         fill
                         className="object-cover"
+                        unoptimized={true}
                       />
                     </div>
                     <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">

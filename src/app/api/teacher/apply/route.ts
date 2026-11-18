@@ -20,7 +20,8 @@ export async function POST(request: Request) {
       education,
       hourlyRate,
       teachingFormat,
-      bio
+      bio,
+      avatarUrl
     } = body;
 
     const cleanEmail = (email || '').trim().toLowerCase();
@@ -59,6 +60,7 @@ export async function POST(request: Request) {
       teaching_format: teachingFormat || 'both',
       applied_at: new Date().toISOString(),
       onboarding_completed: true,
+      ...(avatarUrl ? { avatar_url: avatarUrl, picture: avatarUrl } : {}),
     };
 
     // 1. Check if user already exists in Supabase

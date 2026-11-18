@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { 
   User, 
@@ -18,16 +19,23 @@ import {
   ChevronRight,
   Save,
   DollarSign,
-  Award
+  Award,
+  Camera,
+  Upload,
+  Trash2,
+  Sparkles
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 export default function ProfilePage() {
   const router = useRouter();
   const supabase = createClient();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -90,6 +98,9 @@ export default function ProfilePage() {
       }
       setUserRole(role);
 
+      // Avatar profile photo
+      setAvatarUrl(meta.avatar_url || meta.picture || '');
+
       // Student / Parent fields
       setParentName(meta.parent_name || meta.full_name || '');
       setStudentName(meta.student_name || meta.name || meta.full_name || '');
@@ -112,6 +123,85 @@ export default function ProfilePage() {
     loadUserProfile();
   }, [router]);
 
+  const handleAvatarSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user?.id) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMessage('Image size exceeds the maximum limit of 5MB.');
+      return;
+    }
+
+    setUploadingAvatar(true);
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    // Instant local preview
+    const previewUrl = URL.createObjectURL(file);
+    setAvatarUrl(previewUrl);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('userId', user.id);
+
+      const res = await fetch('/api/upload/avatar', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to upload photo.');
+      }
+
+      setAvatarUrl(data.avatarUrl);
+      setSuccessMessage('Profile photo updated successfully! It is now live on your educator listing in Find Tutors.');
+      setTimeout(() => setSuccessMessage(''), 5000);
+
+      // Refresh auth session user metadata in background
+      await supabase.auth.refreshSession();
+    } catch (err: any) {
+      console.error('Avatar upload failed:', err);
+      setErrorMessage(err.message || 'Failed to upload profile photo.');
+    } finally {
+      setUploadingAvatar(false);
+      // Reset input value so user can upload the same file again if desired
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleRemoveAvatar = async () => {
+    if (!user?.id) return;
+    setUploadingAvatar(true);
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    try {
+      const res = await fetch('/api/upload/avatar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, action: 'remove' }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to remove photo.');
+      }
+
+      setAvatarUrl('');
+      setSuccessMessage('Profile photo removed. Your educator card will show your initial avatar.');
+      setTimeout(() => setSuccessMessage(''), 4000);
+      await supabase.auth.refreshSession();
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Failed to remove profile photo.');
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -133,6 +223,8 @@ export default function ProfilePage() {
             teaching_format: teachingFormat,
             teaching_methodology: teachingMethodology.trim(),
             timezone: timezone,
+            avatar_url: avatarUrl || undefined,
+            picture: avatarUrl || undefined,
           },
         });
         if (authError) throw authError;
@@ -166,6 +258,8 @@ export default function ProfilePage() {
             timezone: timezone,
             phone: phone.trim(),
             learning_goals: learningGoals.trim(),
+            avatar_url: avatarUrl || undefined,
+            picture: avatarUrl || undefined,
           },
         });
         if (authError) throw authError;
@@ -268,9 +362,82 @@ export default function ProfilePage() {
           {/* Left Column: Account Identity Card */}
           <div className="lg:col-span-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-subtle space-y-6">
             <div className="text-center">
-              <div className="w-20 h-20 rounded-full bg-navy-800 text-white flex items-center justify-center font-bold text-3xl uppercase mx-auto mb-3 shadow-lift">
-                {userDisplayName.charAt(0)}
+              {/* Profile Photo / Avatar with Interactive Upload Overlay */}
+              <div className="relative group mx-auto mb-2.5 w-24 h-24">
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-navy-800 text-white flex items-center justify-center font-bold text-3xl uppercase shadow-lift border-2 border-white ring-2 ring-gray-100 relative">
+                  {avatarUrl ? (
+                    <Image
+                      src={avatarUrl}
+                      alt={userDisplayName}
+                      fill
+                      className="object-cover"
+                      unoptimized={true}
+                      priority
+                    />
+                  ) : (
+                    <span>{userDisplayName.charAt(0)}</span>
+                  )}
+
+                  {/* Uploading Spinner Overlay */}
+                  {uploadingAvatar && (
+                    <div className="absolute inset-0 bg-navy-950/70 flex flex-col items-center justify-center text-white text-[10px] font-semibold gap-1 z-10">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Saving...</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Camera / Upload Button Overlay Badge */}
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadingAvatar}
+                  title="Upload profile picture"
+                  className="absolute bottom-0 right-0 p-2 bg-accent-500 hover:bg-accent-600 text-white rounded-full shadow-md transition-transform hover:scale-110 active:scale-95 border-2 border-white cursor-pointer z-20"
+                >
+                  <Camera className="w-4 h-4" />
+                </button>
+
+                {/* Hidden File Input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/jpg,image/webp"
+                  className="hidden"
+                  onChange={handleAvatarSelect}
+                />
               </div>
+
+              {/* Upload & Remove Action Links */}
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadingAvatar}
+                  className="text-[11px] font-bold text-accent-600 hover:text-accent-700 hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <Upload className="w-3 h-3" />
+                  <span>{avatarUrl ? 'Change Photo' : 'Upload Photo'}</span>
+                </button>
+                {avatarUrl && (
+                  <>
+                    <span className="text-gray-300">•</span>
+                    <button
+                      type="button"
+                      onClick={handleRemoveAvatar}
+                      disabled={uploadingAvatar}
+                      className="text-[11px] font-medium text-red-500 hover:text-red-700 hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                      <span>Remove</span>
+                    </button>
+                  </>
+                )}
+              </div>
+              <p className="text-[10px] text-charcoal-400 mb-3">
+                {userRole === 'teacher' ? 'Your photo is displayed publicly on the Find Tutors directory' : 'JPG, PNG or WebP • Max 5MB'}
+              </p>
+
               <h2 className="text-lg font-bold text-navy-800">{userDisplayName}</h2>
               <p className="text-xs text-charcoal-500 mt-0.5">{user?.email}</p>
               

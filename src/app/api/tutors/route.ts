@@ -29,11 +29,13 @@ export async function GET() {
       })
       .map((u: any) => {
         const meta = u.user_metadata || {};
+        const fullName = meta.full_name || meta.name || 'Verified Educator';
+        const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=0B121E&color=ffffff&size=256&bold=true`;
         return {
           id: u.id,
           user_id: u.id,
-          full_name: meta.full_name || meta.name || 'Verified Educator',
-          avatar_url: meta.avatar_url || meta.picture || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+          full_name: fullName,
+          avatar_url: meta.avatar_url || meta.picture || defaultAvatar,
           headline: meta.headline || 'Verified Classly Educator',
           bio: meta.bio || '',
           years_experience: Number(meta.years_experience) || 3,
