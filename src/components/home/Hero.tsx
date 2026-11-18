@@ -51,7 +51,7 @@ export function Hero() {
             {/* Reassurance pill */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200/80 w-fit text-xs font-semibold text-amber-900 mb-6 shadow-subtle">
               <Sparkles className="w-3.5 h-3.5 text-amber-600 fill-amber-500" />
-              <span>100% First-Lesson Guarantee • Audited US K-12 Curriculum</span>
+              <span>100% FREE First Demo Class • Audited US K-12 Curriculum</span>
             </div>
 
             {/* Main Headline with organic curve accent */}
