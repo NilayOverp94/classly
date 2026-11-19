@@ -20,7 +20,9 @@ import {
   Bell,
   Mail,
   AlertCircle,
-  Sparkles
+  Sparkles,
+  Trash2,
+  Loader2
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
@@ -49,6 +51,7 @@ export default function TeacherDashboardPage() {
     description: '',
   });
   const [classCreatedNotice, setClassCreatedNotice] = useState(false);
+  const [isSubmittingClass, setIsSubmittingClass] = useState(false);
 
   useEffect(() => {
     const checkAuthAndLoad = async () => {
@@ -56,6 +59,11 @@ export default function TeacherDashboardPage() {
       const currentUser = session?.user;
       if (currentUser) {
         setUser(currentUser);
+        // Load initial classes from metadata if present
+        if (Array.isArray(currentUser.user_metadata?.teacher_classes)) {
+          setTeacherClasses(currentUser.user_metadata.teacher_classes);
+        }
+
         // Fetch confirmed student bookings from API
         try {
           const res = await fetch(`/api/bookings?userId=${currentUser.id}&role=teacher`, { cache: 'no-store' });
@@ -67,6 +75,19 @@ export default function TeacherDashboardPage() {
           console.error('Failed to load educator bookings:', e);
         } finally {
           setLoadingBookings(false);
+        }
+
+        // Fetch persisted published classes from API
+        try {
+          const clsRes = await fetch(`/api/classes?teacherId=${currentUser.id}`, { cache: 'no-store' });
+          if (clsRes.ok) {
+            const clsData = await clsRes.json();
+            if (Array.isArray(clsData.classes)) {
+              setTeacherClasses(clsData.classes);
+            }
+          }
+        } catch (e) {
+          console.error('Failed to load teacher classes:', e);
         }
       }
     };
@@ -102,27 +123,80 @@ export default function TeacherDashboardPage() {
   const totalEarned = bookings.reduce((sum, b) => sum + (Number(b.hourly_rate) || teacherHourlyRate), 0);
   const netAccruedPayout = totalEarned * 0.85; // 85% net after 15% platform commission
 
-  const handleCreateClass = (e: React.FormEvent) => {
+  const handleCreateClass = async (e: React.FormEvent) => {
     e.preventDefault();
-    setTeacherClasses((prev) => [
-      ...prev,
-      {
-        id: `cls-${Date.now()}`,
-        title: newClass.title,
-        subject: newClass.subject,
-        gradeLevel: newClass.gradeLevel,
-        price: Number(newClass.price),
-        dateTime: newClass.dateTime,
-        durationMinutes: Number(newClass.durationMinutes),
-        maxStudents: Number(newClass.maxStudents),
-        enrolledCount: 0,
-      },
-    ]);
-    setClassCreatedNotice(true);
-    setTimeout(() => {
-      setClassCreatedNotice(false);
-      setActiveTab('classes');
-    }, 1200);
+    if (!user?.id) {
+      alert('Educator session expired. Please refresh the page and log in.');
+      return;
+    }
+
+    setIsSubmittingClass(true);
+
+    try {
+      const res = await fetch('/api/classes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          teacherId: user.id,
+          title: newClass.title,
+          subject: newClass.subject,
+          gradeLevel: newClass.gradeLevel,
+          price: Number(newClass.price),
+          dateTime: newClass.dateTime,
+          durationMinutes: Number(newClass.durationMinutes),
+          maxStudents: Number(newClass.maxStudents),
+          description: newClass.description,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to publish class.');
+      }
+
+      setTeacherClasses(data.classes || []);
+      setClassCreatedNotice(true);
+
+      // Reset new class form
+      setNewClass({
+        title: '',
+        subject: 'Mathematics',
+        gradeLevel: 'Grade 11',
+        classType: 'group',
+        price: '25',
+        dateTime: 'Tomorrow at 05:00 PM EST',
+        durationMinutes: '60',
+        maxStudents: '6',
+        description: '',
+      });
+
+      setTimeout(() => {
+        setClassCreatedNotice(false);
+        setActiveTab('classes');
+      }, 1200);
+    } catch (err: any) {
+      console.error('Publish class error:', err);
+      alert(err.message || 'Failed to publish class.');
+    } finally {
+      setIsSubmittingClass(false);
+    }
+  };
+
+  const handleDeleteClass = async (classId: string) => {
+    if (!user?.id) return;
+    if (!confirm('Are you sure you want to remove this class listing from your schedule?')) return;
+
+    try {
+      const res = await fetch(`/api/classes?teacherId=${user.id}&classId=${classId}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setTeacherClasses(data.classes || []);
+      }
+    } catch (e) {
+      console.error('Delete class error:', e);
+    }
   };
 
   return (
@@ -436,13 +510,22 @@ export default function TeacherDashboardPage() {
                           </p>
                         </div>
 
-                        <Link
-                          href={`/classroom/room-${cls.id}`}
-                          className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5"
-                        >
-                          <Video className="w-3.5 h-3.5" />
-                          <span>Start Class</span>
-                        </Link>
+                        <div className="flex items-center gap-2">
+                          <Link
+                            href={user ? `/classroom/room-tutor-${user.id}` : `/classroom/room-${cls.id}`}
+                            className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5"
+                          >
+                            <Video className="w-3.5 h-3.5" />
+                            <span>Start Class</span>
+                          </Link>
+                          <button
+                            onClick={() => handleDeleteClass(cls.id)}
+                            className="p-2 text-charcoal-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                            title="Delete Class Listing"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -575,9 +658,11 @@ export default function TeacherDashboardPage() {
                   <div className="pt-4 flex justify-end">
                     <button
                       type="submit"
-                      className="px-6 py-2.5 bg-navy-800 hover:bg-navy-900 text-white rounded-lg font-bold text-xs shadow-subtle"
+                      disabled={isSubmittingClass}
+                      className="px-6 py-2.5 bg-navy-800 hover:bg-navy-900 disabled:bg-gray-400 text-white rounded-lg font-bold text-xs shadow-subtle flex items-center gap-2"
                     >
-                      Publish Class
+                      {isSubmittingClass && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                      <span>{isSubmittingClass ? 'Publishing Class...' : 'Publish Class'}</span>
                     </button>
                   </div>
                 </form>
