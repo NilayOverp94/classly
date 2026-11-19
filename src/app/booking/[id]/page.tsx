@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { TeacherProfile } from '@/lib/types';
+import { AlertModal } from '@/components/ui/AlertModal';
 
 function BookingContent() {
   const params = useParams();
@@ -41,6 +42,7 @@ function BookingContent() {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [bookingConfirmed, setBookingConfirmed] = useState<boolean>(false);
   const [confirmedBookingId, setConfirmedBookingId] = useState<string>('');
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const supabase = createClient();
 
@@ -232,7 +234,7 @@ function BookingContent() {
       setBookingConfirmed(true);
     } catch (err: any) {
       console.error('Booking checkout error:', err);
-      alert(err.message || 'Payment processing failed. Please try again.');
+      setCheckoutError(err.message || 'Payment processing failed. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -453,6 +455,18 @@ function BookingContent() {
         )}
 
       </div>
+
+      {/* Checkout Error Alert Modal */}
+      <AlertModal
+        isOpen={!!checkoutError}
+        theme="light"
+        variant="error"
+        title="Reservation Incomplete"
+        message={checkoutError || ''}
+        buttonText="Close"
+        onClose={() => setCheckoutError(null)}
+      />
+
     </div>
   );
 }

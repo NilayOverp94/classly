@@ -25,6 +25,8 @@ import {
   Loader2
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { AlertModal } from '@/components/ui/AlertModal';
 
 export default function TeacherDashboardPage() {
   const router = useRouter();
@@ -32,6 +34,11 @@ export default function TeacherDashboardPage() {
   const [user, setUser] = useState<any>(null);
   const [bookings, setBookings] = useState<any[]>([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
+
+  // Modal dialog states
+  const [classToDelete, setClassToDelete] = useState<any | null>(null);
+  const [isDeletingClass, setIsDeletingClass] = useState(false);
+  const [alertNotice, setAlertNotice] = useState<{ title: string; message: string; variant?: 'success' | 'error' | 'info' } | null>(null);
 
   const [activeTab, setActiveTab] = useState<'overview' | 'classes' | 'availability' | 'create_class' | 'earnings' | 'students'>('overview');
   
@@ -126,7 +133,11 @@ export default function TeacherDashboardPage() {
   const handleCreateClass = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.id) {
-      alert('Educator session expired. Please refresh the page and log in.');
+      setAlertNotice({
+        title: 'Session Expired',
+        message: 'Your educator session has expired. Please refresh the page and sign in again.',
+        variant: 'error',
+      });
       return;
     }
 
@@ -176,26 +187,38 @@ export default function TeacherDashboardPage() {
       }, 1200);
     } catch (err: any) {
       console.error('Publish class error:', err);
-      alert(err.message || 'Failed to publish class.');
+      setAlertNotice({
+        title: 'Could Not Publish Class',
+        message: err.message || 'An error occurred while publishing your class listing. Please try again.',
+        variant: 'error',
+      });
     } finally {
       setIsSubmittingClass(false);
     }
   };
 
-  const handleDeleteClass = async (classId: string) => {
-    if (!user?.id) return;
-    if (!confirm('Are you sure you want to remove this class listing from your schedule?')) return;
+  const handleConfirmDeleteClass = async () => {
+    if (!user?.id || !classToDelete) return;
+    setIsDeletingClass(true);
 
     try {
-      const res = await fetch(`/api/classes?teacherId=${user.id}&classId=${classId}`, {
+      const res = await fetch(`/api/classes?teacherId=${user.id}&classId=${classToDelete.id}`, {
         method: 'DELETE',
       });
       if (res.ok) {
         const data = await res.json();
         setTeacherClasses(data.classes || []);
+        setClassToDelete(null);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error('Delete class error:', e);
+      setAlertNotice({
+        title: 'Error Removing Class',
+        message: e.message || 'Failed to delete class listing.',
+        variant: 'error',
+      });
+    } finally {
+      setIsDeletingClass(false);
     }
   };
 
@@ -519,7 +542,7 @@ export default function TeacherDashboardPage() {
                             <span>Start Class</span>
                           </Link>
                           <button
-                            onClick={() => handleDeleteClass(cls.id)}
+                            onClick={() => setClassToDelete(cls)}
                             className="p-2 text-charcoal-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
                             title="Delete Class Listing"
                           >
@@ -686,7 +709,14 @@ export default function TeacherDashboardPage() {
                         <span className="px-2 py-1 bg-white border border-gray-200 rounded text-charcoal-700">05:00 PM EST</span>
                         <span className="px-2 py-1 bg-white border border-gray-200 rounded text-charcoal-700">06:30 PM EST</span>
                       </div>
-                      <button onClick={() => alert('Availability slots confirmed and synced to your booking calendar!')} className="text-xs font-semibold text-navy-800 hover:underline">
+                      <button 
+                        onClick={() => setAlertNotice({
+                          title: 'Availability Confirmed',
+                          message: 'Your weekly availability slots are confirmed and synced to your booking calendar in US Eastern Time.',
+                          variant: 'success'
+                        })} 
+                        className="text-xs font-semibold text-navy-800 hover:underline"
+                      >
                         Edit
                       </button>
                     </div>
@@ -843,6 +873,41 @@ export default function TeacherDashboardPage() {
         </div>
 
       </div>
+
+      {/* Delete Class Confirmation Modal */}
+      <ConfirmModal
+        isOpen={!!classToDelete}
+        theme="light"
+        icon="delete"
+        variant="danger"
+        title="Remove Class Listing?"
+        description={`Are you sure you want to remove "${classToDelete?.title}" from your teaching schedule? Students will no longer be able to book this session.`}
+        confirmText="Yes, Delete Class"
+        cancelText="Keep Class"
+        isLoading={isDeletingClass}
+        onConfirm={handleConfirmDeleteClass}
+        onClose={() => setClassToDelete(null)}
+        details={
+          classToDelete && (
+            <div className="space-y-1 text-xs">
+              <div className="font-semibold text-navy-800">{classToDelete.title}</div>
+              <div className="text-charcoal-500">{classToDelete.subject} • {classToDelete.dateTime} • ${classToDelete.price} USD</div>
+            </div>
+          )
+        }
+      />
+
+      {/* General Alert Notice Modal */}
+      <AlertModal
+        isOpen={!!alertNotice}
+        theme="light"
+        variant={alertNotice?.variant || 'info'}
+        title={alertNotice?.title || 'Notice'}
+        message={alertNotice?.message || ''}
+        buttonText="Close"
+        onClose={() => setAlertNotice(null)}
+      />
+
     </div>
   );
 }

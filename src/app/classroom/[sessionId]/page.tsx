@@ -27,6 +27,8 @@ import {
   X
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { AlertModal } from '@/components/ui/AlertModal';
 
 export default function ClassroomPage() {
   const params = useParams();
@@ -57,6 +59,10 @@ export default function ClassroomPage() {
   const [accessRequestSent, setAccessRequestSent] = useState(false);
   const [pendingStudentRequest, setPendingStudentRequest] = useState<string | null>(null);
   const [permissionNotice, setPermissionNotice] = useState<string | null>(null);
+
+  // Modal Dialog States (replaces ugly browser alerts/confirms)
+  const [showExitModal, setShowExitModal] = useState(false);
+  const [disconnectNotice, setDisconnectNotice] = useState<string | null>(null);
 
   // Real-time channel ref
   const channelRef = useRef<any>(null);
@@ -341,9 +347,12 @@ export default function ClassroomPage() {
   };
 
   const handleLeaveClassroom = () => {
-    if (confirm('Are you sure you want to exit the live classroom?')) {
-      router.push(userRole === 'teacher' ? '/dashboard/teacher' : '/dashboard/student');
-    }
+    setShowExitModal(true);
+  };
+
+  const handleConfirmExit = () => {
+    setShowExitModal(false);
+    router.push(userRole === 'teacher' ? '/dashboard/teacher' : '/dashboard/student');
   };
 
   if (!isMounted) {
@@ -551,8 +560,7 @@ export default function ClassroomPage() {
                 data-lk-theme="default"
                 style={{ height: '100%', width: '100%' }}
                 onDisconnected={() => {
-                  alert('Disconnected from video room.');
-                  router.push(userRole === 'teacher' ? '/dashboard/teacher' : '/dashboard/student');
+                  setDisconnectNotice('Your live video session ended or was disconnected from the media server.');
                 }}
                 onError={(err) => {
                   console.error('LiveKit Room error:', err);
@@ -712,6 +720,44 @@ export default function ClassroomPage() {
         )}
 
       </div>
+
+      {/* Beautiful Animated Exit Classroom Modal */}
+      <ConfirmModal
+        isOpen={showExitModal}
+        theme="dark"
+        icon="exit"
+        variant="danger"
+        title="Exit Live Classroom?"
+        description={
+          userRole === 'teacher'
+            ? 'Are you sure you want to exit? Your students can remain or re-connect whenever you re-open the class.'
+            : 'Are you sure you want to leave this live lesson? You can re-join anytime from your student dashboard.'
+        }
+        confirmText="Leave Meeting"
+        cancelText="Stay in Class"
+        onConfirm={handleConfirmExit}
+        onClose={() => setShowExitModal(false)}
+        details={
+          <div className="flex items-center justify-between text-[11px]">
+            <span className="text-gray-400">Session Duration:</span>
+            <span className="font-mono font-bold text-emerald-400">{formatTimer(seconds)}</span>
+          </div>
+        }
+      />
+
+      {/* Disconnection Alert Modal */}
+      <AlertModal
+        isOpen={!!disconnectNotice}
+        theme="dark"
+        variant="warning"
+        title="Session Disconnected"
+        message={disconnectNotice || ''}
+        buttonText="Return to Dashboard"
+        onClose={() => {
+          setDisconnectNotice(null);
+          router.push(userRole === 'teacher' ? '/dashboard/teacher' : '/dashboard/student');
+        }}
+      />
 
     </div>
   );
