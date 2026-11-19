@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     const subject = teacherMeta.teaching_subjects?.[0] || 'Mathematics';
 
     const bookingId = `book-${Math.floor(100000 + Math.random() * 900000)}`;
-    const meetingUrl = `/classroom/room-${bookingId}`;
+    const meetingUrl = `/classroom/room-tutor-${teacherUser.id}`;
     const formattedTime = `${date} at ${timeSlot}`;
 
     const newBooking = {

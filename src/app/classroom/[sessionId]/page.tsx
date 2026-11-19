@@ -16,25 +16,27 @@ import {
   Download, 
   Video, 
   PhoneOff, 
-  ExternalLink, 
-  Layout, 
+  RefreshCw, 
+  Trash2, 
+  Lock, 
+  Unlock, 
+  Hand, 
   AlertCircle,
-  RefreshCw,
-  Share2,
-  Trash2,
   CheckCircle2,
-  MessageSquare
+  Bell,
+  X
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 export default function ClassroomPage() {
   const params = useParams();
   const router = useRouter();
-  const sessionId = (params?.sessionId as string) || 'room-session-active';
+  const rawSessionId = (params?.sessionId as string) || 'room-session-active';
   const supabase = createClient();
 
   const [isMounted, setIsMounted] = useState(false);
   const [liveKitToken, setLiveKitToken] = useState<string | null>(null);
+  const [canonicalRoomName, setCanonicalRoomName] = useState<string>(rawSessionId);
   const [liveKitUrl, setLiveKitUrl] = useState<string>(
     process.env.NEXT_PUBLIC_LIVEKIT_URL || 'wss://classly-cq8rvxev.livekit.cloud'
   );
@@ -43,13 +45,23 @@ export default function ClassroomPage() {
   const [userRole, setUserRole] = useState<'teacher' | 'student'>('student');
   const [userName, setUserName] = useState<string>('Learner');
   
-  // Meeting Mode: 'livekit' (default WebRTC) | 'jitsi' (backup iframe)
+  // Standby mode toggle: 'livekit' (default) | 'jitsi' (backup iframe)
   const [meetingMode, setMeetingMode] = useState<'livekit' | 'jitsi'>('livekit');
   
-  // Workspace view: 'split' | 'video_only' | 'whiteboard_only'
-  const [viewMode, setViewMode] = useState<'split' | 'video_only' | 'whiteboard_only'>('video_only');
+  // Workspace view: 'video_only' | 'split' | 'whiteboard_only'
+  const [viewMode, setViewMode] = useState<'video_only' | 'split' | 'whiteboard_only'>('video_only');
 
-  // Interactive Whiteboard State
+  // Whiteboard Access Control State
+  // Teachers ALWAYS have access; students start with access LOCKED until the teacher explicitly allows it
+  const [studentWhiteboardAllowed, setStudentWhiteboardAllowed] = useState(false);
+  const [accessRequestSent, setAccessRequestSent] = useState(false);
+  const [pendingStudentRequest, setPendingStudentRequest] = useState<string | null>(null);
+  const [permissionNotice, setPermissionNotice] = useState<string | null>(null);
+
+  // Real-time channel ref
+  const channelRef = useRef<any>(null);
+
+  // Whiteboard Canvas State
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [tool, setTool] = useState<'pen' | 'eraser'>('pen');
@@ -68,6 +80,10 @@ export default function ClassroomPage() {
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
+  // Determine if the current active user can draw
+  const canDraw = userRole === 'teacher' || (userRole === 'student' && studentWhiteboardAllowed);
+
+  // Initialize room authentication & token
   useEffect(() => {
     setIsMounted(true);
     let isCancelled = false;
@@ -92,7 +108,7 @@ export default function ClassroomPage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            roomName: sessionId,
+            roomName: rawSessionId,
             participantName,
             identity,
             isTeacher: role === 'teacher',
@@ -108,6 +124,7 @@ export default function ClassroomPage() {
         if (!isCancelled) {
           setLiveKitToken(data.token);
           if (data.wsUrl) setLiveKitUrl(data.wsUrl);
+          if (data.roomName) setCanonicalRoomName(data.roomName);
           setUserRole(role);
           setUserName(participantName);
         }
@@ -127,9 +144,54 @@ export default function ClassroomPage() {
     return () => {
       isCancelled = true;
     };
-  }, [sessionId]);
+  }, [rawSessionId]);
 
-  // Canvas drawing handlers
+  // Set up real-time broadcast channel for Whiteboard Permissions & Live Drawing Sync
+  useEffect(() => {
+    if (!canonicalRoomName) return;
+
+    const channel = supabase.channel(`whiteboard-${canonicalRoomName}`, {
+      config: { broadcast: { self: false } },
+    });
+
+    channel
+      .on('broadcast', { event: 'whiteboard_permission' }, ({ payload }) => {
+        setStudentWhiteboardAllowed(payload.allowed);
+        if (payload.allowed) {
+          setPermissionNotice('The teacher has granted you whiteboard drawing access!');
+          setAccessRequestSent(false);
+          setTimeout(() => setPermissionNotice(null), 5000);
+        } else {
+          setPermissionNotice('The teacher has locked the whiteboard.');
+          setTimeout(() => setPermissionNotice(null), 5000);
+        }
+      })
+      .on('broadcast', { event: 'request_whiteboard' }, ({ payload }) => {
+        if (userRole === 'teacher') {
+          setPendingStudentRequest(payload.studentName || 'Student');
+        }
+      })
+      .on('broadcast', { event: 'draw_stroke' }, ({ payload }) => {
+        drawRemoteStroke(payload);
+      })
+      .on('broadcast', { event: 'clear_board' }, () => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      })
+      .subscribe();
+
+    channelRef.current = channel;
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [canonicalRoomName, userRole]);
+
+  // Canvas setup
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -139,56 +201,143 @@ export default function ClassroomPage() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }, [viewMode]);
 
+  // Remote stroke renderer
+  const drawRemoteStroke = (payload: { type: 'start' | 'draw' | 'stop'; x: number; y: number; color: string; tool: string }) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    if (payload.type === 'start') {
+      ctx.beginPath();
+      ctx.moveTo(payload.x, payload.y);
+    } else if (payload.type === 'draw') {
+      if (payload.tool === 'eraser') {
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 24;
+      } else {
+        ctx.strokeStyle = payload.color;
+        ctx.lineWidth = 3;
+      }
+      ctx.lineCap = 'round';
+      ctx.lineTo(payload.x, payload.y);
+      ctx.stroke();
+    }
+  };
+
+  // Local drawing handlers
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!canDraw) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const rect = canvas.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * canvas.width;
+    const y = ((e.clientY - rect.top) / rect.height) * canvas.height;
     ctx.beginPath();
-    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    ctx.moveTo(x, y);
     setIsDrawing(true);
+
+    if (channelRef.current) {
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'draw_stroke',
+        payload: { type: 'start', x, y, color: penColor, tool },
+      });
+    }
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing) return;
+    if (!isDrawing || !canDraw) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const rect = canvas.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * canvas.width;
+    const y = ((e.clientY - rect.top) / rect.height) * canvas.height;
+
     if (tool === 'eraser') {
       ctx.strokeStyle = '#FFFFFF';
-      ctx.lineWidth = 20;
+      ctx.lineWidth = 24;
     } else {
       ctx.strokeStyle = penColor;
       ctx.lineWidth = 3;
     }
     ctx.lineCap = 'round';
-    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+    ctx.lineTo(x, y);
     ctx.stroke();
+
+    if (channelRef.current) {
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'draw_stroke',
+        payload: { type: 'draw', x, y, color: penColor, tool },
+      });
+    }
   };
 
   const stopDrawing = () => {
     setIsDrawing(false);
+    if (channelRef.current && canDraw) {
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'draw_stroke',
+        payload: { type: 'stop' },
+      });
+    }
   };
 
   const clearCanvas = () => {
+    if (!canDraw) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (channelRef.current) {
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'clear_board',
+      });
+    }
   };
 
   const downloadCanvas = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const link = document.createElement('a');
-    link.download = `Classly-Whiteboard-${sessionId}.png`;
+    link.download = `Classly-Whiteboard-${canonicalRoomName}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
+  };
+
+  // Teacher Action: Toggle student whiteboard permission
+  const handleToggleStudentWhiteboard = (allow: boolean) => {
+    setStudentWhiteboardAllowed(allow);
+    setPendingStudentRequest(null);
+    if (channelRef.current) {
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'whiteboard_permission',
+        payload: { allowed: allow },
+      });
+    }
+  };
+
+  // Student Action: Request permission from teacher
+  const handleRequestWhiteboardAccess = () => {
+    setAccessRequestSent(true);
+    if (channelRef.current) {
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'request_whiteboard',
+        payload: { studentName: userName },
+      });
+    }
   };
 
   const handleLeaveClassroom = () => {
@@ -223,12 +372,54 @@ export default function ClassroomPage() {
           </Link>
           <span className="text-navy-700 hidden sm:inline">|</span>
           <span className="text-xs text-gray-300 hidden sm:inline">
-            Room #{sessionId.replace('room-', '')} • {userName} ({userRole === 'teacher' ? 'Educator' : 'Student'})
+            Room #{canonicalRoomName.replace('room-', '').replace('tutor-', '')} • {userName} ({userRole === 'teacher' ? 'Educator' : 'Student'})
           </span>
         </div>
 
         {/* Center / Right Controls */}
         <div className="flex items-center gap-2 sm:gap-3">
+          
+          {/* Teacher Whiteboard Permission Controller in Header */}
+          {userRole === 'teacher' && (
+            <div className="hidden md:flex items-center gap-1.5">
+              <button
+                onClick={() => handleToggleStudentWhiteboard(!studentWhiteboardAllowed)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition ${
+                  studentWhiteboardAllowed
+                    ? 'bg-emerald-600/90 hover:bg-emerald-700 text-white'
+                    : 'bg-amber-600/90 hover:bg-amber-700 text-white'
+                }`}
+                title={studentWhiteboardAllowed ? 'Click to lock student whiteboard' : 'Click to grant student whiteboard access'}
+              >
+                {studentWhiteboardAllowed ? (
+                  <>
+                    <Unlock className="w-3.5 h-3.5" />
+                    <span>Student Drawing: Allowed</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>Student Drawing: Locked</span>
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+
+          {/* Student Whiteboard Permission Badge in Header */}
+          {userRole === 'student' && (
+            <div className="hidden md:flex items-center">
+              <span className={`px-2 py-0.5 rounded text-[11px] font-semibold border flex items-center gap-1 ${
+                studentWhiteboardAllowed 
+                  ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-400' 
+                  : 'bg-navy-950 border-navy-800 text-gray-400'
+              }`}>
+                {studentWhiteboardAllowed ? <Unlock className="w-3 h-3 text-emerald-400" /> : <Lock className="w-3 h-3 text-gray-400" />}
+                <span>{studentWhiteboardAllowed ? 'Whiteboard: Active' : 'Whiteboard: Locked by Teacher'}</span>
+              </span>
+            </div>
+          )}
+
           {/* View Mode Switcher */}
           <div className="bg-navy-950 p-0.5 rounded-lg border border-navy-800 flex items-center text-xs">
             <button
@@ -245,7 +436,7 @@ export default function ClassroomPage() {
                 viewMode === 'split' ? 'bg-navy-800 text-white shadow-sm' : 'text-gray-400 hover:text-white'
               }`}
             >
-              Split + Whiteboard
+              Split + Board
             </button>
             <button
               onClick={() => setViewMode('whiteboard_only')}
@@ -254,18 +445,6 @@ export default function ClassroomPage() {
               }`}
             >
               Whiteboard
-            </button>
-          </div>
-
-          {/* Backup Meeting Switcher */}
-          <div className="hidden md:flex items-center gap-1.5 bg-navy-950 px-2 py-1 rounded-lg border border-navy-800 text-xs">
-            <button
-              onClick={() => setMeetingMode(meetingMode === 'livekit' ? 'jitsi' : 'livekit')}
-              className="text-gray-300 hover:text-white text-[11px] font-semibold flex items-center gap-1"
-              title="Toggle WebRTC video provider"
-            >
-              <RefreshCw className="w-3 h-3 text-accent-400" />
-              <span>{meetingMode === 'livekit' ? 'LiveKit Cloud' : 'Jitsi WebRTC'}</span>
             </button>
           </div>
 
@@ -284,6 +463,43 @@ export default function ClassroomPage() {
           </button>
         </div>
       </header>
+
+      {/* Floating Alerts & Teacher Request Notifications */}
+      {userRole === 'teacher' && pendingStudentRequest && (
+        <div className="bg-amber-500 text-navy-950 px-4 py-2.5 text-xs font-semibold flex items-center justify-between z-30 shadow-lg border-b border-amber-600 animate-in slide-in-from-top">
+          <div className="flex items-center gap-2">
+            <Bell className="w-4 h-4 animate-bounce" />
+            <span>Student <strong>{pendingStudentRequest}</strong> has requested permission to draw on the whiteboard.</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handleToggleStudentWhiteboard(true)}
+              className="px-3 py-1 bg-navy-950 text-white rounded font-bold text-xs hover:bg-navy-900 transition"
+            >
+              Grant Drawing Access
+            </button>
+            <button
+              onClick={() => setPendingStudentRequest(null)}
+              className="p-1 hover:bg-amber-600 rounded text-navy-950"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Student Toast Notice */}
+      {permissionNotice && (
+        <div className="bg-emerald-600 text-white px-4 py-2 text-xs font-semibold flex items-center justify-between z-30 shadow-md">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4" />
+            <span>{permissionNotice}</span>
+          </div>
+          <button onClick={() => setPermissionNotice(null)} className="text-white hover:opacity-75">
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Main Classroom Workspace */}
       <div className="flex-1 flex overflow-hidden relative">
@@ -316,16 +532,16 @@ export default function ClassroomPage() {
               </button>
             </div>
           ) : meetingMode === 'jitsi' ? (
-            /* Instant Standby WebRTC Room (Jitsi Meet) */
+            /* Standby WebRTC Room (Jitsi Meet) using Canonical Unified Room */
             <div className="flex-1 w-full h-full relative">
               <iframe
-                src={`https://meet.jit.si/Classly-${sessionId}#config.prejoinPageEnabled=false&userInfo.displayName="${encodeURIComponent(userName)}"`}
+                src={`https://meet.jit.si/Classly-${canonicalRoomName}#config.prejoinPageEnabled=false&userInfo.displayName="${encodeURIComponent(userName)}"`}
                 allow="camera; microphone; fullscreen; display-capture; autoplay"
                 className="w-full h-full border-0"
               />
             </div>
           ) : liveKitToken ? (
-            /* LiveKit Official Next.js Video Conference */
+            /* Real LiveKit WebRTC Video Conference */
             <div className="flex-1 w-full h-full relative livekit-classroom-wrapper">
               <LiveKitRoom
                 video={true}
@@ -364,44 +580,85 @@ export default function ClassroomPage() {
                   <span>Whiteboard</span>
                 </span>
 
-                <button
-                  onClick={() => setTool('pen')}
-                  className={`px-2.5 py-1 rounded font-semibold transition ${
-                    tool === 'pen' ? 'bg-navy-800 text-white' : 'bg-white border border-gray-200 text-charcoal-700'
-                  }`}
-                >
-                  Pen
-                </button>
-                <button
-                  onClick={() => setTool('eraser')}
-                  className={`px-2.5 py-1 rounded font-semibold transition ${
-                    tool === 'eraser' ? 'bg-navy-800 text-white' : 'bg-white border border-gray-200 text-charcoal-700'
-                  }`}
-                >
-                  Eraser
-                </button>
-
-                <div className="flex items-center gap-1.5 ml-2">
-                  {['#183153', '#059669', '#DC2626', '#2563EB', '#7C3AED'].map((color) => (
+                {/* If the user can draw, show tools */}
+                {canDraw ? (
+                  <>
                     <button
-                      key={color}
-                      onClick={() => { setPenColor(color); setTool('pen'); }}
-                      className="w-5 h-5 rounded-full border border-gray-300 transition-transform hover:scale-110"
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
-                </div>
+                      onClick={() => setTool('pen')}
+                      className={`px-2.5 py-1 rounded font-semibold transition ${
+                        tool === 'pen' ? 'bg-navy-800 text-white' : 'bg-white border border-gray-200 text-charcoal-700'
+                      }`}
+                    >
+                      Pen
+                    </button>
+                    <button
+                      onClick={() => setTool('eraser')}
+                      className={`px-2.5 py-1 rounded font-semibold transition ${
+                        tool === 'eraser' ? 'bg-navy-800 text-white' : 'bg-white border border-gray-200 text-charcoal-700'
+                      }`}
+                    >
+                      Eraser
+                    </button>
+
+                    <div className="flex items-center gap-1.5 ml-2">
+                      {['#183153', '#059669', '#DC2626', '#2563EB', '#7C3AED'].map((color) => (
+                        <button
+                          key={color}
+                          onClick={() => { setPenColor(color); setTool('pen'); }}
+                          className="w-5 h-5 rounded-full border border-gray-300 transition-transform hover:scale-110"
+                          style={{ backgroundColor: color }}
+                        />
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  /* Student Locked Status */
+                  <div className="flex items-center gap-1.5 text-xs text-charcoal-600 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-md">
+                    <Lock className="w-3.5 h-3.5 text-amber-600" />
+                    <span className="font-medium">Student Drawing Locked</span>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center gap-2">
-                <button
-                  onClick={clearCanvas}
-                  className="px-2.5 py-1 bg-white border border-gray-200 rounded text-charcoal-600 hover:bg-gray-50 font-medium flex items-center gap-1"
-                  title="Clear Whiteboard"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Clear</span>
-                </button>
+                {/* Teacher Whiteboard Permission Toggle inside Toolbar */}
+                {userRole === 'teacher' && (
+                  <button
+                    onClick={() => handleToggleStudentWhiteboard(!studentWhiteboardAllowed)}
+                    className={`px-2.5 py-1 rounded text-xs font-bold flex items-center gap-1 transition ${
+                      studentWhiteboardAllowed 
+                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 hover:bg-emerald-200' 
+                        : 'bg-amber-100 text-amber-800 border border-amber-300 hover:bg-amber-200'
+                    }`}
+                  >
+                    {studentWhiteboardAllowed ? <Unlock className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
+                    <span>{studentWhiteboardAllowed ? 'Student: Allowed' : 'Student: Locked'}</span>
+                  </button>
+                )}
+
+                {/* Student Request Access Button */}
+                {userRole === 'student' && !studentWhiteboardAllowed && (
+                  <button
+                    onClick={handleRequestWhiteboardAccess}
+                    disabled={accessRequestSent}
+                    className="px-2.5 py-1 bg-navy-800 hover:bg-navy-900 disabled:bg-gray-400 text-white rounded text-xs font-semibold flex items-center gap-1 transition"
+                  >
+                    <Hand className="w-3 h-3" />
+                    <span>{accessRequestSent ? 'Request Sent ✋' : 'Request Access'}</span>
+                  </button>
+                )}
+
+                {canDraw && (
+                  <button
+                    onClick={clearCanvas}
+                    className="px-2.5 py-1 bg-white border border-gray-200 rounded text-charcoal-600 hover:bg-gray-50 font-medium flex items-center gap-1"
+                    title="Clear Whiteboard"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Clear</span>
+                  </button>
+                )}
+
                 <button
                   onClick={downloadCanvas}
                   className="px-2.5 py-1 bg-navy-800 hover:bg-navy-900 text-white rounded font-medium flex items-center gap-1 shadow-sm"
@@ -413,8 +670,8 @@ export default function ClassroomPage() {
               </div>
             </div>
 
-            {/* Drawing Canvas */}
-            <div className="flex-1 relative cursor-crosshair overflow-hidden bg-white">
+            {/* Drawing Canvas Area */}
+            <div className="flex-1 relative overflow-hidden bg-white">
               <canvas
                 ref={canvasRef}
                 width={1600}
@@ -423,8 +680,32 @@ export default function ClassroomPage() {
                 onMouseMove={draw}
                 onMouseUp={stopDrawing}
                 onMouseLeave={stopDrawing}
-                className="w-full h-full block bg-white"
+                className={`w-full h-full block bg-white ${canDraw ? 'cursor-crosshair' : 'cursor-not-allowed'}`}
               />
+
+              {/* Locked Overlay for Student when not permitted */}
+              {!canDraw && (
+                <div className="absolute inset-0 bg-white/75 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center z-10">
+                  <div className="w-14 h-14 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 mb-3 shadow-subtle">
+                    <Lock className="w-7 h-7" />
+                  </div>
+                  <h3 className="text-base font-bold text-navy-800 mb-1">
+                    Whiteboard Access Locked
+                  </h3>
+                  <p className="text-xs text-charcoal-600 max-w-sm mb-4 leading-relaxed">
+                    Drawing access is currently restricted by your instructor. You will be able to draw, solve formulas, and write once your teacher grants permission.
+                  </p>
+                  <button
+                    onClick={handleRequestWhiteboardAccess}
+                    disabled={accessRequestSent}
+                    className="px-5 py-2.5 bg-navy-800 hover:bg-navy-900 disabled:bg-gray-400 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm"
+                  >
+                    <Hand className="w-4 h-4" />
+                    <span>{accessRequestSent ? 'Access Requested — Waiting for Teacher...' : 'Request Whiteboard Access'}</span>
+                  </button>
+                </div>
+              )}
+
             </div>
 
           </div>

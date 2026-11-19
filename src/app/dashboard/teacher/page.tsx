@@ -248,7 +248,7 @@ export default function TeacherDashboardPage() {
                     </div>
                     <div className="flex items-center gap-2 w-full sm:w-auto">
                       <Link
-                        href={bookings[0].meeting_url || `/classroom/room-${bookings[0].id}`}
+                        href={user ? `/classroom/room-tutor-${user.id}` : (bookings[0]?.meeting_url || '/classroom/room-tutor')}
                         className="flex-1 sm:flex-none px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-subtle"
                       >
                         <Video className="w-4 h-4" />
@@ -320,7 +320,7 @@ export default function TeacherDashboardPage() {
                         Subject: <strong>{bookings[0].subject}</strong> • Earnings: <strong className="text-accent-700">${bookings[0].hourly_rate || teacherHourlyRate} USD</strong> (Ready for payout)
                       </div>
                       <Link
-                        href={bookings[0].meeting_url || `/classroom/room-${bookings[0].id}`}
+                        href={user ? `/classroom/room-tutor-${user.id}` : (bookings[0]?.meeting_url || '/classroom/room-tutor')}
                         className="px-5 py-2.5 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-subtle"
                       >
                         <Video className="w-4 h-4" />
@@ -412,7 +412,7 @@ export default function TeacherDashboardPage() {
                         </div>
 
                         <Link
-                          href={b.meeting_url || `/classroom/room-${b.id}`}
+                          href={user ? `/classroom/room-tutor-${user.id}` : (b.meeting_url || `/classroom/room-${b.id}`)}
                           className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-subtle flex-shrink-0"
                         >
                           <Video className="w-3.5 h-3.5" />
@@ -731,7 +731,7 @@ export default function TeacherDashboardPage() {
 
                         <div className="flex items-center gap-2">
                           <Link
-                            href={b.meeting_url || `/classroom/room-${b.id}`}
+                            href={user ? `/classroom/room-tutor-${user.id}` : (b.meeting_url || `/classroom/room-${b.id}`)}
                             className="px-3.5 py-1.5 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5"
                           >
                             <Video className="w-3.5 h-3.5" />
