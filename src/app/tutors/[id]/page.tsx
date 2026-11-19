@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { TeacherProfile } from '@/lib/types';
+import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/MotionComponents';
 
 export default function TutorProfilePage() {
   const params = useParams();
@@ -175,11 +176,12 @@ export default function TutorProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Main Info Column */}
-          <div className="lg:col-span-8 space-y-6">
-            
-            {/* Header Card */}
-            <div className="bg-white p-6 sm:p-8 rounded-xl border border-gray-200 shadow-subtle">
-              <div className="flex flex-col sm:flex-row gap-6 items-start">
+          <div className="lg:col-span-8">
+            <FadeIn direction="up" delay={0.05} duration={0.5} className="space-y-6">
+              
+              {/* Header Card */}
+              <div className="bg-white p-6 sm:p-8 rounded-xl border border-gray-200 shadow-subtle hover:shadow-card transition-shadow duration-300">
+                <div className="flex flex-col sm:flex-row gap-6 items-start">
                 
                 <div className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shadow-subtle flex-shrink-0">
                   <Image
@@ -314,12 +316,13 @@ export default function TutorProfilePage() {
               </div>
             </div>
 
+            </FadeIn>
           </div>
 
           {/* Sticky Booking Sidebar (4 cols) */}
-          <div className="lg:col-span-4 sticky top-24 space-y-4">
-            
-            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-lift">
+          <div className="lg:col-span-4 sticky top-24">
+            <FadeIn direction="left" delay={0.15} duration={0.55} className="space-y-4">
+              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-lift hover:shadow-lift-lg transition-shadow duration-300">
               
               {/* Hourly rate display */}
               <div className="pb-4 mb-4 border-b border-gray-100 flex items-baseline justify-between">
@@ -415,6 +418,7 @@ export default function TutorProfilePage() {
 
             </div>
 
+            </FadeIn>
           </div>
 
         </div>

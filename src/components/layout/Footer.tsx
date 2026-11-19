@@ -71,32 +71,32 @@ export function Footer() {
             </h3>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link href="/tutors" className="hover:text-white transition-colors">
+                <Link href="/tutors" className="hover:text-white hover:translate-x-0.5 inline-block transition-all duration-200">
                   Find a Tutor
                 </Link>
               </li>
               <li>
-                <Link href="/subjects" className="hover:text-white transition-colors">
+                <Link href="/subjects" className="hover:text-white hover:translate-x-0.5 inline-block transition-all duration-200">
                   All Subjects & Curriculum
                 </Link>
               </li>
               <li>
-                <Link href="/how-it-works" className="hover:text-white transition-colors">
+                <Link href="/how-it-works" className="hover:text-white hover:translate-x-0.5 inline-block transition-all duration-200">
                   How It Works
                 </Link>
               </li>
               <li>
-                <Link href="/tutors?subject=Mathematics" className="hover:text-white transition-colors">
+                <Link href="/tutors?subject=Mathematics" className="hover:text-white hover:translate-x-0.5 inline-block transition-all duration-200">
                   Mathematics & AP Calculus
                 </Link>
               </li>
               <li>
-                <Link href="/tutors?subject=Computer+Science" className="hover:text-white transition-colors">
+                <Link href="/tutors?subject=Computer+Science" className="hover:text-white hover:translate-x-0.5 inline-block transition-all duration-200">
                   Computer Science & Python
                 </Link>
               </li>
               <li>
-                <Link href="/register/student" className="hover:text-white transition-colors">
+                <Link href="/register/student" className="hover:text-white hover:translate-x-0.5 inline-block transition-all duration-200">
                   Parent Registration
                 </Link>
               </li>
@@ -110,27 +110,27 @@ export function Footer() {
             </h3>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link href="/become-a-tutor" className="hover:text-white transition-colors">
+                <Link href="/become-a-tutor" className="hover:text-white hover:translate-x-0.5 inline-block transition-all duration-200">
                   Become a Tutor
                 </Link>
               </li>
               <li>
-                <Link href="/become-a-tutor#earnings" className="hover:text-white transition-colors">
+                <Link href="/become-a-tutor#earnings" className="hover:text-white hover:translate-x-0.5 inline-block transition-all duration-200">
                   Earnings Calculator
                 </Link>
               </li>
               <li>
-                <Link href="/become-a-tutor#requirements" className="hover:text-white transition-colors">
+                <Link href="/become-a-tutor#requirements" className="hover:text-white hover:translate-x-0.5 inline-block transition-all duration-200">
                   Verification Standards
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/teacher" className="hover:text-white transition-colors">
+                <Link href="/dashboard/teacher" className="hover:text-white hover:translate-x-0.5 inline-block transition-all duration-200">
                   Teacher Portal
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="hover:text-white transition-colors">
+                <Link href="/faq" className="hover:text-white hover:translate-x-0.5 inline-block transition-all duration-200">
                   Tutor FAQ
                 </Link>
               </li>
@@ -144,17 +144,17 @@ export function Footer() {
             </h3>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link href="/about" className="hover:text-white transition-colors">
+                <Link href="/about" className="hover:text-white hover:translate-x-0.5 inline-block transition-all duration-200">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-white transition-colors">
+                <Link href="/contact" className="hover:text-white hover:translate-x-0.5 inline-block transition-all duration-200">
                   Contact Support
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="hover:text-white transition-colors">
+                <Link href="/faq" className="hover:text-white hover:translate-x-0.5 inline-block transition-all duration-200">
                   Help Center & FAQ
                 </Link>
               </li>

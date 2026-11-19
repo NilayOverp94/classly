@@ -17,6 +17,8 @@ import {
   AlertCircle 
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/MotionComponents';
 
 export default function BecomeATutorPage() {
   const supabase = createClient();
@@ -200,26 +202,30 @@ export default function BecomeATutorPage() {
       {/* Benefits Grid */}
       <section className="py-16 lg:py-20 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-xs font-semibold text-accent-600 uppercase tracking-wider mb-2">
-              Why Teach on Classly
-            </h2>
-            <p className="text-3xl font-bold text-navy-800 tracking-tight">
-              A Platform Built to Empower Educators
-            </p>
-          </div>
+          <FadeIn direction="up" delay={0.05} duration={0.5}>
+            <div className="text-center max-w-2xl mx-auto mb-14">
+              <h2 className="text-xs font-semibold text-accent-600 uppercase tracking-wider mb-2">
+                Why Teach on Classly
+              </h2>
+              <p className="text-3xl font-bold text-navy-800 tracking-tight">
+                A Platform Built to Empower Educators
+              </p>
+            </div>
+          </FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <StaggerContainer staggerDelay={0.08} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {benefits.map((b) => (
-              <div key={b.title} className="p-6 bg-offwhite/50 rounded-xl border border-gray-200 shadow-subtle">
-                <div className="w-10 h-10 rounded-lg bg-white border border-gray-200 flex items-center justify-center mb-4 shadow-subtle">
-                  {b.icon}
+              <StaggerItem key={b.title} distance={16} duration={0.45}>
+                <div className="p-6 bg-offwhite/50 rounded-xl border border-gray-200 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all duration-300 h-full group">
+                  <div className="w-10 h-10 rounded-lg bg-white border border-gray-200 flex items-center justify-center mb-4 shadow-subtle transition-transform duration-300 group-hover:scale-105">
+                    {b.icon}
+                  </div>
+                  <h3 className="text-base font-bold text-navy-800 mb-2">{b.title}</h3>
+                  <p className="text-xs text-charcoal-600 leading-relaxed">{b.description}</p>
                 </div>
-                <h3 className="text-base font-bold text-navy-800 mb-2">{b.title}</h3>
-                <p className="text-xs text-charcoal-600 leading-relaxed">{b.description}</p>
-              </div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
@@ -358,9 +364,27 @@ export default function BecomeATutorPage() {
       </section>
 
       {/* Teacher Application Modal / Multi-step Form */}
-      {showApplyModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white w-full max-w-2xl rounded-2xl shadow-lift border border-gray-200 my-8 overflow-hidden">
+      <AnimatePresence>
+        {showApplyModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+            {/* Blurred Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setShowApplyModal(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            />
+
+            {/* Modal Card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 8 }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className="relative bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200 my-8 overflow-hidden z-10"
+            >
             
             {/* Modal Header */}
             <div className="bg-navy-800 text-white p-6 flex items-center justify-between">
@@ -692,9 +716,10 @@ export default function BecomeATutorPage() {
               )}
             </div>
 
-          </div>
+          </motion.div>
         </div>
       )}
+    </AnimatePresence>
 
     </div>
   );

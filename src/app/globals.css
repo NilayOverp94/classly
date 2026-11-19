@@ -88,4 +88,46 @@ body {
   animation-play-state: paused;
 }
 
+/* Fluid Global Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* GPU-Accelerated Subtle Hover Card Utility */
+.hover-card-lift {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+  will-change: transform;
+}
+.hover-card-lift:hover {
+  transform: translateY(-3px);
+}
+
+/* Subtle Interactive Button Feedback */
+.btn-interactive {
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-interactive:active {
+  transform: scale(0.97);
+}
+
+/* Subtle Link Underline Slide */
+.hover-link-glow {
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+/* Respect Accessibility & Reduced Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-marquee {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
 

@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, Search, HelpCircle } from 'lucide-react';
+import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/MotionComponents';
 
 interface FAQItem {
   q: string;
@@ -65,83 +67,96 @@ export default function FAQPage() {
     <div className="bg-offwhite min-h-screen py-12 lg:py-16 border-b border-gray-200">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center mb-12">
-          <span className="text-xs font-semibold text-accent-600 uppercase tracking-wider mb-2 block">
-            Got Questions?
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-bold text-navy-800 tracking-tight">
-            Frequently Asked Questions
-          </h1>
-          <p className="mt-2 text-sm text-charcoal-600">
-            Everything you need to know about learning, teaching, and payments on Classly.
-          </p>
-        </div>
+        {/* Header */}
+        <FadeIn direction="up" delay={0.05} duration={0.5}>
+          <div className="text-center mb-12">
+            <span className="text-xs font-semibold text-accent-600 uppercase tracking-wider mb-2 block">
+              Got Questions?
+            </span>
+            <h1 className="text-3xl sm:text-4xl font-bold text-navy-800 tracking-tight">
+              Frequently Asked Questions
+            </h1>
+            <p className="mt-2 text-sm text-charcoal-600">
+              Everything you need to know about learning, teaching, and payments on Classly.
+            </p>
+          </div>
+        </FadeIn>
 
         {/* Category Filters */}
-        <div className="flex flex-wrap justify-center gap-2 mb-8 text-xs font-semibold">
-          {[
-            { id: 'all', label: 'All Questions' },
-            { id: 'parents', label: 'For Parents & Students' },
-            { id: 'teachers', label: 'For Teachers' },
-            { id: 'billing', label: 'Payments & Guarantees' },
-            { id: 'classroom', label: 'Online Classroom' },
-          ].map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => { setActiveCategory(cat.id); setOpenIndex(null); }}
-              className={`px-4 py-2 rounded-lg border transition ${
-                activeCategory === cat.id
-                  ? 'bg-navy-800 text-white border-navy-800 shadow-subtle'
-                  : 'bg-white text-charcoal-700 border-gray-200 hover:bg-gray-50'
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
+        <FadeIn direction="up" delay={0.12} duration={0.45}>
+          <div className="flex flex-wrap justify-center gap-2 mb-8 text-xs font-semibold">
+            {[
+              { id: 'all', label: 'All Questions' },
+              { id: 'parents', label: 'For Parents & Students' },
+              { id: 'teachers', label: 'For Teachers' },
+              { id: 'billing', label: 'Payments & Guarantees' },
+              { id: 'classroom', label: 'Online Classroom' },
+            ].map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => { setActiveCategory(cat.id); setOpenIndex(null); }}
+                className={`px-4 py-2 rounded-lg border transition active:scale-95 ${
+                  activeCategory === cat.id
+                    ? 'bg-navy-800 text-white border-navy-800 shadow-subtle'
+                    : 'bg-white text-charcoal-700 border-gray-200 hover:bg-gray-50'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+        </FadeIn>
 
-        {/* Accordion List */}
+        {/* Accordion List with Smooth Height Transition */}
         <div className="space-y-3">
           {filteredFaqs.map((faq, idx) => {
             const isOpen = openIndex === idx;
             return (
               <div
                 key={idx}
-                className="bg-white rounded-xl border border-gray-200 shadow-subtle overflow-hidden transition"
+                className="bg-white rounded-xl border border-gray-200 shadow-subtle hover:shadow-card transition-shadow duration-300 overflow-hidden"
               >
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : idx)}
-                  className="w-full p-5 text-left flex items-center justify-between gap-4"
+                  className="w-full p-5 text-left flex items-center justify-between gap-4 cursor-pointer"
                 >
                   <span className="text-sm font-bold text-navy-800">{faq.q}</span>
-                  {isOpen ? (
-                    <ChevronUp className="w-4 h-4 text-navy-800 flex-shrink-0" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-charcoal-400 flex-shrink-0" />
-                  )}
+                  <ChevronDown className={`w-4 h-4 text-navy-800 flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
                 </button>
-                {isOpen && (
-                  <div className="px-5 pb-5 pt-1 text-xs text-charcoal-600 leading-relaxed border-t border-gray-50">
-                    {faq.a}
-                  </div>
-                )}
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-5 pt-1 text-xs text-charcoal-600 leading-relaxed border-t border-gray-50">
+                        {faq.a}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             );
           })}
         </div>
 
         {/* Still have questions card */}
-        <div className="mt-12 p-6 bg-white rounded-xl border border-gray-200 shadow-subtle text-center text-xs">
-          <span className="font-bold text-navy-800 block text-sm mb-1">Still have questions?</span>
-          <p className="text-charcoal-600 mb-4">Our family support team is available 7 days a week.</p>
-          <Link
-            href="/contact"
-            className="inline-block px-5 py-2.5 bg-navy-800 hover:bg-navy-900 text-white font-semibold rounded-lg shadow-subtle transition"
-          >
-            Contact Support Team
-          </Link>
-        </div>
+        <FadeIn direction="up" delay={0.2} duration={0.5}>
+          <div className="mt-12 p-6 bg-white rounded-xl border border-gray-200 shadow-subtle hover:shadow-card transition-shadow text-center text-xs">
+            <span className="font-bold text-navy-800 block text-sm mb-1">Still have questions?</span>
+            <p className="text-charcoal-600 mb-4">Our family support team is available 7 days a week.</p>
+            <Link
+              href="/contact"
+              className="inline-block px-5 py-2.5 bg-navy-800 hover:bg-navy-900 text-white font-semibold rounded-lg shadow-subtle transition active:scale-95"
+            >
+              Contact Support Team
+            </Link>
+          </div>
+        </FadeIn>
 
       </div>
     </div>

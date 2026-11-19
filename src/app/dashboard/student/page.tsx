@@ -20,6 +20,8 @@ import {
   Inbox
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { FadeIn } from '@/components/ui/MotionComponents';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function StudentDashboardPage() {
   const router = useRouter();
@@ -147,47 +149,49 @@ export default function StudentDashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Real User Profile Banner */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-200/90 shadow-subtle mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="relative w-16 h-16 rounded-full overflow-hidden bg-navy-800 text-white border border-gray-200 flex-shrink-0 flex items-center justify-center shadow-sm">
-              {avatarUrl ? (
-                <Image
-                  src={avatarUrl}
-                  alt={displayName}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <span className="text-xl font-bold uppercase tracking-wider">
-                  {displayName.charAt(0)}
-                </span>
-              )}
-            </div>
-
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-navy-800">
-                  {displayName}
-                </h1>
-                <span className="text-[11px] font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
-                  {gradeLevel}
-                </span>
+        <FadeIn direction="up" delay={0.05} duration={0.45}>
+          <div className="bg-white p-6 rounded-2xl border border-gray-200/90 shadow-subtle hover:shadow-card transition-shadow mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="relative w-16 h-16 rounded-full overflow-hidden bg-navy-800 text-white border border-gray-200 flex-shrink-0 flex items-center justify-center shadow-sm">
+                {avatarUrl ? (
+                  <Image
+                    src={avatarUrl}
+                    alt={displayName}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <span className="text-xl font-bold uppercase tracking-wider">
+                    {displayName.charAt(0)}
+                  </span>
+                )}
               </div>
-              <p className="text-xs text-charcoal-500 mt-0.5">
-                Logged in as <strong>{userEmail}</strong> • Active Learning Account
-              </p>
+
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-xl font-bold text-navy-800">
+                    {displayName}
+                  </h1>
+                  <span className="text-[11px] font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
+                    {gradeLevel}
+                  </span>
+                </div>
+                <p className="text-xs text-charcoal-500 mt-0.5">
+                  Logged in as <strong>{userEmail}</strong> • Active Learning Account
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Link
+                href="/tutors"
+                className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold shadow-subtle transition-all active:scale-95 flex items-center gap-1.5"
+              >
+                <span>+ Book a Tutor</span>
+              </Link>
             </div>
           </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/tutors"
-              className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold shadow-subtle transition flex items-center gap-1.5"
-            >
-              <span>+ Book a Tutor</span>
-            </Link>
-          </div>
-        </div>
+        </FadeIn>
 
         {/* Dashboard Grid: Sidebar (3 cols) + Active Panel (9 cols) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -240,10 +244,17 @@ export default function StudentDashboardPage() {
             </div>
           </aside>
 
-          {/* Active Tab Panel */}
+          {/* Active Tab Panel with Fluid Transitions */}
           <main className="lg:col-span-9 space-y-6">
-            
-            {/* TAB: Upcoming Lessons */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              >
+                {/* TAB: Upcoming Lessons */}
             {activeTab === 'upcoming' && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between mb-2">
@@ -501,6 +512,8 @@ export default function StudentDashboardPage() {
                 </div>
               </div>
             )}
+              </motion.div>
+            </AnimatePresence>
 
           </main>
 

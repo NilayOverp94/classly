@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { TeacherProfile } from '@/lib/types';
+import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/MotionComponents';
 
 interface PendingApplication {
   id: string;
@@ -142,49 +143,59 @@ export default function AdminDashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Admin Header */}
-        <div className="bg-navy-900 text-white p-6 rounded-xl border border-navy-800 shadow-lift mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <ShieldCheck className="w-5 h-5 text-accent-400" />
-              <h1 className="text-xl font-bold">Classly Administrator Console</h1>
-              <span className="text-[11px] font-semibold bg-navy-800 text-accent-400 px-2 py-0.5 rounded border border-navy-700">
-                Superuser Access
-              </span>
+        <FadeIn direction="up" delay={0.05} duration={0.45}>
+          <div className="bg-navy-900 text-white p-6 rounded-xl border border-navy-800 shadow-lift mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <ShieldCheck className="w-5 h-5 text-accent-400" />
+                <h1 className="text-xl font-bold">Classly Administrator Console</h1>
+                <span className="text-[11px] font-semibold bg-navy-800 text-accent-400 px-2 py-0.5 rounded border border-navy-700">
+                  Superuser Access
+                </span>
+              </div>
+              <p className="text-xs text-gray-300">
+                Educator compliance review, teacher verification queue, and platform ledger monitoring.
+              </p>
             </div>
-            <p className="text-xs text-gray-300">
-              Educator compliance review, teacher verification queue, and platform ledger monitoring.
-            </p>
-          </div>
 
-          <div className="text-right text-xs text-gray-300">
-            <div>Logged in: <strong className="text-white">{adminEmail}</strong></div>
-            <span>Marketplace Mode: <strong className="text-accent-400">Live Production</strong></span>
+            <div className="text-right text-xs text-gray-300">
+              <div>Logged in: <strong className="text-white">{adminEmail}</strong></div>
+              <span>Marketplace Mode: <strong className="text-accent-400">Live Production</strong></span>
+            </div>
           </div>
-        </div>
+        </FadeIn>
 
         {/* Real Operational Metrics */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-subtle">
-            <span className="text-[11px] text-charcoal-500 font-semibold uppercase tracking-wider block">Pending Applications</span>
-            <span className="text-2xl font-bold text-amber-600 mt-1 block">{pendingCount}</span>
-            <span className="text-[10px] text-charcoal-400">Awaiting credential review</span>
-          </div>
-          <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-subtle">
-            <span className="text-[11px] text-charcoal-500 font-semibold uppercase tracking-wider block">Approved Educators</span>
-            <span className="text-2xl font-bold text-navy-800 mt-1 block">{activeTutors.length}</span>
-            <span className="text-[10px] text-accent-600">Active on marketplace</span>
-          </div>
-          <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-subtle">
-            <span className="text-[11px] text-charcoal-500 font-semibold uppercase tracking-wider block">Core Subject Tracks</span>
-            <span className="text-2xl font-bold text-navy-800 mt-1 block">8</span>
-            <span className="text-[10px] text-charcoal-400">Curricula configured</span>
-          </div>
-          <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-subtle">
-            <span className="text-[11px] text-charcoal-500 font-semibold uppercase tracking-wider block">Platform Commission</span>
-            <span className="text-2xl font-bold text-navy-800 mt-1 block">15%</span>
-            <span className="text-[10px] text-charcoal-400">Standard market take</span>
-          </div>
-        </div>
+        <StaggerContainer staggerDelay={0.07} className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+          <StaggerItem distance={14} duration={0.4}>
+            <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-subtle hover:shadow-card transition-shadow">
+              <span className="text-[11px] text-charcoal-500 font-semibold uppercase tracking-wider block">Pending Applications</span>
+              <span className="text-2xl font-bold text-amber-600 mt-1 block">{pendingCount}</span>
+              <span className="text-[10px] text-charcoal-400">Awaiting credential review</span>
+            </div>
+          </StaggerItem>
+          <StaggerItem distance={14} duration={0.4}>
+            <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-subtle hover:shadow-card transition-shadow">
+              <span className="text-[11px] text-charcoal-500 font-semibold uppercase tracking-wider block">Approved Educators</span>
+              <span className="text-2xl font-bold text-navy-800 mt-1 block">{activeTutors.length}</span>
+              <span className="text-[10px] text-accent-600">Active on marketplace</span>
+            </div>
+          </StaggerItem>
+          <StaggerItem distance={14} duration={0.4}>
+            <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-subtle hover:shadow-card transition-shadow">
+              <span className="text-[11px] text-charcoal-500 font-semibold uppercase tracking-wider block">Core Subject Tracks</span>
+              <span className="text-2xl font-bold text-navy-800 mt-1 block">8</span>
+              <span className="text-[10px] text-charcoal-400">Curricula configured</span>
+            </div>
+          </StaggerItem>
+          <StaggerItem distance={14} duration={0.4}>
+            <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-subtle hover:shadow-card transition-shadow">
+              <span className="text-[11px] text-charcoal-500 font-semibold uppercase tracking-wider block">Platform Commission</span>
+              <span className="text-2xl font-bold text-navy-800 mt-1 block">15%</span>
+              <span className="text-[10px] text-charcoal-400">Standard market take</span>
+            </div>
+          </StaggerItem>
+        </StaggerContainer>
 
         {/* Admin Navigation Tabs */}
         <div className="flex border-b border-gray-200 mb-6 gap-2 text-xs font-semibold overflow-x-auto">

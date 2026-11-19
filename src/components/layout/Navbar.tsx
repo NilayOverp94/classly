@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from '../ui/Logo';
 import { 
   Menu, 
@@ -233,83 +234,90 @@ export function Navbar() {
                     <ChevronDown className={`w-3.5 h-3.5 text-charcoal-400 transition-transform duration-200 ${profileDropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
 
-                  {/* Dropdown Menu Card */}
-                  {profileDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white border border-gray-200/90 shadow-lift py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-                      
-                      {/* Dropdown Header */}
-                      <div className="px-4 py-3 border-b border-gray-100">
-                        <div className="flex items-center gap-2.5 mb-1.5">
-                          <div className="relative w-8 h-8 rounded-full overflow-hidden bg-navy-800 text-white flex items-center justify-center font-bold text-xs uppercase shadow-subtle flex-shrink-0">
-                            {userAvatarUrl ? (
-                              <Image
-                                src={userAvatarUrl}
-                                alt={userDisplayName}
-                                fill
-                                className="object-cover"
-                                unoptimized={true}
-                              />
-                            ) : (
-                              <span>{userDisplayName.charAt(0)}</span>
-                            )}
+                  {/* Dropdown Menu Card with Fluid Motion */}
+                  <AnimatePresence>
+                    {profileDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 6, scale: 0.96 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 4, scale: 0.97 }}
+                        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                        className="absolute right-0 mt-2 w-64 rounded-2xl bg-white border border-gray-200/90 shadow-lift-lg py-2 z-50 origin-top-right"
+                      >
+                        {/* Dropdown Header */}
+                        <div className="px-4 py-3 border-b border-gray-100">
+                          <div className="flex items-center gap-2.5 mb-1.5">
+                            <div className="relative w-8 h-8 rounded-full overflow-hidden bg-navy-800 text-white flex items-center justify-center font-bold text-xs uppercase shadow-subtle flex-shrink-0">
+                              {userAvatarUrl ? (
+                                <Image
+                                  src={userAvatarUrl}
+                                  alt={userDisplayName}
+                                  fill
+                                  className="object-cover"
+                                  unoptimized={true}
+                                />
+                              ) : (
+                                <span>{userDisplayName.charAt(0)}</span>
+                              )}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="font-bold text-sm text-navy-900 truncate">
+                                {userDisplayName}
+                              </div>
+                              <div className="text-[11px] text-charcoal-500 truncate">
+                                {user.email}
+                              </div>
+                            </div>
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <div className="font-bold text-sm text-navy-900 truncate">
-                              {userDisplayName}
-                            </div>
-                            <div className="text-[11px] text-charcoal-500 truncate">
-                              {user.email}
-                            </div>
+                          <div className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
+                            <ShieldCheck className="w-3 h-3 text-accent-500" />
+                            <span>{userRole === 'admin' ? 'Super Administrator' : userRole === 'teacher' ? 'Accredited Tutor' : 'Student & Parent'}</span>
                           </div>
                         </div>
-                        <div className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
-                          <ShieldCheck className="w-3 h-3 text-accent-500" />
-                          <span>{userRole === 'admin' ? 'Super Administrator' : userRole === 'teacher' ? 'Accredited Tutor' : 'Student & Parent'}</span>
-                        </div>
-                      </div>
 
-                      {/* Dropdown Navigation Links */}
-                      <div className="py-1 text-xs">
-                        <Link
-                          href="/profile"
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-charcoal-700 hover:text-navy-900 hover:bg-gray-50 font-medium transition"
-                        >
-                          <User className="w-4 h-4 text-accent-600" />
-                          <span>Edit Profile & Account</span>
-                        </Link>
-
-                        <Link
-                          href={dashboardHref}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-charcoal-700 hover:text-navy-900 hover:bg-gray-50 font-medium transition"
-                        >
-                          <LayoutDashboard className="w-4 h-4 text-navy-800" />
-                          <span>{dashboardLabel}</span>
-                        </Link>
-
-                        {userRole === 'student' && (
+                        {/* Dropdown Navigation Links */}
+                        <div className="py-1 text-xs">
                           <Link
-                            href="/tutors"
+                            href="/profile"
                             className="flex items-center gap-2.5 px-4 py-2.5 text-charcoal-700 hover:text-navy-900 hover:bg-gray-50 font-medium transition"
                           >
-                            <GraduationCap className="w-4 h-4 text-charcoal-500" />
-                            <span>Browse Verified Tutors</span>
+                            <User className="w-4 h-4 text-accent-600" />
+                            <span>Edit Profile & Account</span>
                           </Link>
-                        )}
-                      </div>
 
-                      {/* Sign Out Divider & Action */}
-                      <div className="pt-1 border-t border-gray-100">
-                        <button
-                          onClick={handleSignOut}
-                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-semibold text-red-600 hover:bg-red-50 transition cursor-pointer"
-                        >
-                          <LogOut className="w-4 h-4 text-red-500" />
-                          <span>Sign Out</span>
-                        </button>
-                      </div>
+                          <Link
+                            href={dashboardHref}
+                            className="flex items-center gap-2.5 px-4 py-2.5 text-charcoal-700 hover:text-navy-900 hover:bg-gray-50 font-medium transition"
+                          >
+                            <LayoutDashboard className="w-4 h-4 text-navy-800" />
+                            <span>{dashboardLabel}</span>
+                          </Link>
 
-                    </div>
-                  )}
+                          {userRole === 'student' && (
+                            <Link
+                              href="/tutors"
+                              className="flex items-center gap-2.5 px-4 py-2.5 text-charcoal-700 hover:text-navy-900 hover:bg-gray-50 font-medium transition"
+                            >
+                              <GraduationCap className="w-4 h-4 text-charcoal-500" />
+                              <span>Browse Verified Tutors</span>
+                            </Link>
+                          )}
+                        </div>
+
+                        {/* Sign Out Divider & Action */}
+                        <div className="pt-1 border-t border-gray-100">
+                          <button
+                            onClick={handleSignOut}
+                            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-semibold text-red-600 hover:bg-red-50 transition cursor-pointer"
+                          >
+                            <LogOut className="w-4 h-4 text-red-500" />
+                            <span>Sign Out</span>
+                          </button>
+                        </div>
+
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
               </div>
@@ -348,92 +356,99 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-gray-200 bg-white px-4 pt-3 pb-6 space-y-2 shadow-lift animate-in fade-in">
-          
-          {/* User Profile Header for Mobile */}
-          {user && (
-            <div className="p-3 mb-2 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-navy-800 text-white flex items-center justify-center font-bold text-xs uppercase shadow-subtle">
-                  {userDisplayName.charAt(0)}
+      {/* Mobile Drawer Menu with Smooth Height & Fade Animation */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="md:hidden overflow-hidden border-t border-gray-200 bg-white px-4 pt-3 pb-6 space-y-2 shadow-lift"
+          >
+            {/* User Profile Header for Mobile */}
+            {user && (
+              <div className="p-3 mb-2 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-full bg-navy-800 text-white flex items-center justify-center font-bold text-xs uppercase shadow-subtle">
+                    {userDisplayName.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-navy-900">{userDisplayName}</div>
+                    <div className="text-[11px] text-charcoal-500 truncate max-w-[160px]">{user.email}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-xs font-bold text-navy-900">{userDisplayName}</div>
-                  <div className="text-[11px] text-charcoal-500 truncate max-w-[160px]">{user.email}</div>
-                </div>
+                <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-softblue-100 text-navy-800 border border-softblue-200">
+                  {userRole}
+                </span>
               </div>
-              <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-softblue-100 text-navy-800 border border-softblue-200">
-                {userRole}
-              </span>
+            )}
+
+            {/* Navigation links */}
+            <div className="space-y-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-3 py-2 rounded-lg text-sm font-medium text-charcoal-700 hover:text-navy-800 hover:bg-gray-50 transition-colors"
+                >
+                  {link.name}
+                </Link>
+              ))}
             </div>
-          )}
 
-          {/* Navigation links */}
-          <div className="space-y-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-lg text-sm font-medium text-charcoal-700 hover:text-navy-800 hover:bg-gray-50"
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
+            {/* User Specific Mobile Options */}
+            {user ? (
+              <div className="pt-3 border-t border-gray-100 space-y-2">
+                <Link
+                  href="/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-navy-800 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition active:scale-98"
+                >
+                  <User className="w-4 h-4 text-accent-600" />
+                  <span>Edit Profile & Settings</span>
+                </Link>
 
-          {/* User Specific Mobile Options */}
-          {user ? (
-            <div className="pt-3 border-t border-gray-100 space-y-2">
-              <Link
-                href="/profile"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-navy-800 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100"
-              >
-                <User className="w-4 h-4 text-accent-600" />
-                <span>Edit Profile & Settings</span>
-              </Link>
+                <Link
+                  href={dashboardHref}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-white bg-navy-800 rounded-lg hover:bg-navy-900 shadow-subtle transition active:scale-98"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  <span>Go to {dashboardLabel}</span>
+                </Link>
 
-              <Link
-                href={dashboardHref}
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-white bg-navy-800 rounded-lg hover:bg-navy-900 shadow-subtle"
-              >
-                <LayoutDashboard className="w-4 h-4" />
-                <span>Go to {dashboardLabel}</span>
-              </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold text-red-600 border border-red-200 rounded-lg hover:bg-red-50 cursor-pointer transition active:scale-98"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            ) : (
+              <div className="pt-3 border-t border-gray-100 space-y-2">
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full block text-center py-2.5 text-xs font-bold text-navy-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition active:scale-98"
+                >
+                  Log In
+                </Link>
+                <Link
+                  href="/register/student"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full block text-center py-2.5 text-xs font-bold text-white bg-navy-800 rounded-lg hover:bg-navy-900 shadow-subtle transition active:scale-98"
+                >
+                  Sign Up as Student / Parent
+                </Link>
+              </div>
+            )}
 
-              <button
-                onClick={handleSignOut}
-                className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold text-red-600 border border-red-200 rounded-lg hover:bg-red-50 cursor-pointer"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span>Sign Out</span>
-              </button>
-            </div>
-          ) : (
-            <div className="pt-3 border-t border-gray-100 space-y-2">
-              <Link
-                href="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full block text-center py-2.5 text-xs font-bold text-navy-800 border border-gray-300 rounded-lg hover:bg-gray-50"
-              >
-                Log In
-              </Link>
-              <Link
-                href="/register/student"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full block text-center py-2.5 text-xs font-bold text-white bg-navy-800 rounded-lg hover:bg-navy-900 shadow-subtle"
-              >
-                Sign Up as Student / Parent
-              </Link>
-            </div>
-          )}
-
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

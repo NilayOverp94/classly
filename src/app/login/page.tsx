@@ -20,6 +20,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { ScaleIn } from '@/components/ui/MotionComponents';
 
 type PortalRole = 'student' | 'teacher';
 type AuthMode = 'signin' | 'signup';
@@ -265,17 +266,18 @@ function LoginFormContent() {
             Outer frame: rounded-[28px], p-2 (8px padding)
             Inner card:  rounded-[20px] (28 - 8 = 20px) — Mathematically concentric!
         */}
-        <div 
-          className="w-full max-w-[440px] rounded-[28px] p-2 transition-all duration-300 border border-charcoal-200/50 bg-white/75 backdrop-blur-xl"
-          style={{
-            boxShadow: `
-              0 1px 2px rgba(24, 49, 83, 0.03),
-              0 4px 8px -2px rgba(24, 49, 83, 0.04),
-              0 12px 24px -4px rgba(24, 49, 83, 0.06),
-              0 28px 56px -12px rgba(24, 49, 83, 0.08)
-            `,
-          }}
-        >
+        <ScaleIn className="w-full max-w-[440px]">
+          <div 
+            className="w-full rounded-[28px] p-2 transition-all duration-300 border border-charcoal-200/50 bg-white/75 backdrop-blur-xl"
+            style={{
+              boxShadow: `
+                0 1px 2px rgba(24, 49, 83, 0.03),
+                0 4px 8px -2px rgba(24, 49, 83, 0.04),
+                0 12px 24px -4px rgba(24, 49, 83, 0.06),
+                0 28px 56px -12px rgba(24, 49, 83, 0.08)
+              `,
+            }}
+          >
           <div className="relative rounded-[20px] bg-white border border-charcoal-200/70 p-7 sm:p-9 shadow-sm overflow-hidden">
             
             {/* Top ambient edge highlight */}
@@ -600,6 +602,7 @@ function LoginFormContent() {
 
           </div>
         </div>
+        </ScaleIn>
 
       </main>
 

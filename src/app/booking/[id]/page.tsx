@@ -17,6 +17,7 @@ import {
 import { createClient } from '@/lib/supabase/client';
 import { TeacherProfile } from '@/lib/types';
 import { AlertModal } from '@/components/ui/AlertModal';
+import { FadeIn } from '@/components/ui/MotionComponents';
 
 function BookingContent() {
   const params = useParams();
@@ -242,7 +243,7 @@ function BookingContent() {
 
   return (
     <div className="bg-offwhite min-h-screen py-8 lg:py-12 border-b border-gray-200">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <FadeIn className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Back Link */}
         <div className="mb-6">
@@ -454,7 +455,7 @@ function BookingContent() {
           </div>
         )}
 
-      </div>
+      </FadeIn>
 
       {/* Checkout Error Alert Modal */}
       <AlertModal

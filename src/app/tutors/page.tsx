@@ -18,6 +18,7 @@ import {
 import { createClient } from '@/lib/supabase/client';
 import { mockSubjects } from '@/lib/data/mockSubjects';
 import { TeacherProfile } from '@/lib/types';
+import { FadeIn } from '@/components/ui/MotionComponents';
 
 function TutorsContent() {
   const searchParams = useSearchParams();
@@ -401,119 +402,120 @@ function TutorsContent() {
 
             {/* Tutor Listing Cards */}
             {!loading && visibleTutors.map((tutor) => (
-              <div
-                key={tutor.id}
-                className="bg-white rounded-xl border border-gray-200/90 shadow-subtle hover:border-navy-300 hover:shadow-card transition duration-200 p-5 sm:p-6"
-              >
-                <div className="flex flex-col sm:flex-row gap-5 items-start">
-                  
-                  {/* Left: Avatar & Verified Badge */}
-                  <div className="flex-shrink-0 text-center mx-auto sm:mx-0">
-                    <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shadow-subtle mx-auto">
-                      <Image
-                        src={tutor.avatar_url}
-                        alt={tutor.full_name}
-                        fill
-                        className="object-cover"
-                        unoptimized={true}
-                      />
-                    </div>
-                    <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
-                      <ShieldCheck className="w-3.5 h-3.5 text-accent-500" />
-                      <span>Verified</span>
-                    </div>
-                  </div>
-
-                  {/* Middle: Name, Headline, Bio, Badges */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-1">
-                      <div className="flex items-center gap-2">
-                        <Link
-                          href={`/tutors/${tutor.id}`}
-                          className="text-lg font-bold text-navy-800 hover:text-navy-900 hover:underline"
-                        >
-                          {tutor.full_name}
-                        </Link>
+              <FadeIn key={tutor.id} direction="up" distance={16} duration={0.45}>
+                <div
+                  className="bg-white rounded-xl border border-gray-200/90 shadow-subtle hover:border-navy-300 hover:shadow-card hover:-translate-y-0.5 transition-all duration-300 p-5 sm:p-6"
+                >
+                  <div className="flex flex-col sm:flex-row gap-5 items-start">
+                    
+                    {/* Left: Avatar & Verified Badge */}
+                    <div className="flex-shrink-0 text-center mx-auto sm:mx-0">
+                      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shadow-subtle mx-auto">
+                        <Image
+                          src={tutor.avatar_url}
+                          alt={tutor.full_name}
+                          fill
+                          className="object-cover"
+                          unoptimized={true}
+                        />
                       </div>
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-navy-900">
-                        {tutor.review_count > 0 ? (
-                          <>
-                            <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                            <span>{tutor.rating.toFixed(2)}</span>
-                            <span className="text-charcoal-400 font-normal">({tutor.review_count} reviews)</span>
-                          </>
-                        ) : (
-                          <span className="text-[11px] text-accent-700 bg-accent-50 px-1.5 py-0.5 rounded font-semibold border border-accent-200">
-                            New Verified Educator
+                      <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
+                        <ShieldCheck className="w-3.5 h-3.5 text-accent-500" />
+                        <span>Verified</span>
+                      </div>
+                    </div>
+
+                    {/* Middle: Name, Headline, Bio, Badges */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-1">
+                        <div className="flex items-center gap-2">
+                          <Link
+                            href={`/tutors/${tutor.id}`}
+                            className="text-lg font-bold text-navy-800 hover:text-navy-900 hover:underline"
+                          >
+                            {tutor.full_name}
+                          </Link>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-navy-900">
+                          {tutor.review_count > 0 ? (
+                            <>
+                              <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                              <span>{tutor.rating.toFixed(2)}</span>
+                              <span className="text-charcoal-400 font-normal">({tutor.review_count} reviews)</span>
+                            </>
+                          ) : (
+                            <span className="text-[11px] text-accent-700 bg-accent-50 px-1.5 py-0.5 rounded font-semibold border border-accent-200">
+                              New Verified Educator
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <p className="text-xs font-medium text-charcoal-600 mb-2">
+                        {tutor.headline}
+                      </p>
+
+                      <div className="flex flex-wrap gap-1.5 mb-3">
+                        {tutor.subjects.map((s) => (
+                          <span
+                            key={s}
+                            className="px-2 py-0.5 rounded bg-softblue-100 text-navy-800 text-[11px] font-semibold border border-softblue-200"
+                          >
+                            {s}
+                          </span>
+                        ))}
+                        {tutor.years_experience > 0 && (
+                          <span className="px-2 py-0.5 rounded bg-gray-50 text-charcoal-600 text-[11px] font-medium border border-gray-200">
+                            {tutor.years_experience} yrs experience
+                          </span>
+                        )}
+                        {tutor.total_hours_taught > 0 && (
+                          <span className="px-2 py-0.5 rounded bg-gray-50 text-charcoal-600 text-[11px] font-medium border border-gray-200">
+                            {tutor.total_hours_taught}+ hrs taught
                           </span>
                         )}
                       </div>
+
+                      <p className="text-xs text-charcoal-600 line-clamp-2 leading-relaxed mb-3">
+                        {tutor.bio}
+                      </p>
+
+                      <div className="text-[11px] text-charcoal-500 flex flex-wrap items-center gap-x-4 gap-y-1">
+                        <span><strong>Format:</strong> {tutor.teaching_format === 'both' ? '1-on-1 & Group Classes' : '1-on-1 Tutoring'}</span>
+                        {tutor.grades.length > 0 && <span><strong>Grades:</strong> {tutor.grades.join(', ')}</span>}
+                      </div>
                     </div>
 
-                    <p className="text-xs font-medium text-charcoal-600 mb-2">
-                      {tutor.headline}
-                    </p>
+                    {/* Right: Rate, Booking CTA */}
+                    <div className="w-full sm:w-44 flex-shrink-0 pt-4 sm:pt-0 sm:border-l sm:border-gray-100 sm:pl-5 flex flex-col justify-between items-center sm:items-end">
+                      <div className="text-center sm:text-right mb-3">
+                        <span className="text-2xl font-bold text-navy-800">${tutor.hourly_rate}</span>
+                        <span className="text-xs text-charcoal-500 block">per hour</span>
+                      </div>
 
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                      {tutor.subjects.map((s) => (
-                        <span
-                          key={s}
-                          className="px-2 py-0.5 rounded bg-softblue-100 text-navy-800 text-[11px] font-semibold border border-softblue-200"
+                      <div className="w-full space-y-2">
+                        <Link
+                          href={`/booking/${tutor.id}`}
+                          className="w-full block text-center py-2 px-3 bg-navy-800 hover:bg-navy-900 text-white rounded-md text-xs font-semibold transition-all shadow-subtle active:scale-95"
                         >
-                          {s}
-                        </span>
-                      ))}
-                      {tutor.years_experience > 0 && (
-                        <span className="px-2 py-0.5 rounded bg-gray-50 text-charcoal-600 text-[11px] font-medium border border-gray-200">
-                          {tutor.years_experience} yrs experience
-                        </span>
-                      )}
-                      {tutor.total_hours_taught > 0 && (
-                        <span className="px-2 py-0.5 rounded bg-gray-50 text-charcoal-600 text-[11px] font-medium border border-gray-200">
-                          {tutor.total_hours_taught}+ hrs taught
-                        </span>
-                      )}
+                          Book Lesson
+                        </Link>
+                        <Link
+                          href={`/tutors/${tutor.id}`}
+                          className="w-full block text-center py-2 px-3 bg-gray-50 hover:bg-gray-100 text-charcoal-700 rounded-md text-xs font-medium border border-gray-200 transition-all active:scale-95"
+                        >
+                          View Profile
+                        </Link>
+                      </div>
+
+                      <div className="mt-2 text-[10px] text-charcoal-400 text-center sm:text-right">
+                        100% money-back guarantee
+                      </div>
                     </div>
 
-                    <p className="text-xs text-charcoal-600 line-clamp-2 leading-relaxed mb-3">
-                      {tutor.bio}
-                    </p>
-
-                    <div className="text-[11px] text-charcoal-500 flex flex-wrap items-center gap-x-4 gap-y-1">
-                      <span><strong>Format:</strong> {tutor.teaching_format === 'both' ? '1-on-1 & Group Classes' : '1-on-1 Tutoring'}</span>
-                      {tutor.grades.length > 0 && <span><strong>Grades:</strong> {tutor.grades.join(', ')}</span>}
-                    </div>
                   </div>
-
-                  {/* Right: Rate, Booking CTA */}
-                  <div className="w-full sm:w-44 flex-shrink-0 pt-4 sm:pt-0 sm:border-l sm:border-gray-100 sm:pl-5 flex flex-col justify-between items-center sm:items-end">
-                    <div className="text-center sm:text-right mb-3">
-                      <span className="text-2xl font-bold text-navy-800">${tutor.hourly_rate}</span>
-                      <span className="text-xs text-charcoal-500 block">per hour</span>
-                    </div>
-
-                    <div className="w-full space-y-2">
-                      <Link
-                        href={`/booking/${tutor.id}`}
-                        className="w-full block text-center py-2 px-3 bg-navy-800 hover:bg-navy-900 text-white rounded-md text-xs font-semibold transition shadow-subtle"
-                      >
-                        Book Lesson
-                      </Link>
-                      <Link
-                        href={`/tutors/${tutor.id}`}
-                        className="w-full block text-center py-2 px-3 bg-gray-50 hover:bg-gray-100 text-charcoal-700 rounded-md text-xs font-medium border border-gray-200 transition"
-                      >
-                        View Profile
-                      </Link>
-                    </div>
-
-                    <div className="mt-2 text-[10px] text-charcoal-400 text-center sm:text-right">
-                      100% money-back guarantee
-                    </div>
-                  </div>
-
                 </div>
-              </div>
+              </FadeIn>
             ))}
 
             {/* Pagination / Load More */}

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Mail, Clock, MapPin, Send, CheckCircle2 } from 'lucide-react';
+import { FadeIn } from '@/components/ui/MotionComponents';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -40,63 +41,71 @@ export default function ContactPage() {
     <div className="bg-offwhite min-h-screen py-12 lg:py-16 border-b border-gray-200">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="text-xs font-semibold text-accent-600 uppercase tracking-wider mb-2 block">
-            We're Here to Help
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-bold text-navy-800 tracking-tight">
-            Contact the Classly Support Team
-          </h1>
-          <p className="mt-2 text-sm text-charcoal-600">
-            Have questions about finding a tutor, billing, or educator onboarding? Our support team responds within 12 hours.
-          </p>
-        </div>
+        <FadeIn direction="up" delay={0.05} duration={0.5}>
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <span className="text-xs font-semibold text-accent-600 uppercase tracking-wider mb-2 block">
+              We're Here to Help
+            </span>
+            <h1 className="text-3xl sm:text-4xl font-bold text-navy-800 tracking-tight">
+              Contact the Classly Support Team
+            </h1>
+            <p className="mt-2 text-sm text-charcoal-600">
+              Have questions about finding a tutor, billing, or educator onboarding? Our support team responds within 12 hours.
+            </p>
+          </div>
+        </FadeIn>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
           
           {/* Contact Coordinates */}
-          <div className="md:col-span-5 bg-white p-6 sm:p-8 rounded-xl border border-gray-200 shadow-subtle space-y-6">
-            <h2 className="text-base font-bold text-navy-800">Support Coordinates</h2>
-            
-            <div className="space-y-4 text-xs text-charcoal-700">
-              <div className="flex items-start gap-3">
-                <Mail className="w-5 h-5 text-accent-500 flex-shrink-0 mt-0.5" />
-                <div>
-                  <span className="font-bold text-navy-800 block">Email Support</span>
-                  <span>support@classly.com</span>
-                  <span className="text-[11px] text-charcoal-400 block mt-0.5">Average response time: 2 hours</span>
+          <div className="md:col-span-5">
+            <FadeIn direction="up" delay={0.12} duration={0.5}>
+              <div className="bg-white p-6 sm:p-8 rounded-xl border border-gray-200 shadow-subtle hover:shadow-card transition-shadow space-y-6">
+                <h2 className="text-base font-bold text-navy-800">Support Coordinates</h2>
+                
+                <div className="space-y-4 text-xs text-charcoal-700">
+                  <div className="flex items-start gap-3">
+                    <Mail className="w-5 h-5 text-accent-500 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-bold text-navy-800 block">Email Support</span>
+                      <span>support@classly.com</span>
+                      <span className="text-[11px] text-charcoal-400 block mt-0.5">Average response time: 2 hours</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <Clock className="w-5 h-5 text-accent-500 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-bold text-navy-800 block">Support Desk Hours</span>
+                      <span>Monday – Friday: 08:00 AM – 10:00 PM EST</span>
+                      <span className="text-[11px] text-charcoal-400 block mt-0.5">Saturday – Sunday: 09:00 AM – 06:00 PM EST</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <MapPin className="w-5 h-5 text-accent-500 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-bold text-navy-800 block">Operating Offices</span>
+                      <span>United States: Delaware, USA</span>
+                      <span className="block">Educator Operations: New Delhi & Bengaluru, India</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-gray-100 text-xs">
+                  <span className="text-charcoal-500">Looking for immediate answers?</span>
+                  <Link href="/faq" className="mt-1 block font-bold text-navy-800 hover:underline">
+                    Read our Frequently Asked Questions &rarr;
+                  </Link>
                 </div>
               </div>
-
-              <div className="flex items-start gap-3">
-                <Clock className="w-5 h-5 text-accent-500 flex-shrink-0 mt-0.5" />
-                <div>
-                  <span className="font-bold text-navy-800 block">Support Desk Hours</span>
-                  <span>Monday – Friday: 08:00 AM – 10:00 PM EST</span>
-                  <span className="text-[11px] text-charcoal-400 block mt-0.5">Saturday – Sunday: 09:00 AM – 06:00 PM EST</span>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-accent-500 flex-shrink-0 mt-0.5" />
-                <div>
-                  <span className="font-bold text-navy-800 block">Operating Offices</span>
-                  <span>United States: Delaware, USA</span>
-                  <span className="block">Educator Operations: New Delhi & Bengaluru, India</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-gray-100 text-xs">
-              <span className="text-charcoal-500">Looking for immediate answers?</span>
-              <Link href="/faq" className="mt-1 block font-bold text-navy-800 hover:underline">
-                Read our Frequently Asked Questions &rarr;
-              </Link>
-            </div>
+            </FadeIn>
           </div>
 
           {/* Contact Form */}
-          <div className="md:col-span-7 bg-white p-6 sm:p-8 rounded-xl border border-gray-200 shadow-subtle">
+          <div className="md:col-span-7">
+            <FadeIn direction="up" delay={0.18} duration={0.5}>
+              <div className="bg-white p-6 sm:p-8 rounded-xl border border-gray-200 shadow-subtle hover:shadow-card transition-shadow">
             {submitted ? (
               <div className="text-center py-8">
                 <div className="w-14 h-14 bg-accent-50 text-accent-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-accent-200">
@@ -192,6 +201,8 @@ export default function ContactPage() {
                 </button>
               </form>
             )}
+              </div>
+            </FadeIn>
           </div>
 
         </div>

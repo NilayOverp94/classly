@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { FadeIn } from '@/components/ui/MotionComponents';
 
 interface Instructor {
   name: string;
@@ -80,39 +81,41 @@ export function TopInstructorsMarquee() {
       
       {/* Top Header Row */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 sm:mb-12">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-          
-          {/* Left: Tag + Headline */}
-          <div>
-            <span className="text-xs font-bold text-accent-600 tracking-[1.5px] uppercase block mb-2.5">
-              Future-Ready Curriculum
-            </span>
-            <h2 className="text-2xl sm:text-3xl lg:text-[40px] font-bold text-navy-950 tracking-tight leading-[1.18]">
-              Curriculum Designed & Taught by<br className="hidden sm:inline" /> Top Product Engineers
-            </h2>
-          </div>
-
-          {/* Right: MAANG Companies Banner */}
-          <div className="flex flex-col lg:items-end gap-2.5 pt-2 lg:pt-0">
-            <p className="text-xs sm:text-sm font-medium text-charcoal-500">
-              Working in Top MAANG companies
-            </p>
-            <div className="flex items-center gap-5 sm:gap-6 flex-wrap">
-              {MAANG_LOGOS.map((company) => (
-                <div key={company.name} className="h-6 sm:h-7 relative flex items-center">
-                  <Image
-                    src={company.logo}
-                    alt={company.name}
-                    width={company.width}
-                    height={company.height}
-                    className="object-contain h-full w-auto opacity-80 hover:opacity-100 transition-opacity"
-                  />
-                </div>
-              ))}
+        <FadeIn direction="up" delay={0.05} duration={0.5}>
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+            
+            {/* Left: Tag + Headline */}
+            <div>
+              <span className="text-xs font-bold text-accent-600 tracking-[1.5px] uppercase block mb-2.5">
+                Future-Ready Curriculum
+              </span>
+              <h2 className="text-2xl sm:text-3xl lg:text-[40px] font-bold text-navy-950 tracking-tight leading-[1.18]">
+                Curriculum Designed & Taught by<br className="hidden sm:inline" /> Top Product Engineers
+              </h2>
             </div>
-          </div>
 
-        </div>
+            {/* Right: MAANG Companies Banner */}
+            <div className="flex flex-col lg:items-end gap-2.5 pt-2 lg:pt-0">
+              <p className="text-xs sm:text-sm font-medium text-charcoal-500">
+                Working in Top MAANG companies
+              </p>
+              <div className="flex items-center gap-5 sm:gap-6 flex-wrap">
+                {MAANG_LOGOS.map((company) => (
+                  <div key={company.name} className="h-6 sm:h-7 relative flex items-center transition-transform hover:scale-105 duration-200">
+                    <Image
+                      src={company.logo}
+                      alt={company.name}
+                      width={company.width}
+                      height={company.height}
+                      className="object-contain h-full w-auto opacity-80 hover:opacity-100 transition-opacity"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </FadeIn>
       </div>
 
       {/* Marquee Carousel Track */}

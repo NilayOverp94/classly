@@ -27,6 +27,8 @@ import {
 import { createClient } from '@/lib/supabase/client';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { AlertModal } from '@/components/ui/AlertModal';
+import { FadeIn } from '@/components/ui/MotionComponents';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function TeacherDashboardPage() {
   const router = useRouter();
@@ -227,46 +229,48 @@ export default function TeacherDashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Top Educator Profile Banner */}
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
-              <Image
-                src={teacherAvatar}
-                alt={teacherDisplayName}
-                fill
-                className="object-cover"
-              />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-navy-800">{teacherDisplayName}</h1>
-                <span className="text-[11px] font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
-                  Verified Educator • Active
-                </span>
+        <FadeIn direction="up" delay={0.05} duration={0.45}>
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle hover:shadow-card transition-shadow mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
+                <Image
+                  src={teacherAvatar}
+                  alt={teacherDisplayName}
+                  fill
+                  className="object-cover"
+                />
               </div>
-              <p className="text-xs text-charcoal-500 mt-0.5">
-                {teacherHeadline}
-              </p>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-xl font-bold text-navy-800">{teacherDisplayName}</h1>
+                  <span className="text-[11px] font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
+                    Verified Educator • Active
+                  </span>
+                </div>
+                <p className="text-xs text-charcoal-500 mt-0.5">
+                  {teacherHeadline}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Link
+                href="/profile"
+                className="px-3.5 py-2 bg-gray-50 hover:bg-gray-100 text-navy-800 rounded-lg text-xs font-semibold border border-gray-200 shadow-subtle flex items-center gap-1.5 transition active:scale-95"
+              >
+                <User className="w-4 h-4 text-accent-600" />
+                <span>Edit Profile</span>
+              </Link>
+              <button
+                onClick={() => setActiveTab('create_class')}
+                className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold shadow-subtle flex items-center gap-1.5 transition active:scale-95"
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span>Create New Class</span>
+              </button>
             </div>
           </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/profile"
-              className="px-3.5 py-2 bg-gray-50 hover:bg-gray-100 text-navy-800 rounded-lg text-xs font-semibold border border-gray-200 shadow-subtle flex items-center gap-1.5 transition"
-            >
-              <User className="w-4 h-4 text-accent-600" />
-              <span>Edit Profile</span>
-            </Link>
-            <button
-              onClick={() => setActiveTab('create_class')}
-              className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold shadow-subtle flex items-center gap-1.5"
-            >
-              <PlusCircle className="w-4 h-4" />
-              <span>Create New Class</span>
-            </button>
-          </div>
-        </div>
+        </FadeIn>
 
         {/* Dashboard Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -319,10 +323,17 @@ export default function TeacherDashboardPage() {
             </div>
           </aside>
 
-          {/* Main Panel */}
+          {/* Main Panel with Fluid Tab Transitions */}
           <main className="lg:col-span-9 space-y-6">
-            
-            {/* OVERVIEW TAB */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              >
+                {/* OVERVIEW TAB */}
             {activeTab === 'overview' && (
               <div className="space-y-6">
                 
@@ -867,6 +878,8 @@ export default function TeacherDashboardPage() {
                 )}
               </div>
             )}
+              </motion.div>
+            </AnimatePresence>
 
           </main>
 

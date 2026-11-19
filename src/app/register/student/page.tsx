@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Lock, Mail, User, BookOpen, AlertCircle, ArrowRight, ShieldCheck } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 import { createClient } from '@/lib/supabase/client';
+import { ScaleIn } from '@/components/ui/MotionComponents';
 
 export default function StudentRegisterPage() {
   const router = useRouter();
@@ -77,9 +78,10 @@ export default function StudentRegisterPage() {
 
   return (
     <div className="bg-offwhite min-h-screen py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-      <div className="max-w-md w-full bg-white rounded-2xl border border-gray-200 shadow-card p-8">
-        
-        {/* Header */}
+      <ScaleIn className="max-w-md w-full">
+        <div className="w-full bg-white rounded-2xl border border-gray-200 shadow-card p-8">
+          
+          {/* Header */}
         <div className="text-center mb-6">
           <Logo size="md" className="justify-center mb-4" />
           <h1 className="text-2xl font-bold text-navy-800 tracking-tight">
@@ -236,6 +238,7 @@ export default function StudentRegisterPage() {
         </div>
 
       </div>
+      </ScaleIn>
     </div>
   );
 }

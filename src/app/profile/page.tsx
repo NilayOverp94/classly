@@ -26,6 +26,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { FadeIn } from '@/components/ui/MotionComponents';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -328,32 +329,38 @@ export default function ProfilePage() {
         </div>
 
         {/* Page Header */}
-        <div className="mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-softblue-100 border border-softblue-200 text-xs font-semibold text-navy-800 mb-2">
-            <User className="w-4 h-4 text-accent-500" />
-            <span>Profile Management</span>
+        <FadeIn direction="up" delay={0.05} duration={0.45}>
+          <div className="mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-softblue-100 border border-softblue-200 text-xs font-semibold text-navy-800 mb-2">
+              <User className="w-4 h-4 text-accent-500" />
+              <span>Profile Management</span>
+            </div>
+            <h1 className="text-3xl font-bold text-navy-800 tracking-tight">
+              Account Settings & Profile
+            </h1>
+            <p className="mt-1.5 text-xs text-charcoal-600 max-w-xl">
+              Update your personal contact details, school grade level, timezones, and learning preferences.
+            </p>
           </div>
-          <h1 className="text-3xl font-bold text-navy-800 tracking-tight">
-            Account Settings & Profile
-          </h1>
-          <p className="mt-1.5 text-xs text-charcoal-600 max-w-xl">
-            Update your personal contact details, school grade level, timezones, and learning preferences.
-          </p>
-        </div>
+        </FadeIn>
 
         {/* Notifications */}
         {successMessage && (
-          <div className="mb-6 p-4 bg-accent-50 border border-accent-200 text-accent-800 rounded-xl text-xs flex items-center gap-2.5 shadow-subtle animate-in fade-in">
-            <CheckCircle2 className="w-5 h-5 text-accent-600 flex-shrink-0" />
-            <span className="font-semibold">{successMessage}</span>
-          </div>
+          <FadeIn direction="down" duration={0.3}>
+            <div className="mb-6 p-4 bg-accent-50 border border-accent-200 text-accent-800 rounded-xl text-xs flex items-center gap-2.5 shadow-subtle">
+              <CheckCircle2 className="w-5 h-5 text-accent-600 flex-shrink-0" />
+              <span className="font-semibold">{successMessage}</span>
+            </div>
+          </FadeIn>
         )}
 
         {errorMessage && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2.5 shadow-subtle">
-            <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-            <span>{errorMessage}</span>
-          </div>
+          <FadeIn direction="down" duration={0.3}>
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2.5 shadow-subtle">
+              <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+              <span>{errorMessage}</span>
+            </div>
+          </FadeIn>
         )}
 
         {/* Two-Column Layout */}

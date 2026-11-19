@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { ScrollProgressBar } from '@/components/ui/ScrollProgressBar';
 
 export const metadata: Metadata = {
   title: 'Classly — Learn Together. Grow Anywhere.',
@@ -27,6 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans min-h-screen flex flex-col bg-offwhite text-charcoal-800 antialiased">
+        <ScrollProgressBar />
         <Navbar />
         <main className="flex-1">
           {children}
