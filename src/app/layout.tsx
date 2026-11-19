@@ -3,6 +3,7 @@ import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { ScrollProgressBar } from '@/components/ui/ScrollProgressBar';
+import { ThemeProvider } from '@/components/theme/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'Classly — Learn Together. Grow Anywhere.',
@@ -26,14 +27,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="font-sans min-h-screen flex flex-col bg-offwhite text-charcoal-800 antialiased">
-        <ScrollProgressBar />
-        <Navbar />
-        <main className="flex-1">
-          {children}
-        </main>
-        <Footer />
+    <html lang="en" suppressHydrationWarning>
+      <body className="font-sans min-h-screen flex flex-col bg-offwhite text-charcoal-800 antialiased dark:bg-[#0B111E] dark:text-slate-100 transition-colors duration-200">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange={false}
+        >
+          <ScrollProgressBar />
+          <Navbar />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

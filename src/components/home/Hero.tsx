@@ -37,11 +37,11 @@ export function Hero() {
   ];
 
   return (
-    <section className="relative bg-[#FAFAF8] pt-8 pb-16 lg:pt-14 lg:pb-24 border-b border-gray-200/70 overflow-hidden">
+    <section className="relative bg-[#FAFAF8] dark:bg-[#0B111E] pt-8 pb-16 lg:pt-14 lg:pb-24 border-b border-gray-200/70 dark:border-slate-800/80 overflow-hidden transition-colors duration-200">
       
       {/* Subtle ambient light gradient in background */}
-      <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-amber-100/40 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-0 -ml-20 w-80 h-80 bg-accent-100/30 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-amber-100/40 dark:bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-0 -ml-20 w-80 h-80 bg-accent-100/30 dark:bg-accent-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
@@ -103,10 +103,10 @@ export function Hero() {
                         id="hero-subject"
                         value={selectedSubject}
                         onChange={(e) => setSelectedSubject(e.target.value)}
-                        className="w-full h-11 appearance-none bg-gray-50/80 hover:bg-gray-50 border border-gray-200 rounded-xl pl-3.5 pr-9 text-sm font-semibold text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-800 focus:bg-white transition cursor-pointer"
+                        className="w-full h-11 appearance-none bg-gray-50/80 hover:bg-gray-50 dark:bg-slate-800/80 dark:hover:bg-slate-800 dark:text-white border border-gray-200 dark:border-slate-700 rounded-xl pl-3.5 pr-9 text-sm font-semibold text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-slate-800 transition cursor-pointer"
                       >
-                        <option value="Mathematics">Mathematics</option>
-                        <option value="Computer Science">Computer Science</option>
+                        <option value="Mathematics" className="dark:bg-slate-900 dark:text-white">Mathematics</option>
+                        <option value="Computer Science" className="dark:bg-slate-900 dark:text-white">Computer Science</option>
                       </select>
                       <ChevronDown className="w-4 h-4 text-charcoal-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
@@ -122,16 +122,16 @@ export function Hero() {
                         id="hero-grade"
                         value={selectedGrade}
                         onChange={(e) => setSelectedGrade(e.target.value)}
-                        className="w-full h-11 appearance-none bg-gray-50/80 hover:bg-gray-50 border border-gray-200 rounded-xl pl-3.5 pr-9 text-sm font-semibold text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-800 focus:bg-white transition cursor-pointer"
+                        className="w-full h-11 appearance-none bg-gray-50/80 hover:bg-gray-50 dark:bg-slate-800/80 dark:hover:bg-slate-800 dark:text-white border border-gray-200 dark:border-slate-700 rounded-xl pl-3.5 pr-9 text-sm font-semibold text-navy-900 focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-slate-800 transition cursor-pointer"
                       >
-                        <option value="Grade 5">Grade 5 (Middle)</option>
-                        <option value="Grade 6">Grade 6 (Middle)</option>
-                        <option value="Grade 7">Grade 7 (Middle)</option>
-                        <option value="Grade 8">Grade 8 (Middle)</option>
-                        <option value="Grade 9">Grade 9 (Freshman)</option>
-                        <option value="Grade 10">Grade 10 (Sophomore)</option>
-                        <option value="Grade 11">Grade 11 (Junior)</option>
-                        <option value="Grade 12">Grade 12 (Senior)</option>
+                        <option value="Grade 5" className="dark:bg-slate-900 dark:text-white">Grade 5 (Middle)</option>
+                        <option value="Grade 6" className="dark:bg-slate-900 dark:text-white">Grade 6 (Middle)</option>
+                        <option value="Grade 7" className="dark:bg-slate-900 dark:text-white">Grade 7 (Middle)</option>
+                        <option value="Grade 8" className="dark:bg-slate-900 dark:text-white">Grade 8 (Middle)</option>
+                        <option value="Grade 9" className="dark:bg-slate-900 dark:text-white">Grade 9 (Freshman)</option>
+                        <option value="Grade 10" className="dark:bg-slate-900 dark:text-white">Grade 10 (Sophomore)</option>
+                        <option value="Grade 11" className="dark:bg-slate-900 dark:text-white">Grade 11 (Junior)</option>
+                        <option value="Grade 12" className="dark:bg-slate-900 dark:text-white">Grade 12 (Senior)</option>
                       </select>
                       <ChevronDown className="w-4 h-4 text-charcoal-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
