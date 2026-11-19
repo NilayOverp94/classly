@@ -77,7 +77,7 @@ export function TopInstructorsMarquee() {
   const marqueeList = [...INSTRUCTORS, ...INSTRUCTORS];
 
   return (
-    <section className="py-16 sm:py-20 lg:py-24 bg-white border-b border-gray-200/80 overflow-hidden select-none">
+    <section className="py-16 sm:py-20 lg:py-24 bg-white dark:bg-[#0A0F1D] border-b border-gray-200/80 dark:border-[#1E293B] transition-colors duration-200 overflow-hidden select-none">
       
       {/* Top Header Row */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 sm:mb-12">
@@ -86,17 +86,17 @@ export function TopInstructorsMarquee() {
             
             {/* Left: Tag + Headline */}
             <div>
-              <span className="text-xs font-bold text-accent-600 tracking-[1.5px] uppercase block mb-2.5">
+              <span className="text-xs font-bold text-accent-600 dark:text-emerald-400 tracking-[1.5px] uppercase block mb-2.5">
                 Future-Ready Curriculum
               </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-[40px] font-bold text-navy-950 tracking-tight leading-[1.18]">
+              <h2 className="text-2xl sm:text-3xl lg:text-[40px] font-bold text-navy-950 dark:text-white tracking-tight leading-[1.18]">
                 Curriculum Designed & Taught by<br className="hidden sm:inline" /> Top Product Engineers
               </h2>
             </div>
 
             {/* Right: MAANG Companies Banner */}
             <div className="flex flex-col lg:items-end gap-2.5 pt-2 lg:pt-0">
-              <p className="text-xs sm:text-sm font-medium text-charcoal-500">
+              <p className="text-xs sm:text-sm font-medium text-charcoal-500 dark:text-slate-400">
                 Working in Top MAANG companies
               </p>
               <div className="flex items-center gap-5 sm:gap-6 flex-wrap">
@@ -107,7 +107,7 @@ export function TopInstructorsMarquee() {
                       alt={company.name}
                       width={company.width}
                       height={company.height}
-                      className="object-contain h-full w-auto opacity-80 hover:opacity-100 transition-opacity"
+                      className="object-contain h-full w-auto opacity-80 hover:opacity-100 transition-opacity dark:brightness-0 dark:invert dark:opacity-85"
                     />
                   </div>
                 ))}
@@ -122,8 +122,8 @@ export function TopInstructorsMarquee() {
       <div className="relative w-full overflow-hidden py-2">
         
         {/* Soft edge fade masks on left and right */}
-        <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-24 lg:w-32 bg-gradient-to-r from-white via-white/80 to-transparent z-20 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-24 lg:w-32 bg-gradient-to-l from-white via-white/80 to-transparent z-20 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-24 lg:w-32 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-[#0A0F1D] dark:via-[#0A0F1D]/80 dark:to-transparent z-20 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-24 lg:w-32 bg-gradient-to-l from-white via-white/80 to-transparent dark:from-[#0A0F1D] dark:via-[#0A0F1D]/80 dark:to-transparent z-20 pointer-events-none" />
 
         {/* Animated Marquee Flex Strip */}
         <div className="flex gap-5 sm:gap-6 animate-marquee hover:[animation-play-state:paused] w-max">

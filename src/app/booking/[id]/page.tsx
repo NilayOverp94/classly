@@ -242,14 +242,14 @@ function BookingContent() {
   };
 
   return (
-    <div className="bg-offwhite min-h-screen py-8 lg:py-12 border-b border-gray-200">
+    <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-screen py-8 lg:py-12 border-b border-gray-200 dark:border-[#1E293B] transition-colors duration-200">
       <FadeIn className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Back Link */}
         <div className="mb-6">
           <Link
             href={`/tutors/${tutor.id}`}
-            className="inline-flex items-center gap-2 text-xs font-semibold text-charcoal-600 hover:text-navy-800"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-charcoal-600 dark:text-slate-400 hover:text-navy-800 dark:hover:text-white"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to {tutor.full_name}'s Profile</span>
@@ -258,53 +258,53 @@ function BookingContent() {
 
         {bookingConfirmed ? (
           /* Confirmation Screen */
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-lift p-8 sm:p-12 text-center">
-            <div className="w-16 h-16 bg-accent-50 text-accent-500 rounded-full flex items-center justify-center mx-auto mb-5 border border-accent-200">
+          <div className="bg-white dark:bg-[#111827] rounded-2xl border border-gray-200 dark:border-[#1E293B] shadow-lift p-8 sm:p-12 text-center">
+            <div className="w-16 h-16 bg-accent-50 dark:bg-emerald-950/40 text-accent-500 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-5 border border-accent-200 dark:border-emerald-800/60">
               <CheckCircle2 className="w-9 h-9" />
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-bold text-navy-800 mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-navy-800 dark:text-white mb-2">
               Lesson Confirmed!
             </h1>
-            <p className="text-xs text-charcoal-600 max-w-md mx-auto mb-8">
+            <p className="text-xs text-charcoal-600 dark:text-slate-300 max-w-md mx-auto mb-8">
               Your session with <strong>{tutor.full_name}</strong> is scheduled and paid. A confirmation email has been dispatched to your parent inbox.
             </p>
 
             {/* Session Card */}
-            <div className="bg-offwhite/80 p-6 rounded-xl border border-gray-200 text-left max-w-lg mx-auto mb-8 space-y-3 text-xs">
-              <div className="flex justify-between pb-3 border-b border-gray-200">
-                <span className="text-charcoal-500">Booking Reference</span>
-                <span className="font-bold text-navy-800">#{confirmedBookingId}</span>
+            <div className="bg-offwhite/80 dark:bg-[#162032] p-6 rounded-xl border border-gray-200 dark:border-[#2D3B4F] text-left max-w-lg mx-auto mb-8 space-y-3 text-xs">
+              <div className="flex justify-between pb-3 border-b border-gray-200 dark:border-[#2D3B4F]">
+                <span className="text-charcoal-500 dark:text-slate-400">Booking Reference</span>
+                <span className="font-bold text-navy-800 dark:text-white">#{confirmedBookingId}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-charcoal-500">Educator</span>
-                <span className="font-bold text-navy-800">{tutor.full_name}</span>
+                <span className="text-charcoal-500 dark:text-slate-400">Educator</span>
+                <span className="font-bold text-navy-800 dark:text-white">{tutor.full_name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-charcoal-500">Date & Time</span>
-                <span className="font-bold text-navy-800">{selectedDate} at {selectedTimeSlot}</span>
+                <span className="text-charcoal-500 dark:text-slate-400">Date & Time</span>
+                <span className="font-bold text-navy-800 dark:text-white">{selectedDate} at {selectedTimeSlot}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-charcoal-500">Duration</span>
-                <span className="font-bold text-navy-800">60 Minutes</span>
+                <span className="text-charcoal-500 dark:text-slate-400">Duration</span>
+                <span className="font-bold text-navy-800 dark:text-white">60 Minutes</span>
               </div>
-              <div className="flex justify-between pt-3 border-t border-gray-200">
-                <span className="text-charcoal-500">Amount Paid</span>
-                <span className="font-bold text-navy-800">${totalAmount.toFixed(2)} USD</span>
+              <div className="flex justify-between pt-3 border-t border-gray-200 dark:border-[#2D3B4F]">
+                <span className="text-charcoal-500 dark:text-slate-400">Amount Paid</span>
+                <span className="font-bold text-navy-800 dark:text-emerald-400">${totalAmount.toFixed(2)} USD</span>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href={`/classroom/room-${confirmedBookingId}`}
-                className="w-full sm:w-auto px-8 py-3 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-bold shadow-subtle transition flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-8 py-3 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold shadow-subtle transition flex items-center justify-center gap-2"
               >
                 <Video className="w-4 h-4" />
                 <span>Enter Live Classroom</span>
               </Link>
               <Link
                 href="/dashboard/student"
-                className="w-full sm:w-auto px-6 py-3 bg-gray-50 hover:bg-gray-100 text-charcoal-700 rounded-lg text-xs font-semibold border border-gray-200 transition"
+                className="w-full sm:w-auto px-6 py-3 bg-gray-50 hover:bg-gray-100 dark:bg-[#162032] dark:hover:bg-[#1E293B] text-charcoal-700 dark:text-slate-200 rounded-lg text-xs font-semibold border border-gray-200 dark:border-[#2D3B4F] transition"
               >
                 Go to Dashboard
               </Link>
@@ -315,12 +315,12 @@ function BookingContent() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
             {/* Left Column: Form (7 cols) */}
-            <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-xl border border-gray-200 shadow-subtle space-y-6">
+            <div className="lg:col-span-7 bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle space-y-6">
               <div>
-                <h1 className="text-xl font-bold text-navy-800">
+                <h1 className="text-xl font-bold text-navy-800 dark:text-white">
                   Schedule Lesson & Checkout
                 </h1>
-                <p className="text-xs text-charcoal-500 mt-1">
+                <p className="text-xs text-charcoal-500 dark:text-slate-400 mt-1">
                   Select your preferred lesson time and confirm booking details.
                 </p>
               </div>
@@ -329,37 +329,37 @@ function BookingContent() {
                 
                 {/* 1. Format Selection */}
                 <div>
-                  <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-2">
+                  <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-2">
                     1. Select Teaching Format
                   </label>
-                  <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <span className="font-bold text-navy-800 block">1-on-1 Private Tutoring</span>
-                    <span className="text-charcoal-500 text-[11px]">Dedicated 60-minute interactive live video lesson with dual whiteboard</span>
+                  <div className="p-3 bg-gray-50 dark:bg-[#162032] rounded-lg border border-gray-200 dark:border-[#2D3B4F]">
+                    <span className="font-bold text-navy-800 dark:text-white block">1-on-1 Private Tutoring</span>
+                    <span className="text-charcoal-500 dark:text-slate-400 text-[11px]">Dedicated 60-minute interactive live video lesson with dual whiteboard</span>
                   </div>
                 </div>
 
                 {/* 2. Date Selection */}
                 <div>
-                  <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-2">
+                  <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-2">
                     2. Select Date
                   </label>
                   <input
                     type="date"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-xs font-medium text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white"
+                    className="w-full bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg px-3 py-2.5 text-xs font-medium text-navy-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F]"
                   />
                 </div>
 
                 {/* 3. Time Slot */}
                 <div>
-                  <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-2">
+                  <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-2">
                     3. Select Time Slot
                   </label>
                   <select
                     value={selectedTimeSlot}
                     onChange={(e) => setSelectedTimeSlot(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-xs font-medium text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white"
+                    className="w-full bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg px-3 py-2.5 text-xs font-medium text-navy-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F]"
                   >
                     <option value="05:00 PM EST">05:00 PM EST</option>
                     <option value="06:30 PM EST">06:30 PM EST</option>
@@ -369,7 +369,7 @@ function BookingContent() {
 
                 {/* 4. Parent / Student Notes */}
                 <div>
-                  <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-2">
+                  <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-2">
                     4. Student Goals or Topics for this Lesson (Optional)
                   </label>
                   <textarea
@@ -377,7 +377,7 @@ function BookingContent() {
                     placeholder="e.g. Preparing for upcoming AP test, homework assistance, specific textbook chapters..."
                     value={studentNotes}
                     onChange={(e) => setStudentNotes(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-xs text-navy-800 placeholder-charcoal-400 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white"
+                    className="w-full bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg p-3 text-xs text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F]"
                   />
                 </div>
 
@@ -385,7 +385,7 @@ function BookingContent() {
                 <button
                   type="submit"
                   disabled={isProcessing}
-                  className="w-full py-3.5 bg-navy-800 hover:bg-navy-900 disabled:opacity-50 text-white rounded-lg text-xs font-bold shadow-subtle transition flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg text-xs font-bold shadow-subtle transition flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {isProcessing ? (
                     <span>Processing Payment Authorization...</span>
@@ -397,7 +397,7 @@ function BookingContent() {
                   )}
                 </button>
 
-                <p className="text-[11px] text-charcoal-400 text-center">
+                <p className="text-[11px] text-charcoal-400 dark:text-slate-400 text-center">
                   Protected by 100% money-back satisfaction guarantee on your first lesson.
                 </p>
 
@@ -405,13 +405,13 @@ function BookingContent() {
             </div>
 
             {/* Right Column: Order Summary (5 cols) */}
-            <div className="lg:col-span-5 bg-white p-6 rounded-xl border border-gray-200 shadow-subtle space-y-4 text-xs">
-              <h2 className="font-bold text-navy-800 text-sm pb-3 border-b border-gray-100">
+            <div className="lg:col-span-5 bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle space-y-4 text-xs">
+              <h2 className="font-bold text-navy-800 dark:text-white text-sm pb-3 border-b border-gray-100 dark:border-[#1E293B]">
                 Booking Summary
               </h2>
 
-              <div className="flex items-center gap-3 pb-4 border-b border-gray-100">
-                <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
+              <div className="flex items-center gap-3 pb-4 border-b border-gray-100 dark:border-[#1E293B]">
+                <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-100 dark:bg-[#162032] flex-shrink-0">
                   <Image
                     src={tutor.avatar_url}
                     alt={tutor.full_name}
@@ -421,29 +421,29 @@ function BookingContent() {
                   />
                 </div>
                 <div>
-                  <div className="font-bold text-navy-800">{tutor.full_name}</div>
-                  <div className="text-[11px] text-charcoal-500">{tutor.headline}</div>
+                  <div className="font-bold text-navy-800 dark:text-white">{tutor.full_name}</div>
+                  <div className="text-[11px] text-charcoal-500 dark:text-slate-400">{tutor.headline}</div>
                 </div>
               </div>
 
-              <div className="space-y-2 text-charcoal-600">
+              <div className="space-y-2 text-charcoal-600 dark:text-slate-300">
                 <div className="flex justify-between">
                   <span>Lesson Rate (60 mins)</span>
-                  <span className="font-bold text-navy-800">${hourlyRate.toFixed(2)}</span>
+                  <span className="font-bold text-navy-800 dark:text-white">${hourlyRate.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Platform & Classroom Tech Fee</span>
-                  <span className="font-bold text-navy-800">${platformFee.toFixed(2)}</span>
+                  <span className="font-bold text-navy-800 dark:text-white">${platformFee.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between pt-3 border-t border-gray-100 text-sm font-bold text-navy-800">
+                <div className="flex justify-between pt-3 border-t border-gray-100 dark:border-[#1E293B] text-sm font-bold text-navy-800 dark:text-emerald-400">
                   <span>Total Due Today</span>
                   <span>${totalAmount.toFixed(2)} USD</span>
                 </div>
               </div>
 
-              <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 space-y-1.5 text-[11px] text-charcoal-500">
-                <div className="flex items-center gap-1.5 font-semibold text-accent-700">
-                  <ShieldCheck className="w-3.5 h-3.5 text-accent-500" />
+              <div className="p-3 bg-gray-50 dark:bg-[#162032] rounded-lg border border-gray-200 dark:border-[#2D3B4F] space-y-1.5 text-[11px] text-charcoal-500 dark:text-slate-400">
+                <div className="flex items-center gap-1.5 font-semibold text-accent-700 dark:text-emerald-400">
+                  <ShieldCheck className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400" />
                   <span>Classly Parent Protection</span>
                 </div>
                 <div>• Zero recurring subscription charges</div>

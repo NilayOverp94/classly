@@ -7,6 +7,13 @@
 :root {
   --background: #FAFAF8;
   --foreground: #242B35;
+  color-scheme: light;
+}
+
+.dark {
+  --background: #0A0F1D;
+  --foreground: #F8FAFC;
+  color-scheme: dark;
 }
 
 body {
@@ -34,6 +41,19 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #0A0F1D;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #1E293B;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #334155;
 }
 
 @keyframes checkPop {

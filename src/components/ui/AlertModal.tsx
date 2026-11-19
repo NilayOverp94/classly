@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { useTheme } from 'next-themes';
 import { 
   CheckCircle2, 
   AlertCircle, 
@@ -15,7 +16,7 @@ export interface AlertModalProps {
   title: string;
   message: string;
   variant?: 'success' | 'error' | 'info' | 'warning';
-  theme?: 'dark' | 'light';
+  theme?: 'dark' | 'light' | 'auto';
   buttonText?: string;
 }
 
@@ -25,9 +26,11 @@ export function AlertModal({
   title,
   message,
   variant = 'info',
-  theme = 'light',
+  theme = 'auto',
   buttonText = 'Understood',
 }: AlertModalProps) {
+  const { resolvedTheme } = useTheme();
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -46,7 +49,7 @@ export function AlertModal({
 
   if (!isOpen) return null;
 
-  const isDark = theme === 'dark';
+  const isDark = theme === 'auto' ? resolvedTheme === 'dark' : theme === 'dark';
 
   const renderIcon = () => {
     switch (variant) {
@@ -108,7 +111,7 @@ export function AlertModal({
         className={`relative w-full max-w-sm rounded-2xl border p-6 text-center shadow-2xl transition-all transform animate-in zoom-in-95 duration-200 ${
           isDark 
             ? 'bg-navy-900/95 border-navy-700/80 text-white shadow-navy-950/50' 
-            : 'bg-white border-gray-200 text-navy-800 shadow-xl'
+            : 'bg-white dark:bg-[#111827] border-gray-200 dark:border-[#1E293B] text-navy-800 dark:text-white shadow-xl'
         }`}
       >
         <button
@@ -116,7 +119,7 @@ export function AlertModal({
           className={`absolute top-4 right-4 p-1.5 rounded-lg transition ${
             isDark 
               ? 'text-gray-400 hover:text-white hover:bg-navy-800' 
-              : 'text-charcoal-400 hover:text-navy-800 hover:bg-gray-100'
+              : 'text-charcoal-400 hover:text-navy-800 hover:bg-gray-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-[#162032]'
           }`}
         >
           <X className="w-4 h-4" />

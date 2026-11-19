@@ -138,16 +138,16 @@ export default function TutorProfilePage() {
 
   if (!tutor) {
     return (
-      <div className="bg-offwhite min-h-[60vh] flex items-center justify-center py-16 px-4">
-        <div className="bg-white p-8 max-w-md w-full rounded-2xl border border-gray-200 text-center shadow-card">
-          <ShieldCheck className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-          <h1 className="text-lg font-bold text-navy-800 mb-1">Educator Profile Not Found</h1>
-          <p className="text-xs text-charcoal-600 mb-6">
+      <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-[60vh] flex items-center justify-center py-16 px-4 transition-colors duration-200">
+        <div className="bg-white dark:bg-[#111827] p-8 max-w-md w-full rounded-2xl border border-gray-200 dark:border-[#1E293B] text-center shadow-card">
+          <ShieldCheck className="w-12 h-12 text-gray-400 dark:text-slate-500 mx-auto mb-3" />
+          <h1 className="text-lg font-bold text-navy-800 dark:text-white mb-1">Educator Profile Not Found</h1>
+          <p className="text-xs text-charcoal-600 dark:text-slate-300 mb-6">
             This educator profile is not active, currently undergoing compliance review, or does not exist.
           </p>
           <Link
             href="/tutors"
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-navy-800 text-white rounded-lg text-xs font-bold hover:bg-navy-900 transition"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Browse Educator Directory</span>
@@ -160,16 +160,16 @@ export default function TutorProfilePage() {
   const activeAvailability = tutor.availability?.find((a) => a.day === selectedDay);
 
   return (
-    <div className="bg-offwhite min-h-screen py-8 lg:py-12 border-b border-gray-200">
+    <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-screen py-8 lg:py-12 border-b border-gray-200 dark:border-[#1E293B] transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Navigation Breadcrumb */}
-        <div className="mb-6 flex items-center gap-2 text-xs text-charcoal-500">
-          <Link href="/" className="hover:text-navy-800">Home</Link>
+        <div className="mb-6 flex items-center gap-2 text-xs text-charcoal-500 dark:text-slate-400">
+          <Link href="/" className="hover:text-navy-800 dark:hover:text-white">Home</Link>
           <ChevronRight className="w-3.5 h-3.5" />
-          <Link href="/tutors" className="hover:text-navy-800">Find a Tutor</Link>
+          <Link href="/tutors" className="hover:text-navy-800 dark:hover:text-white">Find a Tutor</Link>
           <ChevronRight className="w-3.5 h-3.5" />
-          <span className="font-semibold text-navy-800">{tutor.full_name}</span>
+          <span className="font-semibold text-navy-800 dark:text-slate-200">{tutor.full_name}</span>
         </div>
 
         {/* Profile Grid: Main Content (8 cols) + Sticky Booking Card (4 cols) */}
@@ -180,10 +180,10 @@ export default function TutorProfilePage() {
             <FadeIn direction="up" delay={0.05} duration={0.5} className="space-y-6">
               
               {/* Header Card */}
-              <div className="bg-white p-6 sm:p-8 rounded-xl border border-gray-200 shadow-subtle hover:shadow-card transition-shadow duration-300">
+              <div className="bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle hover:shadow-card transition-shadow duration-300">
                 <div className="flex flex-col sm:flex-row gap-6 items-start">
                 
-                <div className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shadow-subtle flex-shrink-0">
+                <div className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden bg-gray-100 dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] shadow-subtle flex-shrink-0">
                   <Image
                     src={tutor.avatar_url}
                     alt={tutor.full_name}
@@ -196,29 +196,29 @@ export default function TutorProfilePage() {
 
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-navy-800">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-navy-800 dark:text-white">
                       {tutor.full_name}
                     </h1>
-                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent-700 bg-accent-50 px-2.5 py-0.5 rounded-full border border-accent-200">
-                      <ShieldCheck className="w-3.5 h-3.5 text-accent-500" />
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent-700 dark:text-emerald-300 bg-accent-50 dark:bg-emerald-950/40 px-2.5 py-0.5 rounded-full border border-accent-200 dark:border-emerald-800/60">
+                      <ShieldCheck className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400" />
                       <span>Verified Educator</span>
                     </span>
                   </div>
 
-                  <p className="text-sm font-medium text-charcoal-600 mb-3">
+                  <p className="text-sm font-medium text-charcoal-600 dark:text-slate-300 mb-3">
                     {tutor.headline}
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-charcoal-600 mb-4">
-                    <div className="flex items-center gap-1 font-bold text-navy-900">
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-charcoal-600 dark:text-slate-300 mb-4">
+                    <div className="flex items-center gap-1 font-bold text-navy-900 dark:text-white">
                       {tutor.review_count > 0 ? (
                         <>
                           <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                           <span>{tutor.rating.toFixed(2)}</span>
-                          <span className="font-normal text-charcoal-400">({tutor.review_count} reviews)</span>
+                          <span className="font-normal text-charcoal-400 dark:text-slate-400">({tutor.review_count} reviews)</span>
                         </>
                       ) : (
-                        <span className="text-[11px] text-accent-700 bg-accent-50 px-2 py-0.5 rounded font-semibold border border-accent-200">
+                        <span className="text-[11px] text-accent-700 dark:text-emerald-300 bg-accent-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded font-semibold border border-accent-200 dark:border-emerald-800/60">
                           New Verified Educator
                         </span>
                       )}
@@ -227,14 +227,14 @@ export default function TutorProfilePage() {
                       <>
                         <span>•</span>
                         <div className="flex items-center gap-1">
-                          <Clock className="w-4 h-4 text-charcoal-400" />
+                          <Clock className="w-4 h-4 text-charcoal-400 dark:text-slate-400" />
                           <span>{tutor.total_hours_taught}+ hours taught</span>
                         </div>
                       </>
                     )}
                     <span>•</span>
                     <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4 text-charcoal-400" />
+                      <MapPin className="w-4 h-4 text-charcoal-400 dark:text-slate-400" />
                       <span>{tutor.city}, {tutor.country}</span>
                     </div>
                   </div>
@@ -243,7 +243,7 @@ export default function TutorProfilePage() {
                     {tutor.subjects.map((s) => (
                       <span
                         key={s}
-                        className="px-2.5 py-1 rounded bg-softblue-100 text-navy-800 text-xs font-semibold border border-softblue-200"
+                        className="px-2.5 py-1 rounded bg-softblue-100 dark:bg-[#162032] text-navy-800 dark:text-emerald-400 text-xs font-semibold border border-softblue-200 dark:border-[#2D3B4F]"
                       >
                         {s}
                       </span>
@@ -251,7 +251,7 @@ export default function TutorProfilePage() {
                     {tutor.languages.map((l) => (
                       <span
                         key={l}
-                        className="px-2.5 py-1 rounded bg-gray-50 text-charcoal-600 text-xs font-medium border border-gray-200"
+                        className="px-2.5 py-1 rounded bg-gray-50 dark:bg-[#162032] text-charcoal-600 dark:text-slate-300 text-xs font-medium border border-gray-200 dark:border-[#2D3B4F]"
                       >
                         Speaks {l}
                       </span>
@@ -264,54 +264,54 @@ export default function TutorProfilePage() {
             </div>
 
             {/* Biography & Teaching Methodology */}
-            <div className="bg-white p-6 sm:p-8 rounded-xl border border-gray-200 shadow-subtle space-y-6">
+            <div className="bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle space-y-6">
               <div>
-                <h2 className="text-base font-bold text-navy-800 mb-2">
+                <h2 className="text-base font-bold text-navy-800 dark:text-white mb-2">
                   About {tutor.full_name}
                 </h2>
-                <p className="text-sm text-charcoal-700 leading-relaxed whitespace-pre-line">
+                <p className="text-sm text-charcoal-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
                   {tutor.bio || 'Accredited educator specialized in tailored curriculum instruction.'}
                 </p>
               </div>
 
-              <div className="pt-6 border-t border-gray-100">
-                <h2 className="text-base font-bold text-navy-800 mb-2">
+              <div className="pt-6 border-t border-gray-100 dark:border-[#1E293B]">
+                <h2 className="text-base font-bold text-navy-800 dark:text-white mb-2">
                   Teaching Methodology
                 </h2>
-                <p className="text-sm text-charcoal-700 leading-relaxed">
+                <p className="text-sm text-charcoal-700 dark:text-slate-300 leading-relaxed">
                   {tutor.teaching_methodology}
                 </p>
               </div>
 
               {/* Education & Verified Credentials */}
               {tutor.education && (
-                <div className="pt-6 border-t border-gray-100">
-                  <h2 className="text-base font-bold text-navy-800 mb-3 flex items-center gap-2">
-                    <Award className="w-4 h-4 text-accent-500" />
+                <div className="pt-6 border-t border-gray-100 dark:border-[#1E293B]">
+                  <h2 className="text-base font-bold text-navy-800 dark:text-white mb-3 flex items-center gap-2">
+                    <Award className="w-4 h-4 text-accent-500 dark:text-emerald-400" />
                     <span>Verified Qualifications & Degrees</span>
                   </h2>
-                  <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 text-xs">
-                    <span className="font-bold text-navy-800 block">{tutor.education}</span>
-                    <span className="text-charcoal-500">Degree verified by Classly Compliance Team</span>
+                  <div className="p-3 bg-gray-50 dark:bg-[#162032] rounded-lg border border-gray-200 dark:border-[#2D3B4F] text-xs">
+                    <span className="font-bold text-navy-800 dark:text-white block">{tutor.education}</span>
+                    <span className="text-charcoal-500 dark:text-slate-400">Degree verified by Classly Compliance Team</span>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Student Reviews Section */}
-            <div className="bg-white p-6 sm:p-8 rounded-xl border border-gray-200 shadow-subtle">
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+            <div className="bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100 dark:border-[#1E293B]">
                 <div>
-                  <h2 className="text-lg font-bold text-navy-800">
+                  <h2 className="text-lg font-bold text-navy-800 dark:text-white">
                     Student & Parent Reviews
                   </h2>
-                  <p className="text-xs text-charcoal-500">
+                  <p className="text-xs text-charcoal-500 dark:text-slate-400">
                     Feedback from verified lessons booked through Classly
                   </p>
                 </div>
               </div>
 
-              <div className="p-8 text-center text-xs text-charcoal-500 bg-gray-50/50 rounded-lg border border-dashed border-gray-200">
+              <div className="p-8 text-center text-xs text-charcoal-500 dark:text-slate-400 bg-gray-50/50 dark:bg-[#162032]/40 rounded-lg border border-dashed border-gray-200 dark:border-[#2D3B4F]">
                 No student reviews submitted yet. Reviews appear automatically after students complete verified lessons.
               </div>
             </div>
@@ -322,16 +322,16 @@ export default function TutorProfilePage() {
           {/* Sticky Booking Sidebar (4 cols) */}
           <div className="lg:col-span-4 sticky top-24">
             <FadeIn direction="left" delay={0.15} duration={0.55} className="space-y-4">
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-lift hover:shadow-lift-lg transition-shadow duration-300">
+              <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-lift hover:shadow-lift-lg transition-shadow duration-300">
               
               {/* Hourly rate display */}
-              <div className="pb-4 mb-4 border-b border-gray-100 flex items-baseline justify-between">
+              <div className="pb-4 mb-4 border-b border-gray-100 dark:border-[#1E293B] flex items-baseline justify-between">
                 <div>
-                  <span className="text-3xl font-extrabold text-navy-800">${tutor.hourly_rate}</span>
-                  <span className="text-xs text-charcoal-500 ml-1">/ hour</span>
+                  <span className="text-3xl font-extrabold text-navy-800 dark:text-white">${tutor.hourly_rate}</span>
+                  <span className="text-xs text-charcoal-500 dark:text-slate-400 ml-1">/ hour</span>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
+                  <span className="text-xs font-semibold text-accent-700 dark:text-emerald-300 bg-accent-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-accent-200 dark:border-emerald-800/60">
                     100% money-back guarantee
                   </span>
                 </div>
@@ -339,11 +339,11 @@ export default function TutorProfilePage() {
 
               {/* Booking Mode Selector: 1-on-1 */}
               <div className="mb-5">
-                <label className="block text-xs font-semibold text-charcoal-700 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-2">
                   Select Format
                 </label>
-                <div className="p-1 bg-gray-100 rounded-lg text-xs font-semibold">
-                  <div className="py-2 text-center bg-white text-navy-800 rounded-md shadow-subtle">
+                <div className="p-1 bg-gray-100 dark:bg-[#162032] rounded-lg text-xs font-semibold">
+                  <div className="py-2 text-center bg-white dark:bg-[#1C283F] text-navy-800 dark:text-white rounded-md shadow-subtle">
                     1-on-1 Private Lesson
                   </div>
                 </div>
@@ -351,7 +351,7 @@ export default function TutorProfilePage() {
 
               {/* Availability Day Picker */}
               <div className="mb-4">
-                <label className="block text-xs font-semibold text-charcoal-700 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-2">
                   Available Days (US Eastern Time)
                 </label>
                 <div className="flex flex-wrap gap-1.5">
@@ -362,8 +362,8 @@ export default function TutorProfilePage() {
                       onClick={() => setSelectedDay(a.day)}
                       className={`px-3 py-1.5 rounded text-xs font-medium border transition ${
                         selectedDay === a.day
-                          ? 'bg-navy-800 text-white border-navy-800'
-                          : 'bg-gray-50 text-charcoal-700 border-gray-200 hover:bg-gray-100'
+                          ? 'bg-navy-800 dark:bg-emerald-600 text-white border-navy-800 dark:border-emerald-600'
+                          : 'bg-gray-50 dark:bg-[#162032] text-charcoal-700 dark:text-slate-300 border-gray-200 dark:border-[#2D3B4F] hover:bg-gray-100 dark:hover:bg-[#1E293B]'
                       }`}
                     >
                       {a.day.slice(0, 3)}
@@ -374,20 +374,20 @@ export default function TutorProfilePage() {
 
               {/* Available Time Slots */}
               <div className="mb-6">
-                <label className="block text-xs font-semibold text-charcoal-700 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-2">
                   Available Time Slots
                 </label>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   {activeAvailability?.slots.map((slot) => (
                     <div
                       key={slot}
-                      className="p-2 text-center rounded bg-softblue-50 border border-softblue-200 text-navy-800 font-medium"
+                      className="p-2 text-center rounded bg-softblue-50 dark:bg-[#162032] border border-softblue-200 dark:border-[#2D3B4F] text-navy-800 dark:text-emerald-400 font-medium"
                     >
                       {slot}
                     </div>
                   ))}
                 </div>
-                <p className="mt-2 text-[11px] text-charcoal-400">
+                <p className="mt-2 text-[11px] text-charcoal-400 dark:text-slate-400">
                   Times auto-adjust to your local timezone during checkout.
                 </p>
               </div>
@@ -395,23 +395,23 @@ export default function TutorProfilePage() {
               {/* Primary CTA */}
               <Link
                 href={`/booking/${tutor.id}?format=one_on_one&day=${encodeURIComponent(selectedDay)}`}
-                className="w-full block text-center py-3 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-sm font-bold shadow-subtle transition"
+                className="w-full block text-center py-3 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-sm font-bold shadow-subtle transition"
               >
                 Book 1-on-1 Lesson
               </Link>
 
               {/* Safety & Guarantee Points */}
-              <div className="mt-6 pt-4 border-t border-gray-100 space-y-2 text-[11px] text-charcoal-500">
+              <div className="mt-6 pt-4 border-t border-gray-100 dark:border-[#1E293B] space-y-2 text-[11px] text-charcoal-500 dark:text-slate-400">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-3.5 h-3.5 text-accent-500 flex-shrink-0" />
+                  <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400 flex-shrink-0" />
                   <span>Free cancellation up to 24 hours in advance</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-3.5 h-3.5 text-accent-500 flex-shrink-0" />
+                  <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400 flex-shrink-0" />
                   <span>Secure browser-based classroom</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-3.5 h-3.5 text-accent-500 flex-shrink-0" />
+                  <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400 flex-shrink-0" />
                   <span>Direct parent monitoring & attendance records</span>
                 </div>
               </div>

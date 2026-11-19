@@ -64,19 +64,19 @@ export default function FAQPage() {
     : faqs.filter((f) => f.category === activeCategory);
 
   return (
-    <div className="bg-offwhite min-h-screen py-12 lg:py-16 border-b border-gray-200">
+    <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-screen py-12 lg:py-16 border-b border-gray-200 dark:border-[#1E293B] transition-colors duration-200">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <FadeIn direction="up" delay={0.05} duration={0.5}>
           <div className="text-center mb-12">
-            <span className="text-xs font-semibold text-accent-600 uppercase tracking-wider mb-2 block">
+            <span className="text-xs font-semibold text-accent-600 dark:text-emerald-400 uppercase tracking-wider mb-2 block">
               Got Questions?
             </span>
-            <h1 className="text-3xl sm:text-4xl font-bold text-navy-800 tracking-tight">
+            <h1 className="text-3xl sm:text-4xl font-bold text-navy-800 dark:text-white tracking-tight">
               Frequently Asked Questions
             </h1>
-            <p className="mt-2 text-sm text-charcoal-600">
+            <p className="mt-2 text-sm text-charcoal-600 dark:text-slate-300">
               Everything you need to know about learning, teaching, and payments on Classly.
             </p>
           </div>
@@ -95,10 +95,10 @@ export default function FAQPage() {
               <button
                 key={cat.id}
                 onClick={() => { setActiveCategory(cat.id); setOpenIndex(null); }}
-                className={`px-4 py-2 rounded-lg border transition active:scale-95 ${
+                className={`px-4 py-2 rounded-lg border transition active:scale-95 cursor-pointer ${
                   activeCategory === cat.id
-                    ? 'bg-navy-800 text-white border-navy-800 shadow-subtle'
-                    : 'bg-white text-charcoal-700 border-gray-200 hover:bg-gray-50'
+                    ? 'bg-navy-800 text-white border-navy-800 dark:bg-emerald-600 dark:border-emerald-600 shadow-subtle'
+                    : 'bg-white dark:bg-[#111827] text-charcoal-700 dark:text-slate-200 border-gray-200 dark:border-[#1E293B] hover:bg-gray-50 dark:hover:bg-[#162032]'
                 }`}
               >
                 {cat.label}
@@ -114,15 +114,15 @@ export default function FAQPage() {
             return (
               <div
                 key={idx}
-                className="bg-white rounded-xl border border-gray-200 shadow-subtle hover:shadow-card transition-shadow duration-300 overflow-hidden"
+                className="bg-white dark:bg-[#111827] rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle hover:shadow-card transition-shadow duration-300 overflow-hidden"
               >
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : idx)}
                   className="w-full p-5 text-left flex items-center justify-between gap-4 cursor-pointer"
                 >
-                  <span className="text-sm font-bold text-navy-800">{faq.q}</span>
-                  <ChevronDown className={`w-4 h-4 text-navy-800 flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+                  <span className="text-sm font-bold text-navy-800 dark:text-white">{faq.q}</span>
+                  <ChevronDown className={`w-4 h-4 text-navy-800 dark:text-slate-300 flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
                 </button>
                 <AnimatePresence initial={false}>
                   {isOpen && (
@@ -133,7 +133,7 @@ export default function FAQPage() {
                       transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
                       className="overflow-hidden"
                     >
-                      <div className="px-5 pb-5 pt-1 text-xs text-charcoal-600 leading-relaxed border-t border-gray-50">
+                      <div className="px-5 pb-5 pt-1 text-xs text-charcoal-600 dark:text-slate-300 leading-relaxed border-t border-gray-50 dark:border-[#1E293B]">
                         {faq.a}
                       </div>
                     </motion.div>
@@ -146,12 +146,12 @@ export default function FAQPage() {
 
         {/* Still have questions card */}
         <FadeIn direction="up" delay={0.2} duration={0.5}>
-          <div className="mt-12 p-6 bg-white rounded-xl border border-gray-200 shadow-subtle hover:shadow-card transition-shadow text-center text-xs">
-            <span className="font-bold text-navy-800 block text-sm mb-1">Still have questions?</span>
-            <p className="text-charcoal-600 mb-4">Our family support team is available 7 days a week.</p>
+          <div className="mt-12 p-6 bg-white dark:bg-[#111827] rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle hover:shadow-card transition-shadow text-center text-xs">
+            <span className="font-bold text-navy-800 dark:text-white block text-sm mb-1">Still have questions?</span>
+            <p className="text-charcoal-600 dark:text-slate-300 mb-4">Our family support team is available 7 days a week.</p>
             <Link
               href="/contact"
-              className="inline-block px-5 py-2.5 bg-navy-800 hover:bg-navy-900 text-white font-semibold rounded-lg shadow-subtle transition active:scale-95"
+              className="inline-block px-5 py-2.5 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white font-semibold rounded-lg shadow-subtle transition active:scale-95"
             >
               Contact Support Team
             </Link>

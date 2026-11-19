@@ -49,7 +49,7 @@ export function Logo({
       </div>
       {showText && (
         <div className="flex flex-col">
-          <span className={`font-semibold tracking-tight ${textSizes[size]} ${isLight ? 'text-white' : 'text-navy-800'}`}>
+          <span className={`font-semibold tracking-tight ${textSizes[size]} ${isLight ? 'text-white' : 'text-navy-800 dark:text-white'}`}>
             Classly<span className="text-[#F59E0B]">.</span>
           </span>
         </div>

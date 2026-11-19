@@ -145,14 +145,14 @@ export default function StudentDashboardPage() {
   const gradeLevel = user?.user_metadata?.student_grade || 'K-12 Student';
 
   return (
-    <div className="bg-offwhite min-h-screen py-8 border-b border-gray-200">
+    <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-screen py-8 border-b border-gray-200 dark:border-[#1E293B] transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Real User Profile Banner */}
         <FadeIn direction="up" delay={0.05} duration={0.45}>
-          <div className="bg-white p-6 rounded-2xl border border-gray-200/90 shadow-subtle hover:shadow-card transition-shadow mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="bg-white dark:bg-[#111827] p-6 rounded-2xl border border-gray-200/90 dark:border-[#1E293B] shadow-subtle hover:shadow-card transition-shadow mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="relative w-16 h-16 rounded-full overflow-hidden bg-navy-800 text-white border border-gray-200 flex-shrink-0 flex items-center justify-center shadow-sm">
+              <div className="relative w-16 h-16 rounded-full overflow-hidden bg-navy-800 dark:bg-[#162032] text-white border border-gray-200 dark:border-[#2D3B4F] flex-shrink-0 flex items-center justify-center shadow-sm">
                 {avatarUrl ? (
                   <Image
                     src={avatarUrl}
@@ -169,14 +169,14 @@ export default function StudentDashboardPage() {
 
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-xl font-bold text-navy-800">
+                  <h1 className="text-xl font-bold text-navy-800 dark:text-white">
                     {displayName}
                   </h1>
-                  <span className="text-[11px] font-semibold text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
+                  <span className="text-[11px] font-semibold text-accent-700 dark:text-emerald-300 bg-accent-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-accent-200 dark:border-emerald-800/60">
                     {gradeLevel}
                   </span>
                 </div>
-                <p className="text-xs text-charcoal-500 mt-0.5">
+                <p className="text-xs text-charcoal-500 dark:text-slate-400 mt-0.5">
                   Logged in as <strong>{userEmail}</strong> • Active Learning Account
                 </p>
               </div>
@@ -185,7 +185,7 @@ export default function StudentDashboardPage() {
             <div className="flex items-center gap-3">
               <Link
                 href="/tutors"
-                className="px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold shadow-subtle transition-all active:scale-95 flex items-center gap-1.5"
+                className="px-4 py-2 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-subtle transition-all active:scale-95 flex items-center gap-1.5"
               >
                 <span>+ Book a Tutor</span>
               </Link>
@@ -197,8 +197,8 @@ export default function StudentDashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Sidebar Navigation */}
-          <aside className="lg:col-span-3 bg-white rounded-xl border border-gray-200 shadow-subtle p-4 space-y-1">
-            <div className="text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider px-3 py-2">
+          <aside className="lg:col-span-3 bg-white dark:bg-[#111827] rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle p-4 space-y-1">
+            <div className="text-[11px] font-semibold text-charcoal-400 dark:text-slate-400 uppercase tracking-wider px-3 py-2">
               Student Navigation
             </div>
 
@@ -213,10 +213,10 @@ export default function StudentDashboardPage() {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id as any)}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition ${
+                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
                   activeTab === item.id
-                    ? 'bg-navy-800 text-white shadow-subtle'
-                    : 'text-charcoal-700 hover:bg-gray-50 hover:text-navy-800'
+                    ? 'bg-navy-800 dark:bg-emerald-600 text-white shadow-subtle'
+                    : 'text-charcoal-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#162032] hover:text-navy-800 dark:hover:text-white'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
@@ -225,7 +225,7 @@ export default function StudentDashboardPage() {
                 </div>
                 {item.count !== undefined && item.count > 0 && (
                   <span className={`px-1.5 py-0.5 rounded text-[10px] ${
-                    activeTab === item.id ? 'bg-navy-900 text-white' : 'bg-softblue-100 text-navy-800'
+                    activeTab === item.id ? 'bg-navy-900 dark:bg-emerald-700 text-white' : 'bg-softblue-100 dark:bg-[#162032] text-navy-800 dark:text-emerald-400 border border-transparent dark:border-[#2D3B4F]'
                   }`}>
                     {item.count}
                   </span>
@@ -233,10 +233,10 @@ export default function StudentDashboardPage() {
               </button>
             ))}
 
-            <div className="pt-4 border-t border-gray-100 mt-4">
+            <div className="pt-4 border-t border-gray-100 dark:border-[#1E293B] mt-4">
               <button
                 onClick={handleSignOut}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-red-600 hover:bg-red-50 transition cursor-pointer text-left"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition cursor-pointer text-left"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Log Out</span>
@@ -258,20 +258,20 @@ export default function StudentDashboardPage() {
             {activeTab === 'upcoming' && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-base font-bold text-navy-800">
+                  <h2 className="text-base font-bold text-navy-800 dark:text-white">
                     Confirmed Upcoming Lessons
                   </h2>
-                  <span className="text-xs text-charcoal-500">Live WebRTC Classrooms</span>
+                  <span className="text-xs text-charcoal-500 dark:text-slate-400">Live WebRTC Classrooms</span>
                 </div>
 
                 {upcomingBookings.length > 0 ? (
                   upcomingBookings.map((b) => (
                     <div
                       key={b.id}
-                      className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle flex flex-col md:flex-row items-start md:items-center justify-between gap-5"
+                      className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle flex flex-col md:flex-row items-start md:items-center justify-between gap-5"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
+                        <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-gray-100 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] flex-shrink-0">
                           <Image
                             src={b.teacher_avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
                             alt={b.teacher_name}
@@ -281,16 +281,16 @@ export default function StudentDashboardPage() {
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <h3 className="text-base font-bold text-navy-800">{b.subject}</h3>
-                            <span className="px-2 py-0.5 rounded bg-accent-50 text-accent-700 text-[11px] font-semibold border border-accent-200">
+                            <h3 className="text-base font-bold text-navy-800 dark:text-white">{b.subject}</h3>
+                            <span className="px-2 py-0.5 rounded bg-accent-50 dark:bg-emerald-950/40 text-accent-700 dark:text-emerald-300 text-[11px] font-semibold border border-accent-200 dark:border-emerald-800/60">
                               Confirmed
                             </span>
                           </div>
-                          <p className="text-xs text-charcoal-600 mt-0.5">
+                          <p className="text-xs text-charcoal-600 dark:text-slate-300 mt-0.5">
                             with <strong>{b.teacher_name}</strong> • 1-on-1 Session ({b.duration_minutes} mins)
                           </p>
-                          <div className="flex items-center gap-2 text-xs text-charcoal-500 mt-2">
-                            <Clock className="w-3.5 h-3.5 text-accent-500" />
+                          <div className="flex items-center gap-2 text-xs text-charcoal-500 dark:text-slate-400 mt-2">
+                            <Clock className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400" />
                             <span>{b.formatted_time || b.start_time || `${b.date} at ${b.time_slot}`}</span>
                           </div>
                         </div>
@@ -299,7 +299,7 @@ export default function StudentDashboardPage() {
                       <div className="w-full md:w-auto flex flex-col sm:flex-row items-center gap-2.5">
                         <Link
                           href={b.meeting_url || (b.teacher_id ? `/classroom/room-tutor-${b.teacher_id}` : `/classroom/room-${b.id}`)}
-                          className="w-full md:w-auto px-5 py-2.5 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-bold transition shadow-subtle flex items-center justify-center gap-2"
+                          className="w-full md:w-auto px-5 py-2.5 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition shadow-subtle flex items-center justify-center gap-2"
                         >
                           <Video className="w-4 h-4" />
                           <span>Join Live Classroom</span>
@@ -309,17 +309,17 @@ export default function StudentDashboardPage() {
                   ))
                 ) : (
                   /* Clean Empty State */
-                  <div className="bg-white p-12 rounded-2xl border border-gray-200/90 shadow-subtle text-center">
-                    <div className="w-12 h-12 rounded-full bg-softblue-50 text-navy-800 flex items-center justify-center mx-auto mb-3">
-                      <Calendar className="w-6 h-6 text-navy-700" />
+                  <div className="bg-white dark:bg-[#111827] p-12 rounded-2xl border border-gray-200/90 dark:border-[#1E293B] shadow-subtle text-center">
+                    <div className="w-12 h-12 rounded-full bg-softblue-50 dark:bg-[#162032] text-navy-800 dark:text-emerald-400 flex items-center justify-center mx-auto mb-3">
+                      <Calendar className="w-6 h-6 text-navy-700 dark:text-emerald-400" />
                     </div>
-                    <h3 className="text-base font-bold text-navy-800">No Upcoming Lessons Scheduled</h3>
-                    <p className="text-xs text-charcoal-500 max-w-sm mx-auto mt-1 mb-5">
+                    <h3 className="text-base font-bold text-navy-800 dark:text-white">No Upcoming Lessons Scheduled</h3>
+                    <p className="text-xs text-charcoal-500 dark:text-slate-400 max-w-sm mx-auto mt-1 mb-5">
                       You don't have any tutoring sessions scheduled yet. Find a verified educator and book your first lesson.
                     </p>
                     <Link
                       href="/tutors"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-navy-800 hover:bg-navy-900 text-white rounded-xl text-xs font-bold transition shadow-sm"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition shadow-sm"
                     >
                       <span>Find a Tutor</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -332,27 +332,27 @@ export default function StudentDashboardPage() {
             {/* TAB: Past History */}
             {activeTab === 'past' && (
               <div className="space-y-4">
-                <h2 className="text-base font-bold text-navy-800 mb-2">
+                <h2 className="text-base font-bold text-navy-800 dark:text-white mb-2">
                   Completed Lessons & Attendance
                 </h2>
                 
                 {pastBookings.length > 0 ? (
                   pastBookings.map((b) => (
-                    <div key={b.id} className="bg-white p-5 rounded-xl border border-gray-200 shadow-subtle flex items-center justify-between">
+                    <div key={b.id} className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle flex items-center justify-between">
                       <div>
-                        <div className="font-bold text-sm text-navy-800">{b.subject} with {b.teacher_name}</div>
-                        <div className="text-xs text-charcoal-500 mt-0.5">Completed • {b.duration_minutes} mins</div>
+                        <div className="font-bold text-sm text-navy-800 dark:text-white">{b.subject} with {b.teacher_name}</div>
+                        <div className="text-xs text-charcoal-500 dark:text-slate-400 mt-0.5">Completed • {b.duration_minutes} mins</div>
                       </div>
-                      <span className="text-xs font-semibold text-gray-500">${b.price} Paid</span>
+                      <span className="text-xs font-semibold text-gray-500 dark:text-slate-400">${b.price} Paid</span>
                     </div>
                   ))
                 ) : (
-                  <div className="bg-white p-12 rounded-2xl border border-gray-200/90 shadow-subtle text-center">
-                    <div className="w-12 h-12 rounded-full bg-gray-50 text-charcoal-400 flex items-center justify-center mx-auto mb-3">
+                  <div className="bg-white dark:bg-[#111827] p-12 rounded-2xl border border-gray-200/90 dark:border-[#1E293B] shadow-subtle text-center">
+                    <div className="w-12 h-12 rounded-full bg-gray-50 dark:bg-[#162032] text-charcoal-400 dark:text-slate-400 flex items-center justify-center mx-auto mb-3">
                       <Clock className="w-6 h-6" />
                     </div>
-                    <h3 className="text-base font-bold text-navy-800">No Past Lessons Yet</h3>
-                    <p className="text-xs text-charcoal-500 max-w-sm mx-auto mt-1">
+                    <h3 className="text-base font-bold text-navy-800 dark:text-white">No Past Lessons Yet</h3>
+                    <p className="text-xs text-charcoal-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
                       Once you complete lessons with your educators, your session history and recordings will appear here.
                     </p>
                   </div>
@@ -363,22 +363,22 @@ export default function StudentDashboardPage() {
             {/* TAB: My Tutors */}
             {activeTab === 'tutors' && (
               <div className="space-y-4">
-                <h2 className="text-base font-bold text-navy-800 mb-2">Booked Tutors</h2>
+                <h2 className="text-base font-bold text-navy-800 dark:text-white mb-2">Booked Tutors</h2>
 
                 {bookedTutors.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {bookedTutors.map((t) => (
-                      <div key={t.id} className="p-4 bg-white rounded-xl border border-gray-200 shadow-subtle flex items-center gap-3">
+                      <div key={t.id} className="p-4 bg-white dark:bg-[#111827] rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle flex items-center gap-3">
                         <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
                           <Image src={t.avatar_url} alt={t.full_name} fill className="object-cover" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-bold text-xs text-navy-800 truncate">{t.full_name}</div>
-                          <div className="text-[11px] text-charcoal-500">{t.subjects?.join(', ')}</div>
+                          <div className="font-bold text-xs text-navy-800 dark:text-white truncate">{t.full_name}</div>
+                          <div className="text-[11px] text-charcoal-500 dark:text-slate-400">{t.subjects?.join(', ')}</div>
                         </div>
                         <Link
                           href={`/booking/${t.id}`}
-                          className="px-3 py-1.5 bg-navy-800 text-white rounded text-xs font-semibold"
+                          className="px-3 py-1.5 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded text-xs font-semibold"
                         >
                           Book
                         </Link>
@@ -386,17 +386,17 @@ export default function StudentDashboardPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="bg-white p-12 rounded-2xl border border-gray-200/90 shadow-subtle text-center">
-                    <div className="w-12 h-12 rounded-full bg-gray-50 text-charcoal-400 flex items-center justify-center mx-auto mb-3">
+                  <div className="bg-white dark:bg-[#111827] p-12 rounded-2xl border border-gray-200/90 dark:border-[#1E293B] shadow-subtle text-center">
+                    <div className="w-12 h-12 rounded-full bg-gray-50 dark:bg-[#162032] text-charcoal-400 dark:text-slate-400 flex items-center justify-center mx-auto mb-3">
                       <User className="w-6 h-6" />
                     </div>
-                    <h3 className="text-base font-bold text-navy-800">No Tutors Booked Yet</h3>
-                    <p className="text-xs text-charcoal-500 max-w-sm mx-auto mt-1 mb-4">
+                    <h3 className="text-base font-bold text-navy-800 dark:text-white">No Tutors Booked Yet</h3>
+                    <p className="text-xs text-charcoal-500 dark:text-slate-400 max-w-sm mx-auto mt-1 mb-4">
                       Tutors you connect with will be saved here for one-click re-booking and direct messaging.
                     </p>
                     <Link
                       href="/tutors"
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-semibold transition"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold transition"
                     >
                       <span>Browse Verified Tutors</span>
                     </Link>
@@ -407,27 +407,27 @@ export default function StudentDashboardPage() {
 
             {/* TAB: Learning Materials */}
             {activeTab === 'materials' && (
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle space-y-4">
-                <h2 className="text-base font-bold text-navy-800">Class Notes & Homework Sheets</h2>
+              <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle space-y-4">
+                <h2 className="text-base font-bold text-navy-800 dark:text-white">Class Notes & Homework Sheets</h2>
                 
                 {materials.length > 0 ? (
                   <div className="space-y-2 text-xs">
                     {materials.map((doc, idx) => (
-                      <div key={idx} className="p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-between">
+                      <div key={idx} className="p-3 bg-gray-50 dark:bg-[#162032] rounded-lg border border-gray-200 dark:border-[#2D3B4F] flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <FileText className="w-4 h-4 text-navy-800" />
-                          <div className="font-semibold text-navy-800">{doc.name}</div>
+                          <FileText className="w-4 h-4 text-navy-800 dark:text-emerald-400" />
+                          <div className="font-semibold text-navy-800 dark:text-white">{doc.name}</div>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
                   <div className="py-10 text-center">
-                    <div className="w-12 h-12 rounded-full bg-gray-50 text-charcoal-400 flex items-center justify-center mx-auto mb-3">
+                    <div className="w-12 h-12 rounded-full bg-gray-50 dark:bg-[#162032] text-charcoal-400 dark:text-slate-400 flex items-center justify-center mx-auto mb-3">
                       <FileText className="w-6 h-6" />
                     </div>
-                    <h3 className="text-sm font-bold text-navy-800">No Shared Study Materials Yet</h3>
-                    <p className="text-xs text-charcoal-500 max-w-sm mx-auto mt-1">
+                    <h3 className="text-sm font-bold text-navy-800 dark:text-white">No Shared Study Materials Yet</h3>
+                    <p className="text-xs text-charcoal-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
                       Whiteboard exports, formula sheets, and homework worksheets provided by your educators will be accessible here.
                     </p>
                   </div>
@@ -437,37 +437,37 @@ export default function StudentDashboardPage() {
 
             {/* TAB: Payments & Receipts */}
             {activeTab === 'payments' && (
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle space-y-4">
-                <h2 className="text-base font-bold text-navy-800">Payment History & Tax Invoices</h2>
+              <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle space-y-4">
+                <h2 className="text-base font-bold text-navy-800 dark:text-white">Payment History & Tax Invoices</h2>
                 
                 {paymentHistory.length > 0 ? (
                   <table className="w-full text-xs text-left">
                     <thead>
-                      <tr className="border-b border-gray-200 text-charcoal-400 font-semibold uppercase text-[10px]">
+                      <tr className="border-b border-gray-200 dark:border-[#1E293B] text-charcoal-400 dark:text-slate-400 font-semibold uppercase text-[10px]">
                         <th className="pb-2">Date</th>
                         <th className="pb-2">Description</th>
                         <th className="pb-2">Amount</th>
                         <th className="pb-2">Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-gray-100 dark:divide-[#1E293B]">
                       {paymentHistory.map((item, idx) => (
                         <tr key={idx}>
-                          <td className="py-3 text-charcoal-600">{item.date}</td>
-                          <td className="py-3 font-semibold text-navy-800">{item.description}</td>
-                          <td className="py-3 font-bold text-navy-800">${item.amount}</td>
-                          <td className="py-3"><span className="text-accent-600 font-semibold">{item.status}</span></td>
+                          <td className="py-3 text-charcoal-600 dark:text-slate-300">{item.date}</td>
+                          <td className="py-3 font-semibold text-navy-800 dark:text-white">{item.description}</td>
+                          <td className="py-3 font-bold text-navy-800 dark:text-white">${item.amount}</td>
+                          <td className="py-3"><span className="text-accent-600 dark:text-emerald-400 font-semibold">{item.status}</span></td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 ) : (
                   <div className="py-10 text-center">
-                    <div className="w-12 h-12 rounded-full bg-gray-50 text-charcoal-400 flex items-center justify-center mx-auto mb-3">
+                    <div className="w-12 h-12 rounded-full bg-gray-50 dark:bg-[#162032] text-charcoal-400 dark:text-slate-400 flex items-center justify-center mx-auto mb-3">
                       <CreditCard className="w-6 h-6" />
                     </div>
-                    <h3 className="text-sm font-bold text-navy-800">No Payment Records Yet</h3>
-                    <p className="text-xs text-charcoal-500 max-w-sm mx-auto mt-1">
+                    <h3 className="text-sm font-bold text-navy-800 dark:text-white">No Payment Records Yet</h3>
+                    <p className="text-xs text-charcoal-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
                       Receipts and invoices will be automatically generated and stored here when you book a lesson.
                     </p>
                   </div>
@@ -477,34 +477,34 @@ export default function StudentDashboardPage() {
 
             {/* TAB: Settings */}
             {activeTab === 'settings' && (
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-subtle space-y-6 text-xs">
+              <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle space-y-6 text-xs">
                 <div>
-                  <h2 className="text-base font-bold text-navy-800">Account & Safety Settings</h2>
-                  <p className="text-xs text-charcoal-500 mt-0.5">
+                  <h2 className="text-base font-bold text-navy-800 dark:text-white">Account & Safety Settings</h2>
+                  <p className="text-xs text-charcoal-500 dark:text-slate-400 mt-0.5">
                     Manage student information, grade levels, and guardian contact details.
                   </p>
                 </div>
 
-                <div className="p-4 bg-softblue-50 rounded-lg border border-softblue-200">
-                  <div className="flex items-center gap-2 font-bold text-navy-800 mb-1">
-                    <ShieldCheck className="w-4 h-4 text-accent-500" />
+                <div className="p-4 bg-softblue-50 dark:bg-[#162032] rounded-lg border border-softblue-200 dark:border-[#2D3B4F]">
+                  <div className="flex items-center gap-2 font-bold text-navy-800 dark:text-white mb-1">
+                    <ShieldCheck className="w-4 h-4 text-accent-500 dark:text-emerald-400" />
                     <span>Protected K-12 Student Account (COPPA Compliant)</span>
                   </div>
-                  <p className="text-[11px] text-charcoal-600">
+                  <p className="text-[11px] text-charcoal-600 dark:text-slate-300">
                     All tutor interactions, session links, and billing receipts are managed securely under <strong>{userEmail}</strong>.
                   </p>
                 </div>
 
-                <div className="p-5 bg-gray-50 rounded-xl border border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="p-5 bg-gray-50 dark:bg-[#162032] rounded-xl border border-gray-200 dark:border-[#2D3B4F] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <h3 className="font-bold text-navy-900 text-sm">Personal & Academic Profile</h3>
-                    <p className="text-xs text-charcoal-500 mt-0.5">
+                    <h3 className="font-bold text-navy-900 dark:text-white text-sm">Personal & Academic Profile</h3>
+                    <p className="text-xs text-charcoal-500 dark:text-slate-400 mt-0.5">
                       Update student name, school grade level, timezones, and learning goals.
                     </p>
                   </div>
                   <Link
                     href="/profile"
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-navy-800 hover:bg-navy-900 text-white rounded-lg font-bold text-xs shadow-subtle transition"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg font-bold text-xs shadow-subtle transition"
                   >
                     <User className="w-3.5 h-3.5" />
                     <span>Edit Profile</span>

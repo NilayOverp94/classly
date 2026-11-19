@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { useTheme } from 'next-themes';
 import { 
   AlertTriangle, 
   Trash2, 
@@ -21,7 +22,7 @@ export interface ConfirmModalProps {
   confirmText?: string;
   cancelText?: string;
   variant?: 'danger' | 'warning' | 'info' | 'success';
-  theme?: 'dark' | 'light';
+  theme?: 'dark' | 'light' | 'auto';
   icon?: 'exit' | 'delete' | 'warning' | 'info' | 'success';
   details?: React.ReactNode;
   isLoading?: boolean;
@@ -36,11 +37,13 @@ export function ConfirmModal({
   confirmText = 'Confirm',
   cancelText = 'Cancel',
   variant = 'danger',
-  theme = 'light',
+  theme = 'auto',
   icon = 'warning',
   details,
   isLoading = false,
 }: ConfirmModalProps) {
+  const { resolvedTheme } = useTheme();
+
   // Handle ESC key press
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -60,7 +63,7 @@ export function ConfirmModal({
 
   if (!isOpen) return null;
 
-  const isDark = theme === 'dark';
+  const isDark = theme === 'auto' ? resolvedTheme === 'dark' : theme === 'dark';
 
   const renderIcon = () => {
     switch (icon) {
@@ -138,7 +141,7 @@ export function ConfirmModal({
         className={`relative w-full max-w-md rounded-2xl border p-6 sm:p-7 shadow-2xl transition-all transform animate-in zoom-in-95 duration-200 ${
           isDark 
             ? 'bg-navy-900/95 border-navy-700/80 text-white shadow-navy-950/50' 
-            : 'bg-white border-gray-200 text-navy-800 shadow-xl'
+            : 'bg-white dark:bg-[#111827] border-gray-200 dark:border-[#1E293B] text-navy-800 dark:text-white shadow-xl'
         }`}
       >
         {/* Close 'X' Button */}
@@ -147,7 +150,7 @@ export function ConfirmModal({
           className={`absolute top-4 right-4 p-1.5 rounded-lg transition ${
             isDark 
               ? 'text-gray-400 hover:text-white hover:bg-navy-800' 
-              : 'text-charcoal-400 hover:text-navy-800 hover:bg-gray-100'
+              : 'text-charcoal-400 hover:text-navy-800 hover:bg-gray-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-[#162032]'
           }`}
           aria-label="Close dialog"
         >
@@ -192,7 +195,7 @@ export function ConfirmModal({
               className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-semibold transition border ${
                 isDark
                   ? 'bg-navy-800/80 hover:bg-navy-800 text-gray-200 border-navy-700'
-                  : 'bg-gray-100 hover:bg-gray-200 text-charcoal-700 border-gray-200'
+                  : 'bg-gray-100 hover:bg-gray-200 dark:bg-[#162032] dark:hover:bg-[#1E293B] text-charcoal-700 dark:text-slate-200 border-gray-200 dark:border-[#1E293B]'
               }`}
             >
               {cancelText}

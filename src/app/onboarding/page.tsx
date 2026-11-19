@@ -126,7 +126,7 @@ function OnboardingContent() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col justify-between bg-[#F9FAF8] text-navy-800 selection:bg-softblue-200 selection:text-navy-900 overflow-hidden py-10 px-4 sm:px-6">
+    <div className="relative min-h-screen flex flex-col justify-between bg-[#F9FAF8] dark:bg-[#0A0F1D] text-navy-800 dark:text-slate-100 selection:bg-softblue-200 selection:text-navy-900 overflow-hidden py-10 px-4 sm:px-6 transition-colors duration-200">
       
       {/* Background Atmosphere */}
       <div className="absolute inset-0 pointer-events-none select-none z-0">
@@ -135,11 +135,11 @@ function OnboardingContent() {
           alt="Atmospheric study hall"
           fill
           priority
-          className="object-cover object-center opacity-[0.14] blur-[3px] scale-105"
+          className="object-cover object-center opacity-[0.14] dark:opacity-[0.05] blur-[3px] scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#FAF9F6]/92 via-[#F8F9FA]/88 to-[#F1F3F5]/96" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FAF9F6]/92 via-[#F8F9FA]/88 to-[#F1F3F5]/96 dark:from-[#0A0F1D]/95 dark:via-[#0E1526]/90 dark:to-[#0A0F1D]/98" />
         <div 
-          className="absolute inset-0 opacity-[0.025]"
+          className="absolute inset-0 opacity-[0.025] dark:opacity-[0.015]"
           style={{
             backgroundImage: `radial-gradient(#183153 1px, transparent 1px)`,
             backgroundSize: '28px 28px',
@@ -151,7 +151,7 @@ function OnboardingContent() {
         
         {/* Concentric Framing Architecture */}
         <div 
-          className="rounded-[28px] p-2 transition-all duration-300 border border-charcoal-200/50 bg-white/80 backdrop-blur-xl"
+          className="rounded-[28px] p-2 transition-all duration-300 border border-charcoal-200/50 dark:border-[#1E293B] bg-white/80 dark:bg-[#111827]/90 backdrop-blur-xl"
           style={{
             boxShadow: `
               0 1px 2px rgba(24, 49, 83, 0.03),
@@ -161,21 +161,21 @@ function OnboardingContent() {
             `,
           }}
         >
-          <div className="rounded-[20px] bg-white border border-charcoal-200/70 p-7 sm:p-9 shadow-sm">
+          <div className="rounded-[20px] bg-white dark:bg-[#111827] border border-charcoal-200/70 dark:border-[#1E293B] p-7 sm:p-9 shadow-sm">
             
             {/* Header Badge */}
             <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold mb-3 tracking-wide uppercase bg-accent-50 text-accent-700 border border-accent-200">
-                <Sparkles className="w-3.5 h-3.5 text-accent-500" />
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold mb-3 tracking-wide uppercase bg-accent-50 dark:bg-emerald-950/40 text-accent-700 dark:text-emerald-400 border border-accent-200 dark:border-emerald-800">
+                <Sparkles className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400" />
                 <span>Account Setup Required</span>
               </div>
 
-              <h1 className="text-2xl font-bold text-navy-900 tracking-tight">
+              <h1 className="text-2xl font-bold text-navy-900 dark:text-white tracking-tight">
                 Complete Your Profile
               </h1>
-              <p className="mt-1.5 text-xs text-charcoal-500 max-w-sm mx-auto">
+              <p className="mt-1.5 text-xs text-charcoal-500 dark:text-slate-400 max-w-sm mx-auto">
                 {currentUser?.email ? (
-                  <>Signed in as <strong className="text-navy-900">{currentUser.email}</strong>. Please provide your learning profile details to finish activating your account.</>
+                  <>Signed in as <strong className="text-navy-900 dark:text-white">{currentUser.email}</strong>. Please provide your learning profile details to finish activating your account.</>
                 ) : (
                   'Please provide your profile details to finish activating your learning account.'
                 )}
@@ -183,17 +183,17 @@ function OnboardingContent() {
             </div>
 
             {/* Role Switcher */}
-            <div className="grid grid-cols-2 p-1.5 bg-charcoal-100/80 rounded-2xl border border-charcoal-200/60 mb-6">
+            <div className="grid grid-cols-2 p-1.5 bg-charcoal-100/80 dark:bg-[#162032] rounded-2xl border border-charcoal-200/60 dark:border-[#1E293B] mb-6">
               <button
                 type="button"
                 onClick={() => setRole('student')}
                 className={`py-2 px-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
                   role === 'student'
-                    ? 'bg-white text-navy-900 shadow-sm font-bold border border-charcoal-200/40'
-                    : 'text-charcoal-600 hover:text-navy-900'
+                    ? 'bg-white dark:bg-[#111827] text-navy-900 dark:text-white shadow-sm font-bold border border-charcoal-200/40 dark:border-[#1E293B]'
+                    : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white'
                 }`}
               >
-                <GraduationCap className={`w-4 h-4 ${role === 'student' ? 'text-accent-600' : 'text-charcoal-400'}`} />
+                <GraduationCap className={`w-4 h-4 ${role === 'student' ? 'text-accent-600 dark:text-emerald-400' : 'text-charcoal-400 dark:text-slate-500'}`} />
                 <span className="text-xs">Student / Parent</span>
               </button>
 
@@ -202,18 +202,18 @@ function OnboardingContent() {
                 onClick={() => setRole('teacher')}
                 className={`py-2 px-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
                   role === 'teacher'
-                    ? 'bg-white text-navy-900 shadow-sm font-bold border border-charcoal-200/40'
-                    : 'text-charcoal-600 hover:text-navy-900'
+                    ? 'bg-white dark:bg-[#111827] text-navy-900 dark:text-white shadow-sm font-bold border border-charcoal-200/40 dark:border-[#1E293B]'
+                    : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white'
                 }`}
               >
-                <BookOpen className={`w-4 h-4 ${role === 'teacher' ? 'text-accent-600' : 'text-charcoal-400'}`} />
+                <BookOpen className={`w-4 h-4 ${role === 'teacher' ? 'text-accent-600 dark:text-emerald-400' : 'text-charcoal-400 dark:text-slate-500'}`} />
                 <span className="text-xs">Teacher / Tutor</span>
               </button>
             </div>
 
             {errorMessage && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-500" />
+              <div className="mb-4 p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 rounded-xl text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-500 dark:text-red-400" />
                 <span>{errorMessage}</span>
               </div>
             )}
@@ -222,7 +222,7 @@ function OnboardingContent() {
             {role === 'student' ? (
               <form onSubmit={handleSubmit} className="space-y-4 text-xs">
                 <div>
-                  <label className="block font-semibold text-charcoal-700 mb-1">
+                  <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">
                     Parent / Guardian Full Name *
                   </label>
                   <input
@@ -231,13 +231,13 @@ function OnboardingContent() {
                     value={parentName}
                     onChange={(e) => setParentName(e.target.value)}
                     placeholder="e.g. Jane Smith"
-                    className="w-full h-10 px-3.5 bg-charcoal-50/60 border border-charcoal-200/90 rounded-xl text-xs text-navy-900 focus:bg-white focus:border-navy-700 focus:ring-4 focus:ring-navy-800/8 transition outline-none"
+                    className="w-full h-10 px-3.5 bg-charcoal-50/60 dark:bg-[#162032] border border-charcoal-200/90 dark:border-[#1E293B] rounded-xl text-xs text-navy-900 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-[#162032] focus:border-navy-700 dark:focus:border-emerald-500 focus:ring-2 focus:ring-navy-800/10 dark:focus:ring-emerald-500/20 transition outline-none"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-semibold text-charcoal-700 mb-1">
+                    <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">
                       Student First & Last Name *
                     </label>
                     <input
@@ -246,18 +246,18 @@ function OnboardingContent() {
                       value={studentName}
                       onChange={(e) => setStudentName(e.target.value)}
                       placeholder="e.g. Alex Smith"
-                      className="w-full h-10 px-3.5 bg-charcoal-50/60 border border-charcoal-200/90 rounded-xl text-xs text-navy-900 focus:bg-white focus:border-navy-700 focus:ring-4 focus:ring-navy-800/8 transition outline-none"
+                      className="w-full h-10 px-3.5 bg-charcoal-50/60 dark:bg-[#162032] border border-charcoal-200/90 dark:border-[#1E293B] rounded-xl text-xs text-navy-900 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-[#162032] focus:border-navy-700 dark:focus:border-emerald-500 focus:ring-2 focus:ring-navy-800/10 dark:focus:ring-emerald-500/20 transition outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-charcoal-700 mb-1">
+                    <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">
                       Current Grade Level *
                     </label>
                     <select
                       value={studentGrade}
                       onChange={(e) => setStudentGrade(e.target.value)}
-                      className="w-full h-10 px-3 bg-charcoal-50/60 border border-charcoal-200/90 rounded-xl text-xs text-navy-900 focus:bg-white focus:border-navy-700 focus:ring-4 focus:ring-navy-800/8 transition outline-none"
+                      className="w-full h-10 px-3 bg-charcoal-50/60 dark:bg-[#162032] border border-charcoal-200/90 dark:border-[#1E293B] rounded-xl text-xs text-navy-900 dark:text-white focus:bg-white dark:focus:bg-[#162032] focus:border-navy-700 dark:focus:border-emerald-500 focus:ring-2 focus:ring-navy-800/10 dark:focus:ring-emerald-500/20 transition outline-none"
                     >
                       <option value="Grade 5">Grade 5 (Elementary)</option>
                       <option value="Grade 6">Grade 6 (Middle School)</option>
@@ -272,7 +272,7 @@ function OnboardingContent() {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-charcoal-700 mb-1">
+                  <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">
                     Primary Subjects / Learning Focus
                   </label>
                   <input
@@ -280,23 +280,23 @@ function OnboardingContent() {
                     value={learningFocus}
                     onChange={(e) => setLearningFocus(e.target.value)}
                     placeholder="e.g. AP Calculus AB, SAT Math, Physics homework support"
-                    className="w-full h-10 px-3.5 bg-charcoal-50/60 border border-charcoal-200/90 rounded-xl text-xs text-navy-900 focus:bg-white focus:border-navy-700 focus:ring-4 focus:ring-navy-800/8 transition outline-none"
+                    className="w-full h-10 px-3.5 bg-charcoal-50/60 dark:bg-[#162032] border border-charcoal-200/90 dark:border-[#1E293B] rounded-xl text-xs text-navy-900 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-[#162032] focus:border-navy-700 dark:focus:border-emerald-500 focus:ring-2 focus:ring-navy-800/10 dark:focus:ring-emerald-500/20 transition outline-none"
                   />
                 </div>
 
                 {/* COPPA Consent */}
-                <div className="pt-2 border-t border-charcoal-100">
-                  <label className="flex items-start gap-2.5 cursor-pointer text-charcoal-700">
+                <div className="pt-2 border-t border-charcoal-100 dark:border-gray-800">
+                  <label className="flex items-start gap-2.5 cursor-pointer text-charcoal-700 dark:text-slate-300">
                     <input
                       type="checkbox"
                       required
                       checked={coppaConsent}
                       onChange={(e) => setCoppaConsent(e.target.checked)}
-                      className="mt-0.5 accent-navy-800 w-4 h-4 rounded cursor-pointer"
+                      className="mt-0.5 accent-navy-800 dark:accent-emerald-500 w-4 h-4 rounded cursor-pointer"
                     />
                     <span className="text-[11px] leading-relaxed">
                       I confirm that I am the parent or legal guardian. I consent to Classly's{' '}
-                      <Link href="/privacy" className="text-navy-900 underline font-semibold">
+                      <Link href="/privacy" className="text-navy-900 dark:text-emerald-400 underline font-semibold">
                         COPPA-compliant Privacy Policy
                       </Link>{' '}
                       and authorize tutoring session scheduling under parent supervision.
@@ -307,7 +307,7 @@ function OnboardingContent() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-11 mt-4 bg-navy-800 hover:bg-navy-900 active:scale-[0.99] text-white text-xs font-bold rounded-xl transition-all duration-200 shadow-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75"
+                  className="w-full h-11 mt-4 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 active:scale-[0.99] text-white text-xs font-bold rounded-xl transition-all duration-200 shadow-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75"
                 >
                   <span>{loading ? 'Activating account...' : 'Complete Setup & Open Classroom'}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -317,7 +317,7 @@ function OnboardingContent() {
               /* FORM: Teacher / Tutor */
               <form onSubmit={handleSubmit} className="space-y-4 text-xs">
                 <div>
-                  <label className="block font-semibold text-charcoal-700 mb-1">
+                  <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">
                     Educator Full Name *
                   </label>
                   <input
@@ -326,19 +326,19 @@ function OnboardingContent() {
                     value={teacherName}
                     onChange={(e) => setTeacherName(e.target.value)}
                     placeholder="e.g. Dr. Jane Smith"
-                    className="w-full h-10 px-3.5 bg-charcoal-50/60 border border-charcoal-200/90 rounded-xl text-xs text-navy-900 focus:bg-white focus:border-navy-700 focus:ring-4 focus:ring-navy-800/8 transition outline-none"
+                    className="w-full h-10 px-3.5 bg-charcoal-50/60 dark:bg-[#162032] border border-charcoal-200/90 dark:border-[#1E293B] rounded-xl text-xs text-navy-900 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-[#162032] focus:border-navy-700 dark:focus:border-emerald-500 focus:ring-2 focus:ring-navy-800/10 dark:focus:ring-emerald-500/20 transition outline-none"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-semibold text-charcoal-700 mb-1">
+                    <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">
                       Primary Subject *
                     </label>
                     <select
                       value={subject}
                       onChange={(e) => setSubject(e.target.value)}
-                      className="w-full h-10 px-3 bg-charcoal-50/60 border border-charcoal-200/90 rounded-xl text-xs text-navy-900 focus:bg-white focus:border-navy-700 focus:ring-4 focus:ring-navy-800/8 transition outline-none"
+                      className="w-full h-10 px-3 bg-charcoal-50/60 dark:bg-[#162032] border border-charcoal-200/90 dark:border-[#1E293B] rounded-xl text-xs text-navy-900 dark:text-white focus:bg-white dark:focus:bg-[#162032] focus:border-navy-700 dark:focus:border-emerald-500 focus:ring-2 focus:ring-navy-800/10 dark:focus:ring-emerald-500/20 transition outline-none"
                     >
                       <option value="Mathematics">Mathematics</option>
                       <option value="Computer Science">Computer Science</option>
@@ -346,7 +346,7 @@ function OnboardingContent() {
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-charcoal-700 mb-1">
+                    <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">
                       Hourly Rate ($ USD) *
                     </label>
                     <input
@@ -356,13 +356,13 @@ function OnboardingContent() {
                       max={150}
                       value={hourlyRate}
                       onChange={(e) => setHourlyRate(e.target.value)}
-                      className="w-full h-10 px-3.5 bg-charcoal-50/60 border border-charcoal-200/90 rounded-xl text-xs text-navy-900 focus:bg-white focus:border-navy-700 focus:ring-4 focus:ring-navy-800/8 transition outline-none"
+                      className="w-full h-10 px-3.5 bg-charcoal-50/60 dark:bg-[#162032] border border-charcoal-200/90 dark:border-[#1E293B] rounded-xl text-xs text-navy-900 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-[#162032] focus:border-navy-700 dark:focus:border-emerald-500 focus:ring-2 focus:ring-navy-800/10 dark:focus:ring-emerald-500/20 transition outline-none"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-charcoal-700 mb-1">
+                  <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">
                     Highest Degree / University *
                   </label>
                   <input
@@ -371,12 +371,12 @@ function OnboardingContent() {
                     value={qualifications}
                     onChange={(e) => setQualifications(e.target.value)}
                     placeholder="e.g. M.Sc. in Mathematics, IIT Delhi"
-                    className="w-full h-10 px-3.5 bg-charcoal-50/60 border border-charcoal-200/90 rounded-xl text-xs text-navy-900 focus:bg-white focus:border-navy-700 focus:ring-4 focus:ring-navy-800/8 transition outline-none"
+                    className="w-full h-10 px-3.5 bg-charcoal-50/60 dark:bg-[#162032] border border-charcoal-200/90 dark:border-[#1E293B] rounded-xl text-xs text-navy-900 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-[#162032] focus:border-navy-700 dark:focus:border-emerald-500 focus:ring-2 focus:ring-navy-800/10 dark:focus:ring-emerald-500/20 transition outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-charcoal-700 mb-1">
+                  <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">
                     Years of Teaching Experience *
                   </label>
                   <input
@@ -386,14 +386,14 @@ function OnboardingContent() {
                     max={40}
                     value={yearsExperience}
                     onChange={(e) => setYearsExperience(e.target.value)}
-                    className="w-full h-10 px-3.5 bg-charcoal-50/60 border border-charcoal-200/90 rounded-xl text-xs text-navy-900 focus:bg-white focus:border-navy-700 focus:ring-4 focus:ring-navy-800/8 transition outline-none"
+                    className="w-full h-10 px-3.5 bg-charcoal-50/60 dark:bg-[#162032] border border-charcoal-200/90 dark:border-[#1E293B] rounded-xl text-xs text-navy-900 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-[#162032] focus:border-navy-700 dark:focus:border-emerald-500 focus:ring-2 focus:ring-navy-800/10 dark:focus:ring-emerald-500/20 transition outline-none"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-11 mt-4 bg-navy-800 hover:bg-navy-900 active:scale-[0.99] text-white text-xs font-bold rounded-xl transition-all duration-200 shadow-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75"
+                  className="w-full h-11 mt-4 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 active:scale-[0.99] text-white text-xs font-bold rounded-xl transition-all duration-200 shadow-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75"
                 >
                   <span>{loading ? 'Activating educator profile...' : 'Complete Setup & Open Studio'}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -406,7 +406,7 @@ function OnboardingContent() {
 
       </div>
 
-      <footer className="relative z-10 w-full max-w-7xl mx-auto px-6 py-5 text-center text-[11px] text-charcoal-400">
+      <footer className="relative z-10 w-full max-w-7xl mx-auto px-6 py-5 text-center text-[11px] text-charcoal-400 dark:text-slate-500">
         Classly Educational Marketplace • All student profiles protected by COPPA
       </footer>
 

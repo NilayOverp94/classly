@@ -77,23 +77,23 @@ export default function StudentRegisterPage() {
   };
 
   return (
-    <div className="bg-offwhite min-h-screen py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+    <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-screen py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center transition-colors duration-200">
       <ScaleIn className="max-w-md w-full">
-        <div className="w-full bg-white rounded-2xl border border-gray-200 shadow-card p-8">
+        <div className="w-full bg-white dark:bg-[#111827] rounded-2xl border border-gray-200 dark:border-[#1E293B] shadow-card p-8">
           
           {/* Header */}
         <div className="text-center mb-6">
           <Logo size="md" className="justify-center mb-4" />
-          <h1 className="text-2xl font-bold text-navy-800 tracking-tight">
+          <h1 className="text-2xl font-bold text-navy-800 dark:text-white tracking-tight">
             Parent & Student Registration
           </h1>
-          <p className="mt-1 text-xs text-charcoal-600">
+          <p className="mt-1 text-xs text-charcoal-600 dark:text-slate-300">
             Create your account to browse tutors, book lessons, and track academic progress.
           </p>
         </div>
 
         {errorMessage && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-xs flex items-center gap-2">
+          <div className="mb-4 p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 text-red-700 dark:text-red-300 rounded-lg text-xs flex items-center gap-2">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>{errorMessage}</span>
           </div>
@@ -103,39 +103,39 @@ export default function StudentRegisterPage() {
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           
           <div>
-            <label className="block font-semibold text-charcoal-700 mb-1">Parent's Full Name *</label>
+            <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Parent's Full Name *</label>
             <div className="relative">
-              <User className="w-4 h-4 text-charcoal-400 absolute left-3 top-2.5" />
+              <User className="w-4 h-4 text-charcoal-400 dark:text-slate-400 absolute left-3 top-2.5" />
               <input
                 type="text"
                 required
                 value={parentName}
                 onChange={(e) => setParentName(e.target.value)}
                 placeholder="e.g. Jane Smith"
-                className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:ring-2 focus:ring-navy-600 focus:bg-white text-navy-800"
+                className="w-full pl-9 pr-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
               />
             </div>
           </div>
 
           <div>
-            <label className="block font-semibold text-charcoal-700 mb-1">Parent's Email Address *</label>
+            <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Parent's Email Address *</label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-charcoal-400 absolute left-3 top-2.5" />
+              <Mail className="w-4 h-4 text-charcoal-400 dark:text-slate-400 absolute left-3 top-2.5" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="parent@example.com"
-                className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:ring-2 focus:ring-navy-600 focus:bg-white text-navy-800"
+                className="w-full pl-9 pr-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
               />
             </div>
           </div>
 
           <div>
-            <label className="block font-semibold text-charcoal-700 mb-1">Account Password *</label>
+            <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Account Password *</label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-charcoal-400 absolute left-3 top-2.5" />
+              <Lock className="w-4 h-4 text-charcoal-400 dark:text-slate-400 absolute left-3 top-2.5" />
               <input
                 type="password"
                 required
@@ -143,35 +143,35 @@ export default function StudentRegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="At least 8 characters"
-                className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:ring-2 focus:ring-navy-600 focus:bg-white text-navy-800"
+                className="w-full pl-9 pr-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
               />
             </div>
           </div>
 
-          <div className="pt-2 border-t border-gray-100">
-            <span className="block font-bold text-navy-800 uppercase tracking-wider text-[11px] mb-2">
+          <div className="pt-2 border-t border-gray-100 dark:border-[#1E293B]">
+            <span className="block font-bold text-navy-800 dark:text-white uppercase tracking-wider text-[11px] mb-2">
               Student Details (Managed by Parent)
             </span>
 
             <div className="grid grid-cols-2 gap-3 mb-3">
               <div>
-                <label className="block font-semibold text-charcoal-700 mb-1">Student First Name *</label>
+                <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Student First Name *</label>
                 <input
                   type="text"
                   required
                   value={studentName}
                   onChange={(e) => setStudentName(e.target.value)}
                   placeholder="e.g. Alex"
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-navy-800"
+                  className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-charcoal-700 mb-1">Grade Level *</label>
+                <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Grade Level *</label>
                 <select
                   value={studentGrade}
                   onChange={(e) => setStudentGrade(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-navy-800"
+                  className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md text-navy-800 dark:text-slate-200"
                 >
                   <option value="Grade 5">Grade 5</option>
                   <option value="Grade 6">Grade 6</option>
@@ -186,30 +186,30 @@ export default function StudentRegisterPage() {
             </div>
 
             <div>
-              <label className="block font-semibold text-charcoal-700 mb-1">Primary Learning Focus</label>
+              <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Primary Learning Focus</label>
               <input
                 type="text"
                 value={learningGoals}
                 onChange={(e) => setLearningGoals(e.target.value)}
                 placeholder="e.g. Pre-Calculus homework, AP Physics exam preparation"
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-navy-800"
+                className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
               />
             </div>
           </div>
 
           {/* COPPA Consent Checkbox */}
           <div className="pt-2">
-            <label className="flex items-start gap-2 cursor-pointer text-charcoal-700">
+            <label className="flex items-start gap-2 cursor-pointer text-charcoal-700 dark:text-slate-300">
               <input
                 type="checkbox"
                 required
                 checked={coppaConsent}
                 onChange={(e) => setCoppaConsent(e.target.checked)}
-                className="mt-0.5 accent-navy-800"
+                className="mt-0.5 accent-navy-800 dark:accent-emerald-500"
               />
               <span className="text-[11px] leading-relaxed">
                 I confirm that I am the parent or legal guardian. I consent to Classly's{' '}
-                <Link href="/privacy" className="text-navy-800 underline font-semibold">
+                <Link href="/privacy" className="text-navy-800 dark:text-emerald-400 underline font-semibold">
                   COPPA-compliant Privacy Policy
                 </Link>{' '}
                 and understand that parent supervision is maintained for all student sessions.
@@ -221,7 +221,7 @@ export default function StudentRegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-4 py-2.5 bg-navy-800 hover:bg-navy-900 text-white font-bold rounded-lg transition shadow-subtle flex items-center justify-center gap-2"
+            className="w-full mt-4 py-2.5 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white font-bold rounded-lg transition shadow-subtle flex items-center justify-center gap-2"
           >
             <span>{loading ? 'Creating Account...' : 'Complete Registration'}</span>
             <ArrowRight className="w-4 h-4" />
@@ -230,9 +230,9 @@ export default function StudentRegisterPage() {
         </form>
 
         {/* Existing account link */}
-        <div className="mt-6 pt-4 border-t border-gray-100 text-center text-xs text-charcoal-600">
+        <div className="mt-6 pt-4 border-t border-gray-100 dark:border-[#1E293B] text-center text-xs text-charcoal-600 dark:text-slate-400">
           Already have an account?{' '}
-          <Link href="/login" className="font-bold text-navy-800 hover:underline">
+          <Link href="/login" className="font-bold text-navy-800 dark:text-emerald-400 hover:underline">
             Log In
           </Link>
         </div>

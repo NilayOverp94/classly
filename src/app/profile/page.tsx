@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { FadeIn } from '@/components/ui/MotionComponents';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -306,39 +307,39 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="bg-offwhite min-h-[60vh] flex items-center justify-center py-16 px-4">
+      <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-[60vh] flex items-center justify-center py-16 px-4 transition-colors duration-200">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-navy-800 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-xs text-charcoal-500">Loading your profile details...</p>
+          <div className="w-8 h-8 border-2 border-navy-800 dark:border-emerald-400 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-xs text-charcoal-500 dark:text-slate-400">Loading your profile details...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-offwhite min-h-screen py-8 lg:py-12 border-b border-gray-200">
+    <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-screen py-8 lg:py-12 border-b border-gray-200 dark:border-[#1E293B] transition-colors duration-200">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Navigation Breadcrumb */}
-        <div className="mb-6 flex items-center gap-2 text-xs text-charcoal-500">
-          <Link href={dashboardHref} className="hover:text-navy-800 transition">
+        <div className="mb-6 flex items-center gap-2 text-xs text-charcoal-500 dark:text-slate-400">
+          <Link href={dashboardHref} className="hover:text-navy-800 dark:hover:text-white transition">
             Dashboard
           </Link>
           <ChevronRight className="w-3.5 h-3.5" />
-          <span className="font-semibold text-navy-800">Account Profile & Settings</span>
+          <span className="font-semibold text-navy-800 dark:text-slate-200">Account Profile & Settings</span>
         </div>
 
         {/* Page Header */}
         <FadeIn direction="up" delay={0.05} duration={0.45}>
           <div className="mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-softblue-100 border border-softblue-200 text-xs font-semibold text-navy-800 mb-2">
-              <User className="w-4 h-4 text-accent-500" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-softblue-100 dark:bg-[#162032] border border-softblue-200 dark:border-[#2D3B4F] text-xs font-semibold text-navy-800 dark:text-emerald-400 mb-2">
+              <User className="w-4 h-4 text-accent-500 dark:text-emerald-400" />
               <span>Profile Management</span>
             </div>
-            <h1 className="text-3xl font-bold text-navy-800 tracking-tight">
+            <h1 className="text-3xl font-bold text-navy-800 dark:text-white tracking-tight">
               Account Settings & Profile
             </h1>
-            <p className="mt-1.5 text-xs text-charcoal-600 max-w-xl">
+            <p className="mt-1.5 text-xs text-charcoal-600 dark:text-slate-300 max-w-xl">
               Update your personal contact details, school grade level, timezones, and learning preferences.
             </p>
           </div>
@@ -347,8 +348,8 @@ export default function ProfilePage() {
         {/* Notifications */}
         {successMessage && (
           <FadeIn direction="down" duration={0.3}>
-            <div className="mb-6 p-4 bg-accent-50 border border-accent-200 text-accent-800 rounded-xl text-xs flex items-center gap-2.5 shadow-subtle">
-              <CheckCircle2 className="w-5 h-5 text-accent-600 flex-shrink-0" />
+            <div className="mb-6 p-4 bg-accent-50 dark:bg-emerald-950/40 border border-accent-200 dark:border-emerald-800/60 text-accent-800 dark:text-emerald-300 rounded-xl text-xs flex items-center gap-2.5 shadow-subtle">
+              <CheckCircle2 className="w-5 h-5 text-accent-600 dark:text-emerald-400 flex-shrink-0" />
               <span className="font-semibold">{successMessage}</span>
             </div>
           </FadeIn>
@@ -356,8 +357,8 @@ export default function ProfilePage() {
 
         {errorMessage && (
           <FadeIn direction="down" duration={0.3}>
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2.5 shadow-subtle">
-              <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+            <div className="mb-6 p-4 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 text-red-700 dark:text-red-300 rounded-xl text-xs flex items-center gap-2.5 shadow-subtle">
+              <AlertCircle className="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0" />
               <span>{errorMessage}</span>
             </div>
           </FadeIn>
@@ -367,11 +368,11 @@ export default function ProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Left Column: Account Identity Card */}
-          <div className="lg:col-span-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-subtle space-y-6">
+          <div className="lg:col-span-4 bg-white dark:bg-[#111827] p-6 rounded-2xl border border-gray-200 dark:border-[#1E293B] shadow-subtle space-y-6">
             <div className="text-center">
               {/* Profile Photo / Avatar with Interactive Upload Overlay */}
               <div className="relative group mx-auto mb-2.5 w-24 h-24">
-                <div className="w-24 h-24 rounded-full overflow-hidden bg-navy-800 text-white flex items-center justify-center font-bold text-3xl uppercase shadow-lift border-2 border-white ring-2 ring-gray-100 relative">
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-navy-800 dark:bg-[#162032] text-white flex items-center justify-center font-bold text-3xl uppercase shadow-lift border-2 border-white dark:border-[#1E293B] ring-2 ring-gray-100 dark:ring-[#2D3B4F] relative">
                   {avatarUrl ? (
                     <Image
                       src={avatarUrl}
@@ -400,7 +401,7 @@ export default function ProfilePage() {
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadingAvatar}
                   title="Upload profile picture"
-                  className="absolute bottom-0 right-0 p-2 bg-accent-500 hover:bg-accent-600 text-white rounded-full shadow-md transition-transform hover:scale-110 active:scale-95 border-2 border-white cursor-pointer z-20"
+                  className="absolute bottom-0 right-0 p-2 bg-accent-500 hover:bg-accent-600 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-full shadow-md transition-transform hover:scale-110 active:scale-95 border-2 border-white dark:border-[#111827] cursor-pointer z-20"
                 >
                   <Camera className="w-4 h-4" />
                 </button>
@@ -421,19 +422,19 @@ export default function ProfilePage() {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadingAvatar}
-                  className="text-[11px] font-bold text-accent-600 hover:text-accent-700 hover:underline flex items-center gap-1 cursor-pointer"
+                  className="text-[11px] font-bold text-accent-600 dark:text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer"
                 >
                   <Upload className="w-3 h-3" />
                   <span>{avatarUrl ? 'Change Photo' : 'Upload Photo'}</span>
                 </button>
                 {avatarUrl && (
                   <>
-                    <span className="text-gray-300">•</span>
+                    <span className="text-gray-300 dark:text-slate-600">•</span>
                     <button
                       type="button"
                       onClick={handleRemoveAvatar}
                       disabled={uploadingAvatar}
-                      className="text-[11px] font-medium text-red-500 hover:text-red-700 hover:underline flex items-center gap-1 cursor-pointer"
+                      className="text-[11px] font-medium text-red-500 dark:text-red-400 hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       <Trash2 className="w-3 h-3" />
                       <span>Remove</span>
@@ -441,43 +442,47 @@ export default function ProfilePage() {
                   </>
                 )}
               </div>
-              <p className="text-[10px] text-charcoal-400 mb-3">
+              <p className="text-[10px] text-charcoal-400 dark:text-slate-400 mb-3">
                 {userRole === 'teacher' ? 'Your photo is displayed publicly on the Find Tutors directory' : 'JPG, PNG or WebP • Max 5MB'}
               </p>
 
-              <h2 className="text-lg font-bold text-navy-800">{userDisplayName}</h2>
-              <p className="text-xs text-charcoal-500 mt-0.5">{user?.email}</p>
+              <h2 className="text-lg font-bold text-navy-800 dark:text-white">{userDisplayName}</h2>
+              <p className="text-xs text-charcoal-500 dark:text-slate-400 mt-0.5">{user?.email}</p>
               
-              <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-softblue-50 text-navy-800 border border-softblue-200">
-                <ShieldCheck className="w-3.5 h-3.5 text-accent-500" />
+              <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-softblue-50 dark:bg-[#162032] text-navy-800 dark:text-emerald-400 border border-softblue-200 dark:border-[#2D3B4F]">
+                <ShieldCheck className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400" />
                 <span>
                   {userRole === 'admin' ? 'Super Administrator' : userRole === 'teacher' ? 'Accredited Educator' : 'Student & Parent Account'}
                 </span>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-gray-100 space-y-3 text-xs">
-              <div className="flex justify-between items-center text-charcoal-600">
-                <span className="text-charcoal-400">Account Type</span>
-                <span className="font-semibold text-navy-800 capitalize">{userRole}</span>
+            <div className="pt-4 border-t border-gray-100 dark:border-[#1E293B] space-y-3 text-xs">
+              <div className="flex justify-between items-center text-charcoal-600 dark:text-slate-300">
+                <span className="text-charcoal-400 dark:text-slate-400">Account Type</span>
+                <span className="font-semibold text-navy-800 dark:text-white capitalize">{userRole}</span>
               </div>
-              <div className="flex justify-between items-center text-charcoal-600">
-                <span className="text-charcoal-400">Auth Status</span>
-                <span className="text-accent-600 font-semibold flex items-center gap-1">
+              <div className="flex justify-between items-center text-charcoal-600 dark:text-slate-300">
+                <span className="text-charcoal-400 dark:text-slate-400">Auth Status</span>
+                <span className="text-accent-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>Verified</span>
                 </span>
               </div>
-              <div className="flex justify-between items-center text-charcoal-600">
-                <span className="text-charcoal-400">Security</span>
-                <span className="font-semibold text-navy-800">COPPA Supervised</span>
+              <div className="flex justify-between items-center text-charcoal-600 dark:text-slate-300">
+                <span className="text-charcoal-400 dark:text-slate-400">Security</span>
+                <span className="font-semibold text-navy-800 dark:text-white">COPPA Supervised</span>
+              </div>
+              <div className="flex justify-between items-center text-charcoal-600 dark:text-slate-300 pt-1">
+                <span className="text-charcoal-400 dark:text-slate-400">Appearance</span>
+                <ThemeToggle showLabel={false} />
               </div>
             </div>
 
-            <div className="pt-4 border-t border-gray-100">
+            <div className="pt-4 border-t border-gray-100 dark:border-[#1E293B]">
               <Link
                 href={dashboardHref}
-                className="w-full block text-center py-2.5 px-4 bg-gray-50 hover:bg-gray-100 text-navy-800 rounded-lg text-xs font-bold border border-gray-200 transition"
+                className="w-full block text-center py-2.5 px-4 bg-gray-50 dark:bg-[#162032] hover:bg-gray-100 dark:hover:bg-[#1E293B] text-navy-800 dark:text-slate-200 rounded-lg text-xs font-bold border border-gray-200 dark:border-[#2D3B4F] transition"
               >
                 Return to Dashboard
               </Link>
@@ -485,25 +490,25 @@ export default function ProfilePage() {
           </div>
 
           {/* Right Column: Edit Profile Form */}
-          <div className="lg:col-span-8 bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-subtle">
+          <div className="lg:col-span-8 bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-2xl border border-gray-200 dark:border-[#1E293B] shadow-subtle">
             
             <form onSubmit={handleSaveProfile} className="space-y-6 text-xs">
               
               {/* Account Email (Read-Only) */}
               <div>
-                <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-1.5">
+                <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                   Registered Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-charcoal-400 absolute left-3.5 top-3" />
+                  <Mail className="w-4 h-4 text-charcoal-400 dark:text-slate-400 absolute left-3.5 top-3" />
                   <input
                     type="email"
                     disabled
                     value={user?.email || ''}
-                    className="w-full pl-10 pr-4 py-2.5 bg-gray-100 border border-gray-200 rounded-lg text-charcoal-500 font-medium cursor-not-allowed"
+                    className="w-full pl-10 pr-4 py-2.5 bg-gray-100 dark:bg-[#162032]/60 border border-gray-200 dark:border-[#2D3B4F] rounded-lg text-charcoal-500 dark:text-slate-400 font-medium cursor-not-allowed"
                   />
                 </div>
-                <p className="mt-1 text-[11px] text-charcoal-400">
+                <p className="mt-1 text-[11px] text-charcoal-400 dark:text-slate-400">
                   Email addresses are secured and linked to your authentication provider.
                 </p>
               </div>
@@ -513,7 +518,7 @@ export default function ProfilePage() {
                 <>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-1.5">
+                      <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                         Parent / Guardian Full Name
                       </label>
                       <input
@@ -522,12 +527,12 @@ export default function ProfilePage() {
                         value={parentName}
                         onChange={(e) => setParentName(e.target.value)}
                         placeholder="e.g. Jane Smith"
-                        className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white transition"
+                        className="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] transition"
                       />
                     </div>
 
                     <div>
-                      <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-1.5">
+                      <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                         Student Full Name
                       </label>
                       <input
@@ -536,20 +541,20 @@ export default function ProfilePage() {
                         value={studentName}
                         onChange={(e) => setStudentName(e.target.value)}
                         placeholder="e.g. Alex Smith"
-                        className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white transition"
+                        className="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] transition"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-1.5">
+                      <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                         Student Grade Level
                       </label>
                       <select
                         value={studentGrade}
                         onChange={(e) => setStudentGrade(e.target.value)}
-                        className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white"
+                        className="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg text-navy-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F]"
                       >
                         <option value="Grade 5">Grade 5 (Elementary)</option>
                         <option value="Grade 6">Grade 6 (Middle School)</option>
@@ -563,13 +568,13 @@ export default function ProfilePage() {
                     </div>
 
                     <div>
-                      <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-1.5">
+                      <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                         Primary Timezone
                       </label>
                       <select
                         value={timezone}
                         onChange={(e) => setTimezone(e.target.value)}
-                        className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white"
+                        className="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg text-navy-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F]"
                       >
                         <option value="America/New_York (Eastern Time)">Eastern Time (US / New York)</option>
                         <option value="America/Chicago (Central Time)">Central Time (US / Chicago)</option>
@@ -581,23 +586,23 @@ export default function ProfilePage() {
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-1.5">
+                    <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                       Parent Contact Phone (Optional)
                     </label>
                     <div className="relative">
-                      <Phone className="w-4 h-4 text-charcoal-400 absolute left-3.5 top-3" />
+                      <Phone className="w-4 h-4 text-charcoal-400 dark:text-slate-400 absolute left-3.5 top-3" />
                       <input
                         type="tel"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="+1 (555) 000-0000"
-                        className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white transition"
+                        className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] transition"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-1.5">
+                    <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                       Learning Goals & Key Subjects
                     </label>
                     <textarea
@@ -605,7 +610,7 @@ export default function ProfilePage() {
                       value={learningGoals}
                       onChange={(e) => setLearningGoals(e.target.value)}
                       placeholder="e.g. Focus on AP Calculus BC free-response questions, high school physics homework support, and SAT test strategies..."
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white transition"
+                      className="w-full p-3 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] transition"
                     />
                   </div>
                 </>
@@ -616,7 +621,7 @@ export default function ProfilePage() {
                 <>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-1.5">
+                      <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                         Educator Full Name
                       </label>
                       <input
@@ -625,16 +630,16 @@ export default function ProfilePage() {
                         value={teacherName}
                         onChange={(e) => setTeacherName(e.target.value)}
                         placeholder="e.g. Dr. Jane Smith"
-                        className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white transition"
+                        className="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] transition"
                       />
                     </div>
 
                     <div>
-                      <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-1.5">
+                      <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                         Hourly Rate ($ USD / hour)
                       </label>
                       <div className="relative">
-                        <DollarSign className="w-4 h-4 text-charcoal-400 absolute left-3 top-3" />
+                        <DollarSign className="w-4 h-4 text-charcoal-400 dark:text-slate-400 absolute left-3 top-3" />
                         <input
                           type="number"
                           required
@@ -642,14 +647,14 @@ export default function ProfilePage() {
                           max={150}
                           value={hourlyRate}
                           onChange={(e) => setHourlyRate(e.target.value)}
-                          className="w-full pl-8 pr-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white transition"
+                          className="w-full pl-8 pr-3.5 py-2.5 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg text-navy-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] transition"
                         />
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-1.5">
+                    <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                       Professional Headline
                     </label>
                     <input
@@ -658,12 +663,12 @@ export default function ProfilePage() {
                       value={headline}
                       onChange={(e) => setHeadline(e.target.value)}
                       placeholder="e.g. Certified AP Calculus & Physics Specialist • 8+ Yrs Experience"
-                      className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white transition"
+                      className="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] transition"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-1.5">
+                    <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                       Educator Bio & Introduction
                     </label>
                     <textarea
@@ -671,13 +676,13 @@ export default function ProfilePage() {
                       value={bio}
                       onChange={(e) => setBio(e.target.value)}
                       placeholder="Share your teaching background, credentials, and passion for mentoring students..."
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white transition"
+                      className="w-full p-3 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] transition"
                     />
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-1.5">
+                      <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                         University Degree & Certifications
                       </label>
                       <input
@@ -685,12 +690,12 @@ export default function ProfilePage() {
                         value={education}
                         onChange={(e) => setEducation(e.target.value)}
                         placeholder="e.g. Ph.D. in Applied Mathematics"
-                        className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white transition"
+                        className="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] transition"
                       />
                     </div>
 
                     <div>
-                      <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-1.5">
+                      <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                         Years of Teaching Experience
                       </label>
                       <input
@@ -699,13 +704,13 @@ export default function ProfilePage() {
                         max={40}
                         value={yearsExperience}
                         onChange={(e) => setYearsExperience(e.target.value)}
-                        className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white transition"
+                        className="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg text-navy-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] transition"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-charcoal-700 uppercase tracking-wider mb-1.5">
+                    <label className="block font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                       Teaching Methodology
                     </label>
                     <textarea
@@ -713,24 +718,24 @@ export default function ProfilePage() {
                       value={teachingMethodology}
                       onChange={(e) => setTeachingMethodology(e.target.value)}
                       placeholder="e.g. Socratic problem deconstruction, interactive whiteboard derivations, and structured homework practice..."
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-600 focus:bg-white transition"
+                      className="w-full p-3 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] transition"
                     />
                   </div>
                 </>
               )}
 
               {/* Submit CTA */}
-              <div className="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-gray-100 dark:border-[#1E293B] flex items-center justify-end gap-3">
                 <Link
                   href={dashboardHref}
-                  className="px-4 py-2.5 rounded-lg text-charcoal-600 hover:text-navy-800 hover:bg-gray-100 font-semibold transition"
+                  className="px-4 py-2.5 rounded-lg text-charcoal-600 dark:text-slate-300 hover:text-navy-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#162032] font-semibold transition"
                 >
                   Cancel
                 </Link>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-navy-800 hover:bg-navy-900 disabled:opacity-50 text-white rounded-lg font-bold shadow-subtle transition cursor-pointer"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg font-bold shadow-subtle transition cursor-pointer"
                 >
                   {saving ? (
                     <>
