@@ -23,7 +23,6 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -153,7 +152,7 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 dark:bg-[#0B111E]/90 backdrop-blur-md border-b border-gray-200/80 dark:border-slate-800/80 transition-colors duration-200 select-none">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200/80 transition-all select-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
@@ -172,8 +171,8 @@ export function Navbar() {
                   href={link.href}
                   className={`px-3.5 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all ${
                     active
-                      ? 'text-navy-900 bg-softblue-100 font-bold dark:bg-slate-800 dark:text-emerald-400'
-                      : 'text-charcoal-600 hover:text-navy-900 hover:bg-gray-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/60'
+                      ? 'text-navy-900 bg-softblue-100 font-bold'
+                      : 'text-charcoal-600 hover:text-navy-900 hover:bg-gray-50'
                   }`}
                 >
                   {link.name}
@@ -183,12 +182,9 @@ export function Navbar() {
           </nav>
 
           {/* Right: Actions & User Profile Section */}
-          <div className="hidden md:flex items-center space-x-2.5">
-            {/* Dark / Light Theme Toggle */}
-            <ThemeToggle />
-
+          <div className="hidden md:flex items-center space-x-3">
             {user ? (
-              <div className="flex items-center space-x-2.5">
+              <div className="flex items-center space-x-3">
                 
                 {/* Quick Dashboard Shortcut Button */}
                 <Link
@@ -196,7 +192,7 @@ export function Navbar() {
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-subtle ${
                     userRole === 'admin'
                       ? 'bg-navy-900 text-white hover:bg-navy-950 border border-navy-700'
-                      : 'bg-navy-800 text-white hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500'
+                      : 'bg-navy-800 text-white hover:bg-navy-900'
                   }`}
                 >
                   {userRole === 'admin' ? (
@@ -213,10 +209,10 @@ export function Navbar() {
                 <div className="relative" ref={dropdownRef}>
                   <button
                     onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                    className="flex items-center gap-2 pl-2.5 pr-2 py-1 rounded-xl bg-gray-50 hover:bg-gray-100 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 border border-gray-200/90 dark:border-slate-700 text-xs transition cursor-pointer group"
+                    className="flex items-center gap-2 pl-2.5 pr-2 py-1 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200/90 text-xs transition cursor-pointer group"
                     aria-expanded={profileDropdownOpen}
                   >
-                    <div className="relative w-6 h-6 rounded-full overflow-hidden bg-navy-800 dark:bg-slate-700 text-white flex items-center justify-center font-bold text-[11px] uppercase shadow-subtle flex-shrink-0">
+                    <div className="relative w-6 h-6 rounded-full overflow-hidden bg-navy-800 text-white flex items-center justify-center font-bold text-[11px] uppercase shadow-subtle flex-shrink-0">
                       {userAvatarUrl ? (
                         <Image
                           src={userAvatarUrl}
@@ -229,13 +225,13 @@ export function Navbar() {
                         <span>{userDisplayName.charAt(0)}</span>
                       )}
                     </div>
-                    <span className="font-bold text-navy-900 dark:text-slate-100 max-w-[110px] truncate">
+                    <span className="font-bold text-navy-900 max-w-[110px] truncate">
                       {userDisplayName}
                     </span>
-                    <span className="text-[10px] font-semibold text-charcoal-500 dark:text-slate-300 uppercase px-1.5 py-0.5 rounded bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600">
+                    <span className="text-[10px] font-semibold text-charcoal-500 uppercase px-1.5 py-0.5 rounded bg-white border border-gray-200">
                       {userRole}
                     </span>
-                    <ChevronDown className={`w-3.5 h-3.5 text-charcoal-400 dark:text-slate-400 transition-transform duration-200 ${profileDropdownOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`w-3.5 h-3.5 text-charcoal-400 transition-transform duration-200 ${profileDropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
 
                   {/* Dropdown Menu Card with Fluid Motion */}
@@ -246,12 +242,12 @@ export function Navbar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 4, scale: 0.97 }}
                         transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                        className="absolute right-0 mt-2 w-64 rounded-2xl bg-white dark:bg-[#111C2E] border border-gray-200/90 dark:border-slate-800 shadow-lift-lg py-2 z-50 origin-top-right"
+                        className="absolute right-0 mt-2 w-64 rounded-2xl bg-white border border-gray-200/90 shadow-lift-lg py-2 z-50 origin-top-right"
                       >
                         {/* Dropdown Header */}
-                        <div className="px-4 py-3 border-b border-gray-100 dark:border-slate-800">
+                        <div className="px-4 py-3 border-b border-gray-100">
                           <div className="flex items-center gap-2.5 mb-1.5">
-                            <div className="relative w-8 h-8 rounded-full overflow-hidden bg-navy-800 dark:bg-slate-700 text-white flex items-center justify-center font-bold text-xs uppercase shadow-subtle flex-shrink-0">
+                            <div className="relative w-8 h-8 rounded-full overflow-hidden bg-navy-800 text-white flex items-center justify-center font-bold text-xs uppercase shadow-subtle flex-shrink-0">
                               {userAvatarUrl ? (
                                 <Image
                                   src={userAvatarUrl}
@@ -265,16 +261,16 @@ export function Navbar() {
                               )}
                             </div>
                             <div className="min-w-0 flex-1">
-                              <div className="font-bold text-sm text-navy-900 dark:text-white truncate">
+                              <div className="font-bold text-sm text-navy-900 truncate">
                                 {userDisplayName}
                               </div>
-                              <div className="text-[11px] text-charcoal-500 dark:text-slate-400 truncate">
+                              <div className="text-[11px] text-charcoal-500 truncate">
                                 {user.email}
                               </div>
                             </div>
                           </div>
-                          <div className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-accent-700 dark:text-emerald-300 bg-accent-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-accent-200 dark:border-emerald-800/60">
-                            <ShieldCheck className="w-3 h-3 text-accent-500 dark:text-emerald-400" />
+                          <div className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-accent-700 bg-accent-50 px-2 py-0.5 rounded border border-accent-200">
+                            <ShieldCheck className="w-3 h-3 text-accent-500" />
                             <span>{userRole === 'admin' ? 'Super Administrator' : userRole === 'teacher' ? 'Accredited Tutor' : 'Student & Parent'}</span>
                           </div>
                         </div>
@@ -283,38 +279,38 @@ export function Navbar() {
                         <div className="py-1 text-xs">
                           <Link
                             href="/profile"
-                            className="flex items-center gap-2.5 px-4 py-2.5 text-charcoal-700 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-800/60 font-medium transition"
+                            className="flex items-center gap-2.5 px-4 py-2.5 text-charcoal-700 hover:text-navy-900 hover:bg-gray-50 font-medium transition"
                           >
-                            <User className="w-4 h-4 text-accent-600 dark:text-emerald-400" />
+                            <User className="w-4 h-4 text-accent-600" />
                             <span>Edit Profile & Account</span>
                           </Link>
 
                           <Link
                             href={dashboardHref}
-                            className="flex items-center gap-2.5 px-4 py-2.5 text-charcoal-700 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-800/60 font-medium transition"
+                            className="flex items-center gap-2.5 px-4 py-2.5 text-charcoal-700 hover:text-navy-900 hover:bg-gray-50 font-medium transition"
                           >
-                            <LayoutDashboard className="w-4 h-4 text-navy-800 dark:text-softblue-300" />
+                            <LayoutDashboard className="w-4 h-4 text-navy-800" />
                             <span>{dashboardLabel}</span>
                           </Link>
 
                           {userRole === 'student' && (
                             <Link
                               href="/tutors"
-                              className="flex items-center gap-2.5 px-4 py-2.5 text-charcoal-700 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-800/60 font-medium transition"
+                              className="flex items-center gap-2.5 px-4 py-2.5 text-charcoal-700 hover:text-navy-900 hover:bg-gray-50 font-medium transition"
                             >
-                              <GraduationCap className="w-4 h-4 text-charcoal-500 dark:text-slate-400" />
+                              <GraduationCap className="w-4 h-4 text-charcoal-500" />
                               <span>Browse Verified Tutors</span>
                             </Link>
                           )}
                         </div>
 
                         {/* Sign Out Divider & Action */}
-                        <div className="pt-1 border-t border-gray-100 dark:border-slate-800">
+                        <div className="pt-1 border-t border-gray-100">
                           <button
                             onClick={handleSignOut}
-                            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition cursor-pointer"
+                            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-semibold text-red-600 hover:bg-red-50 transition cursor-pointer"
                           >
-                            <LogOut className="w-4 h-4 text-red-500 dark:text-red-400" />
+                            <LogOut className="w-4 h-4 text-red-500" />
                             <span>Sign Out</span>
                           </button>
                         </div>
@@ -330,15 +326,15 @@ export function Navbar() {
               <div className="flex items-center space-x-2">
                 <Link
                   href="/login"
-                  className="px-3.5 py-2 text-xs font-bold text-charcoal-700 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-800/60 rounded-lg transition-colors flex items-center gap-1.5"
+                  className="px-3.5 py-2 text-xs font-bold text-charcoal-700 hover:text-navy-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-1.5"
                 >
-                  <LogIn className="w-3.5 h-3.5 text-charcoal-500 dark:text-slate-400" />
+                  <LogIn className="w-3.5 h-3.5 text-charcoal-500" />
                   <span>Log In</span>
                 </Link>
 
                 <Link
                   href="/register/student"
-                  className="inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-white bg-navy-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 rounded-lg hover:bg-navy-900 transition shadow-subtle"
+                  className="inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-white bg-navy-800 rounded-lg hover:bg-navy-900 transition shadow-subtle"
                 >
                   <span>Sign Up</span>
                 </Link>
@@ -348,10 +344,9 @@ export function Navbar() {
 
           {/* Mobile menu trigger */}
           <div className="flex md:hidden items-center space-x-2">
-            <ThemeToggle />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-charcoal-600 dark:text-slate-300 hover:text-navy-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition"
+              className="p-2 rounded-lg text-charcoal-600 hover:text-navy-800 hover:bg-gray-100 transition"
               aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -369,21 +364,21 @@ export function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="md:hidden overflow-hidden border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-[#0B111E] px-4 pt-3 pb-6 space-y-2.5 shadow-lift"
+            className="md:hidden overflow-hidden border-t border-gray-200 bg-white px-4 pt-3 pb-6 space-y-2 shadow-lift"
           >
             {/* User Profile Header for Mobile */}
             {user && (
-              <div className="p-3 mb-2 bg-gray-50 dark:bg-slate-800/60 rounded-xl border border-gray-200 dark:border-slate-800 flex items-center justify-between">
+              <div className="p-3 mb-2 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-full bg-navy-800 dark:bg-slate-700 text-white flex items-center justify-center font-bold text-xs uppercase shadow-subtle">
+                  <div className="w-8 h-8 rounded-full bg-navy-800 text-white flex items-center justify-center font-bold text-xs uppercase shadow-subtle">
                     {userDisplayName.charAt(0)}
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-navy-900 dark:text-white">{userDisplayName}</div>
-                    <div className="text-[11px] text-charcoal-500 dark:text-slate-400 truncate max-w-[160px]">{user.email}</div>
+                    <div className="text-xs font-bold text-navy-900">{userDisplayName}</div>
+                    <div className="text-[11px] text-charcoal-500 truncate max-w-[160px]">{user.email}</div>
                   </div>
                 </div>
-                <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-softblue-100 dark:bg-slate-700 text-navy-800 dark:text-emerald-400 border border-softblue-200 dark:border-slate-600">
+                <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-softblue-100 text-navy-800 border border-softblue-200">
                   {userRole}
                 </span>
               </div>
@@ -396,35 +391,29 @@ export function Navbar() {
                   key={link.name}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block px-3 py-2 rounded-lg text-sm font-medium text-charcoal-700 dark:text-slate-200 hover:text-navy-800 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-800/60 transition-colors"
+                  className="block px-3 py-2 rounded-lg text-sm font-medium text-charcoal-700 hover:text-navy-800 hover:bg-gray-50 transition-colors"
                 >
                   {link.name}
                 </Link>
               ))}
             </div>
 
-            {/* Mobile Appearance Toggle Row */}
-            <div className="flex items-center justify-between p-2.5 rounded-xl bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-800">
-              <span className="text-xs font-semibold text-charcoal-700 dark:text-slate-300">Theme</span>
-              <ThemeToggle showLabel />
-            </div>
-
             {/* User Specific Mobile Options */}
             {user ? (
-              <div className="pt-2 border-t border-gray-100 dark:border-slate-800 space-y-2">
+              <div className="pt-3 border-t border-gray-100 space-y-2">
                 <Link
                   href="/profile"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-navy-800 dark:text-slate-200 bg-gray-50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition active:scale-98"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-navy-800 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition active:scale-98"
                 >
-                  <User className="w-4 h-4 text-accent-600 dark:text-emerald-400" />
+                  <User className="w-4 h-4 text-accent-600" />
                   <span>Edit Profile & Settings</span>
                 </Link>
 
                 <Link
                   href={dashboardHref}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-white bg-navy-800 dark:bg-emerald-600 rounded-lg hover:bg-navy-900 dark:hover:bg-emerald-500 shadow-subtle transition active:scale-98"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-white bg-navy-800 rounded-lg hover:bg-navy-900 shadow-subtle transition active:scale-98"
                 >
                   <LayoutDashboard className="w-4 h-4" />
                   <span>Go to {dashboardLabel}</span>
@@ -432,18 +421,18 @@ export function Navbar() {
 
                 <button
                   onClick={handleSignOut}
-                  className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/60 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer transition active:scale-98"
+                  className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold text-red-600 border border-red-200 rounded-lg hover:bg-red-50 cursor-pointer transition active:scale-98"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   <span>Sign Out</span>
                 </button>
               </div>
             ) : (
-              <div className="pt-2 border-t border-gray-100 dark:border-slate-800 space-y-2">
+              <div className="pt-3 border-t border-gray-100 space-y-2">
                 <Link
                   href="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full block text-center py-2.5 text-xs font-bold text-navy-800 dark:text-slate-200 border border-gray-300 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800/60 transition active:scale-98"
+                  className="w-full block text-center py-2.5 text-xs font-bold text-navy-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition active:scale-98"
                 >
                   Log In
                 </Link>

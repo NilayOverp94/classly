@@ -23,19 +23,14 @@ import {
   Camera,
   Upload,
   Trash2,
-  Sparkles,
-  Sun,
-  Moon,
-  Monitor
+  Sparkles
 } from 'lucide-react';
-import { useTheme } from 'next-themes';
 import { createClient } from '@/lib/supabase/client';
 import { FadeIn } from '@/components/ui/MotionComponents';
 
 export default function ProfilePage() {
   const router = useRouter();
   const supabase = createClient();
-  const { theme, setTheme } = useTheme();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [loading, setLoading] = useState(true);
@@ -476,51 +471,6 @@ export default function ProfilePage() {
               <div className="flex justify-between items-center text-charcoal-600">
                 <span className="text-charcoal-400">Security</span>
                 <span className="font-semibold text-navy-800">COPPA Supervised</span>
-              </div>
-            </div>
-
-            {/* Interface Theme Preference */}
-            <div className="pt-4 border-t border-gray-100 dark:border-slate-800">
-              <span className="block text-[11px] font-bold uppercase tracking-wider text-charcoal-500 dark:text-slate-400 mb-2">
-                Color Theme
-              </span>
-              <div className="grid grid-cols-3 gap-1.5 p-1 bg-gray-50 dark:bg-slate-800/60 rounded-xl border border-gray-200 dark:border-slate-700 text-center">
-                <button
-                  type="button"
-                  onClick={() => setTheme('light')}
-                  className={`py-1.5 px-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition cursor-pointer ${
-                    theme === 'light'
-                      ? 'bg-white text-navy-900 shadow-sm border border-gray-200 dark:border-slate-600'
-                      : 'text-charcoal-500 hover:text-navy-900 dark:text-slate-400 dark:hover:text-white'
-                  }`}
-                >
-                  <Sun className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Light</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTheme('dark')}
-                  className={`py-1.5 px-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition cursor-pointer ${
-                    theme === 'dark'
-                      ? 'bg-white dark:bg-slate-700 text-navy-900 dark:text-white shadow-sm border border-gray-200 dark:border-slate-600'
-                      : 'text-charcoal-500 hover:text-navy-900 dark:text-slate-400 dark:hover:text-white'
-                  }`}
-                >
-                  <Moon className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Dark</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTheme('system')}
-                  className={`py-1.5 px-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition cursor-pointer ${
-                    theme === 'system'
-                      ? 'bg-white dark:bg-slate-700 text-navy-900 dark:text-white shadow-sm border border-gray-200 dark:border-slate-600'
-                      : 'text-charcoal-500 hover:text-navy-900 dark:text-slate-400 dark:hover:text-white'
-                  }`}
-                >
-                  <Monitor className="w-3.5 h-3.5 text-blue-500" />
-                  <span>System</span>
-                </button>
               </div>
             </div>
 

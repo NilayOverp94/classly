@@ -7,13 +7,6 @@
 :root {
   --background: #FAFAF8;
   --foreground: #242B35;
-  color-scheme: light;
-}
-
-.dark {
-  --background: #0B111E;
-  --foreground: #F1F5F9;
-  color-scheme: dark;
 }
 
 body {
@@ -41,66 +34,6 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
-}
-
-.dark ::-webkit-scrollbar-track {
-  background: #0B111E;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: #1E293B;
-  border-radius: 4px;
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
-}
-
-/* Dark theme intelligent surface mapping with zero specificity override */
-@layer utilities {
-  .dark :where(.bg-white) {
-    background-color: #111C2E;
-  }
-  .dark :where(.bg-offwhite) {
-    background-color: #0B111E;
-  }
-  .dark :where(.bg-\[\#FAFAF8\], .bg-\[\#F9FAF8\]) {
-    background-color: #0B111E;
-  }
-  .dark :where(.bg-gray-50) {
-    background-color: #162238;
-  }
-  .dark :where(.bg-gray-100) {
-    background-color: #1E2C42;
-  }
-  .dark :where(.border-gray-200, .border-gray-100, .border-charcoal-200, .border-charcoal-100) {
-    border-color: #1E293B;
-  }
-  .dark :where(.text-navy-900, .text-navy-800) {
-    color: #F8FAFC;
-  }
-  .dark :where(.text-charcoal-800, .text-charcoal-700) {
-    color: #E2E8F0;
-  }
-  .dark :where(.text-charcoal-600, .text-charcoal-500) {
-    color: #94A3B8;
-  }
-  .dark :where(.text-charcoal-400) {
-    color: #64748B;
-  }
-  .dark :where(.shadow-card, .shadow-lift, .shadow-subtle) {
-    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
-  }
-}
-
-.dark input, 
-.dark textarea, 
-.dark select {
-  color-scheme: dark;
-}
-
-.dark ::placeholder {
-  color: #64748B;
 }
 
 @keyframes checkPop {

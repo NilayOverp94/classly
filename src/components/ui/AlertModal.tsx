@@ -108,7 +108,7 @@ export function AlertModal({
         className={`relative w-full max-w-sm rounded-2xl border p-6 text-center shadow-2xl transition-all transform animate-in zoom-in-95 duration-200 ${
           isDark 
             ? 'bg-navy-900/95 border-navy-700/80 text-white shadow-navy-950/50' 
-            : 'bg-white dark:bg-[#111C2E] border-gray-200 dark:border-slate-700 text-navy-800 dark:text-white shadow-xl'
+            : 'bg-white border-gray-200 text-navy-800 shadow-xl'
         }`}
       >
         <button
@@ -116,7 +116,7 @@ export function AlertModal({
           className={`absolute top-4 right-4 p-1.5 rounded-lg transition ${
             isDark 
               ? 'text-gray-400 hover:text-white hover:bg-navy-800' 
-              : 'text-charcoal-400 hover:text-navy-800 hover:bg-gray-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800'
+              : 'text-charcoal-400 hover:text-navy-800 hover:bg-gray-100'
           }`}
         >
           <X className="w-4 h-4" />
