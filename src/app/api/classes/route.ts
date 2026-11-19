@@ -1,11 +1,23 @@
 import { NextResponse } from 'next/server';
+import { getSupabaseAdminConfig } from '@/lib/supabase/admin';
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://isooxdepfamnufwglosa.supabase.co';
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzb294ZGVwZmFtbnVmd2dsb3NhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5NDU5MTQ1MSwiZXhwIjoyMTEwMTY3NDUxfQ.0Tgs5rBFTtsAoFjEqlzLxSbJMJ3IXv3Xiol3G78zobo';
+// Helper for admin config
+function getAdminAuth() {
+  const { supabaseUrl, serviceRoleKey } = getSupabaseAdminConfig();
+  return {
+    SUPABASE_URL: supabaseUrl,
+    SERVICE_KEY: serviceRoleKey,
+    headers: {
+      'Authorization': `Bearer ${serviceRoleKey}`,
+      'apikey': serviceRoleKey,
+    },
+  };
+}
 
 // GET: Fetch teacher's published classes or all published classes
 export async function GET(request: Request) {
   try {
+    const { SUPABASE_URL, SERVICE_KEY } = getAdminAuth();
     const { searchParams } = new URL(request.url);
     const teacherId = searchParams.get('teacherId');
 
@@ -57,6 +69,7 @@ export async function GET(request: Request) {
 // POST: Publish a new class for a teacher and save to Supabase
 export async function POST(request: Request) {
   try {
+    const { SUPABASE_URL, SERVICE_KEY } = getAdminAuth();
     const body = await request.json();
     const {
       teacherId,
@@ -145,6 +158,7 @@ export async function POST(request: Request) {
 // DELETE: Remove a class from teacher's schedule
 export async function DELETE(request: Request) {
   try {
+    const { SUPABASE_URL, SERVICE_KEY } = getAdminAuth();
     const { searchParams } = new URL(request.url);
     const teacherId = searchParams.get('teacherId');
     const classId = searchParams.get('classId');

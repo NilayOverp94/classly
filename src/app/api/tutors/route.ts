@@ -1,15 +1,14 @@
 import { NextResponse } from 'next/server';
-
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://isooxdepfamnufwglosa.supabase.co';
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzb294ZGVwZmFtbnVmd2dsb3NhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5NDU5MTQ1MSwiZXhwIjoyMTEwMTY3NDUxfQ.0Tgs5rBFTtsAoFjEqlzLxSbJMJ3IXv3Xiol3G78zobo';
+import { getSupabaseAdminConfig } from '@/lib/supabase/admin';
 
 export async function GET() {
   try {
-    const adminUrl = `${SUPABASE_URL}/auth/v1/admin/users`;
+    const { supabaseUrl, serviceRoleKey } = getSupabaseAdminConfig();
+    const adminUrl = `${supabaseUrl}/auth/v1/admin/users`;
     const res = await fetch(adminUrl, {
       headers: {
-        'Authorization': `Bearer ${SERVICE_KEY}`,
-        'apikey': SERVICE_KEY,
+        'Authorization': `Bearer ${serviceRoleKey}`,
+        'apikey': serviceRoleKey,
       },
       cache: 'no-store',
     });

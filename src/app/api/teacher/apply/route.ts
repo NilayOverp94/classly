@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
 import { sendTeacherApplicationStatusEmail } from '@/lib/resend/client';
-
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://isooxdepfamnufwglosa.supabase.co';
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzb294ZGVwZmFtbnVmd2dsb3NhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5NDU5MTQ1MSwiZXhwIjoyMTEwMTY3NDUxfQ.0Tgs5rBFTtsAoFjEqlzLxSbJMJ3IXv3Xiol3G78zobo';
+import { getSupabaseAdminConfig, isAdminEmail } from '@/lib/supabase/admin';
 
 export async function POST(request: Request) {
   try {
+    const { supabaseUrl, serviceRoleKey } = getSupabaseAdminConfig();
+    const SUPABASE_URL = supabaseUrl;
+    const SERVICE_KEY = serviceRoleKey;
+
     const body = await request.json();
     const { 
       email, 
@@ -32,7 +34,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Email address is required.' }, { status: 400 });
     }
 
-    const isAdmin = cleanEmail === 'milayraj713@gmail.com' || cleanEmail === 'nilayraj713@gmail.com';
+    const isAdmin = isAdminEmail(cleanEmail);
     if (isAdmin) {
       return NextResponse.json({
         error: 'This email is reserved for platform administration. Please use an educator email.',

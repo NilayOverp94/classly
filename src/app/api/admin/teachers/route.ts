@@ -1,17 +1,16 @@
 import { NextResponse } from 'next/server';
 import { sendTeacherApplicationStatusEmail } from '@/lib/resend/client';
-
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://isooxdepfamnufwglosa.supabase.co';
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzb294ZGVwZmFtbnVmd2dsb3NhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5NDU5MTQ1MSwiZXhwIjoyMTEwMTY3NDUxfQ.0Tgs5rBFTtsAoFjEqlzLxSbJMJ3IXv3Xiol3G78zobo';
+import { getSupabaseAdminConfig, isAdminEmail } from '@/lib/supabase/admin';
 
 // GET: Fetch all educator applications (pending and approved)
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const adminUrl = `${SUPABASE_URL}/auth/v1/admin/users`;
+    const { supabaseUrl, serviceRoleKey } = getSupabaseAdminConfig();
+    const adminUrl = `${supabaseUrl}/auth/v1/admin/users`;
     const res = await fetch(adminUrl, {
       headers: {
-        'Authorization': `Bearer ${SERVICE_KEY}`,
-        'apikey': SERVICE_KEY,
+        'Authorization': `Bearer ${serviceRoleKey}`,
+        'apikey': serviceRoleKey,
       },
       cache: 'no-store',
     });
@@ -32,7 +31,7 @@ export async function GET() {
       const email = (u.email || '').toLowerCase().trim();
 
       // Skip platform administrators
-      if (email === 'milayraj713@gmail.com' || email === 'nilayraj713@gmail.com') {
+      if (isAdminEmail(email)) {
         continue;
       }
 
@@ -103,6 +102,7 @@ export async function GET() {
 // POST: Approve or reject teacher application
 export async function POST(request: Request) {
   try {
+    const { supabaseUrl, serviceRoleKey } = getSupabaseAdminConfig();
     const body = await request.json();
     const { userId, action, notes } = body;
 
@@ -110,13 +110,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'userId and action are required.' }, { status: 400 });
     }
 
-    const adminUrl = `${SUPABASE_URL}/auth/v1/admin/users/${userId}`;
+    const adminUrl = `${supabaseUrl}/auth/v1/admin/users/${userId}`;
 
     // 1. Fetch current user metadata
     const userRes = await fetch(adminUrl, {
       headers: {
-        'Authorization': `Bearer ${SERVICE_KEY}`,
-        'apikey': SERVICE_KEY,
+        'Authorization': `Bearer ${serviceRoleKey}`,
+        'apikey': serviceRoleKey,
       },
       cache: 'no-store',
     });
@@ -133,8 +133,8 @@ export async function POST(request: Request) {
     const updateRes = await fetch(adminUrl, {
       method: 'PUT',
       headers: {
-        'Authorization': `Bearer ${SERVICE_KEY}`,
-        'apikey': SERVICE_KEY,
+        'Authorization': `Bearer ${serviceRoleKey}`,
+        'apikey': serviceRoleKey,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({

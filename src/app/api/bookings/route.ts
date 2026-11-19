@@ -1,12 +1,24 @@
 import { NextResponse } from 'next/server';
 import { sendBookingConfirmationEmail, sendTeacherBookingNotificationEmail } from '@/lib/resend/client';
+import { getSupabaseAdminConfig } from '@/lib/supabase/admin';
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://isooxdepfamnufwglosa.supabase.co';
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzb294ZGVwZmFtbnVmd2dsb3NhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5NDU5MTQ1MSwiZXhwIjoyMTEwMTY3NDUxfQ.0Tgs5rBFTtsAoFjEqlzLxSbJMJ3IXv3Xiol3G78zobo';
+function getAdminAuth() {
+  const { supabaseUrl, serviceRoleKey } = getSupabaseAdminConfig();
+  return {
+    adminUrl: `${supabaseUrl}/auth/v1/admin/users`,
+    supabaseUrl,
+    serviceRoleKey,
+    headers: {
+      'Authorization': `Bearer ${serviceRoleKey}`,
+      'apikey': serviceRoleKey,
+    },
+  };
+}
 
 // POST: Create a new booking, update teacher and student records, and send email notifications
 export async function POST(request: Request) {
   try {
+    const { adminUrl, supabaseUrl, serviceRoleKey, headers } = getAdminAuth();
     const body = await request.json();
     const {
       tutorId,
@@ -24,12 +36,8 @@ export async function POST(request: Request) {
     }
 
     // 1. Fetch users from Supabase Auth Admin
-    const adminUrl = `${SUPABASE_URL}/auth/v1/admin/users`;
     const res = await fetch(adminUrl, {
-      headers: {
-        'Authorization': `Bearer ${SERVICE_KEY}`,
-        'apikey': SERVICE_KEY,
-      },
+      headers,
       cache: 'no-store',
     });
 
@@ -91,11 +99,11 @@ export async function POST(request: Request) {
     const existingTeacherBookings: any[] = Array.isArray(teacherMeta.bookings) ? teacherMeta.bookings : [];
     const updatedTeacherBookings = [newBooking, ...existingTeacherBookings];
 
-    await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${teacherUser.id}`, {
+    await fetch(`${supabaseUrl}/auth/v1/admin/users/${teacherUser.id}`, {
       method: 'PUT',
       headers: {
-        'Authorization': `Bearer ${SERVICE_KEY}`,
-        'apikey': SERVICE_KEY,
+        'Authorization': `Bearer ${serviceRoleKey}`,
+        'apikey': serviceRoleKey,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -115,11 +123,11 @@ export async function POST(request: Request) {
         const existingStudentBookings: any[] = Array.isArray(studentMeta.bookings) ? studentMeta.bookings : [];
         const updatedStudentBookings = [newBooking, ...existingStudentBookings];
 
-        await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${studentId}`, {
+        await fetch(`${supabaseUrl}/auth/v1/admin/users/${studentId}`, {
           method: 'PUT',
           headers: {
-            'Authorization': `Bearer ${SERVICE_KEY}`,
-            'apikey': SERVICE_KEY,
+            'Authorization': `Bearer ${serviceRoleKey}`,
+            'apikey': serviceRoleKey,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
@@ -185,12 +193,9 @@ export async function GET(request: Request) {
       return NextResponse.json({ bookings: [] });
     }
 
-    const adminUrl = `${SUPABASE_URL}/auth/v1/admin/users`;
+    const { adminUrl, headers } = getAdminAuth();
     const res = await fetch(adminUrl, {
-      headers: {
-        'Authorization': `Bearer ${SERVICE_KEY}`,
-        'apikey': SERVICE_KEY,
-      },
+      headers,
       cache: 'no-store',
     });
 

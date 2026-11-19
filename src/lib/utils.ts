@@ -33,3 +33,13 @@ export function formatTime(timeString: string | Date): string {
   }).format(date);
 }
 
+export function isUserAdmin(email?: string | null, metadataRole?: string | null): boolean {
+  if (metadataRole === 'admin') return true;
+  if (!email) return false;
+  const clean = email.toLowerCase().trim();
+  const adminEmails = [
+    'nilayraj713@gmail.com',
+    'milayraj713@gmail.com',
+  ];
+  return adminEmails.includes(clean);
+}

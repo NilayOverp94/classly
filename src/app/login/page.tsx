@@ -142,14 +142,6 @@ function LoginFormContent() {
     }
 
     // 2. SIGN IN (MANUAL LOGIN)
-    if (isAdmin) {
-      if (cleanPassword !== 'Tejaswik123') {
-        setLoading(false);
-        setErrorMessage('Invalid administrator credentials. Incorrect password.');
-        return;
-      }
-    }
-
     try {
       // First attempt: standard signInWithPassword
       const { data, error } = await supabase.auth.signInWithPassword({
