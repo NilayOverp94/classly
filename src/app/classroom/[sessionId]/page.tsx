@@ -24,7 +24,8 @@ import {
   AlertCircle,
   CheckCircle2,
   Bell,
-  X
+  X,
+  RotateCcw
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
@@ -67,11 +68,19 @@ export default function ClassroomPage() {
   // Real-time channel ref
   const channelRef = useRef<any>(null);
 
-  // Whiteboard Canvas State
+  // Whiteboard Canvas State & High-DPI / Smooth Stroke Enhancements
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [tool, setTool] = useState<'pen' | 'eraser'>('pen');
   const [penColor, setPenColor] = useState<string>('#183153');
+  const [strokeWidth, setStrokeWidth] = useState<number>(3);
+
+  // Undo history & stroke smoothing refs
+  const historyRef = useRef<ImageData[]>([]);
+  const lastPointRef = useRef<{ x: number; y: number } | null>(null);
+  const remoteLastPointRef = useRef<{ x: number; y: number } | null>(null);
+  const strokeBufferRef = useRef<Array<{ nx: number; ny: number }>>([]);
+  const flushTimeoutRef = useRef<any>(null);
 
   // Elapsed timer
   const [seconds, setSeconds] = useState(0);
@@ -197,101 +206,301 @@ export default function ClassroomPage() {
     };
   }, [canonicalRoomName, userRole]);
 
-  // Canvas setup
-  useEffect(() => {
+  // Save current canvas state to history for undo
+  const saveSnapshot = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-  }, [viewMode]);
-
-  // Remote stroke renderer
-  const drawRemoteStroke = (payload: { type: 'start' | 'draw' | 'stop'; x: number; y: number; color: string; tool: string }) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    if (payload.type === 'start') {
-      ctx.beginPath();
-      ctx.moveTo(payload.x, payload.y);
-    } else if (payload.type === 'draw') {
-      if (payload.tool === 'eraser') {
-        ctx.strokeStyle = '#FFFFFF';
-        ctx.lineWidth = 24;
-      } else {
-        ctx.strokeStyle = payload.color;
-        ctx.lineWidth = 3;
+    try {
+      if (historyRef.current.length >= 15) {
+        historyRef.current.shift();
       }
-      ctx.lineCap = 'round';
-      ctx.lineTo(payload.x, payload.y);
-      ctx.stroke();
+      historyRef.current.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    } catch (e) {
+      // Fallback if security restrictions block getImageData
     }
   };
 
-  // Local drawing handlers
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleUndo = () => {
     if (!canDraw) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * canvas.width;
-    const y = ((e.clientY - rect.top) / rect.height) * canvas.height;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    setIsDrawing(true);
-
-    if (channelRef.current) {
-      channelRef.current.send({
-        type: 'broadcast',
-        event: 'draw_stroke',
-        payload: { type: 'start', x, y, color: penColor, tool },
-      });
+    if (historyRef.current.length > 0) {
+      const previousState = historyRef.current.pop();
+      if (previousState) {
+        ctx.putImageData(previousState, 0, 0);
+      }
+    } else {
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
   };
 
-  const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing || !canDraw) return;
+  // Canvas setup & High-DPI Retina Display support (preserves content across layout changes)
+  useEffect(() => {
+    const handleResize = () => {
+      const canvas = canvasRef.current;
+      if (!canvas || !canvas.parentElement) return;
+
+      const rect = canvas.parentElement.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+
+      const dpr = window.devicePixelRatio || 1;
+      const targetWidth = Math.round(rect.width * dpr);
+      const targetHeight = Math.round(rect.height * dpr);
+
+      if (canvas.width === targetWidth && canvas.height === targetHeight) return;
+
+      // Preserve existing drawings on an offscreen buffer before resizing
+      const offscreen = document.createElement('canvas');
+      offscreen.width = canvas.width;
+      offscreen.height = canvas.height;
+      const offCtx = offscreen.getContext('2d');
+      if (offCtx && canvas.width > 0 && canvas.height > 0) {
+        offCtx.drawImage(canvas, 0, 0);
+      }
+
+      // Update physical resolution for crystal-sharp Retina rendering
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // Fill background
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Restore drawing buffer seamlessly
+      if (offscreen.width > 0 && offscreen.height > 0) {
+        ctx.drawImage(offscreen, 0, 0, offscreen.width, offscreen.height, 0, 0, canvas.width, canvas.height);
+      }
+    };
+
+    const timer = setTimeout(handleResize, 80);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [viewMode]);
+
+  // Coordinate resolution with High-DPI scaling and 0..1 normalization
+  const getCanvasPoint = (clientX: number, clientY: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0, nx: 0, ny: 0 };
+    const rect = canvas.getBoundingClientRect();
+    const nx = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const ny = Math.max(0, Math.min(1, (clientY - rect.top) / rect.height));
+    const x = nx * canvas.width;
+    const y = ny * canvas.height;
+    return { x, y, nx, ny };
+  };
+
+  // Remote stroke renderer with smooth curve interpolation and batch handling
+  const drawRemoteStroke = (payload: any) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * canvas.width;
-    const y = ((e.clientY - rect.top) / rect.height) * canvas.height;
+    const dpr = window.devicePixelRatio || 1;
 
-    if (tool === 'eraser') {
-      ctx.strokeStyle = '#FFFFFF';
-      ctx.lineWidth = 24;
-    } else {
-      ctx.strokeStyle = penColor;
-      ctx.lineWidth = 3;
-    }
+    const width = (payload.tool === 'eraser' ? 30 : (payload.strokeWidth || 3)) * dpr;
+    ctx.strokeStyle = payload.tool === 'eraser' ? '#FFFFFF' : (payload.color || '#183153');
+    ctx.lineWidth = width;
     ctx.lineCap = 'round';
-    ctx.lineTo(x, y);
-    ctx.stroke();
+    ctx.lineJoin = 'round';
+
+    if (payload.type === 'start') {
+      const x = payload.nx !== undefined ? payload.nx * canvas.width : (payload.x / 1600) * canvas.width;
+      const y = payload.ny !== undefined ? payload.ny * canvas.height : (payload.y / 1000) * canvas.height;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      remoteLastPointRef.current = { x, y };
+    } else if (payload.type === 'batch' && Array.isArray(payload.points)) {
+      payload.points.forEach((pt: { nx: number; ny: number }) => {
+        const x = pt.nx * canvas.width;
+        const y = pt.ny * canvas.height;
+        if (remoteLastPointRef.current) {
+          const midX = (remoteLastPointRef.current.x + x) / 2;
+          const midY = (remoteLastPointRef.current.y + y) / 2;
+          ctx.quadraticCurveTo(remoteLastPointRef.current.x, remoteLastPointRef.current.y, midX, midY);
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+        }
+        remoteLastPointRef.current = { x, y };
+      });
+    } else if (payload.type === 'draw') {
+      const x = payload.nx !== undefined ? payload.nx * canvas.width : (payload.x / 1600) * canvas.width;
+      const y = payload.ny !== undefined ? payload.ny * canvas.height : (payload.y / 1000) * canvas.height;
+      if (remoteLastPointRef.current) {
+        const midX = (remoteLastPointRef.current.x + x) / 2;
+        const midY = (remoteLastPointRef.current.y + y) / 2;
+        ctx.quadraticCurveTo(remoteLastPointRef.current.x, remoteLastPointRef.current.y, midX, midY);
+        ctx.stroke();
+      } else {
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
+      remoteLastPointRef.current = { x, y };
+    } else if (payload.type === 'stop') {
+      remoteLastPointRef.current = null;
+    }
+  };
+
+  // Local drawing helpers
+  const startDrawingAt = (clientX: number, clientY: number) => {
+    if (!canDraw) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    saveSnapshot();
+
+    const pt = getCanvasPoint(clientX, clientY);
+    ctx.beginPath();
+    ctx.moveTo(pt.x, pt.y);
+    lastPointRef.current = { x: pt.x, y: pt.y };
+    setIsDrawing(true);
+
+    strokeBufferRef.current = [{ nx: pt.nx, ny: pt.ny }];
 
     if (channelRef.current) {
       channelRef.current.send({
         type: 'broadcast',
         event: 'draw_stroke',
-        payload: { type: 'draw', x, y, color: penColor, tool },
+        payload: {
+          type: 'start',
+          nx: pt.nx,
+          ny: pt.ny,
+          x: pt.nx * 1600,
+          y: pt.ny * 1000,
+          color: penColor,
+          tool,
+          strokeWidth,
+        },
       });
     }
   };
 
+  const drawAt = (clientX: number, clientY: number) => {
+    if (!isDrawing || !canDraw) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx || !lastPointRef.current) return;
+
+    const pt = getCanvasPoint(clientX, clientY);
+    const dpr = window.devicePixelRatio || 1;
+
+    ctx.strokeStyle = tool === 'eraser' ? '#FFFFFF' : penColor;
+    ctx.lineWidth = (tool === 'eraser' ? 30 : strokeWidth) * dpr;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // Smooth quadratic curve to midpoint for natural handwriting feel
+    const midX = (lastPointRef.current.x + pt.x) / 2;
+    const midY = (lastPointRef.current.y + pt.y) / 2;
+    ctx.quadraticCurveTo(lastPointRef.current.x, lastPointRef.current.y, midX, midY);
+    ctx.stroke();
+
+    lastPointRef.current = { x: pt.x, y: pt.y };
+    strokeBufferRef.current.push({ nx: pt.nx, ny: pt.ny });
+
+    // Throttle WebSocket broadcasting to ~35ms to eliminate message flooding and latency
+    if (!flushTimeoutRef.current && channelRef.current) {
+      flushTimeoutRef.current = setTimeout(() => {
+        if (strokeBufferRef.current.length > 0 && channelRef.current) {
+          channelRef.current.send({
+            type: 'broadcast',
+            event: 'draw_stroke',
+            payload: {
+              type: 'batch',
+              points: strokeBufferRef.current,
+              color: penColor,
+              tool,
+              strokeWidth,
+            },
+          });
+          strokeBufferRef.current = [];
+        }
+        flushTimeoutRef.current = null;
+      }, 35);
+    }
+  };
+
   const stopDrawing = () => {
+    if (!isDrawing) return;
     setIsDrawing(false);
+    lastPointRef.current = null;
+
+    if (flushTimeoutRef.current) {
+      clearTimeout(flushTimeoutRef.current);
+      flushTimeoutRef.current = null;
+    }
+
     if (channelRef.current && canDraw) {
+      // Flush any trailing points
+      if (strokeBufferRef.current.length > 0) {
+        channelRef.current.send({
+          type: 'broadcast',
+          event: 'draw_stroke',
+          payload: {
+            type: 'batch',
+            points: strokeBufferRef.current,
+            color: penColor,
+            tool,
+            strokeWidth,
+          },
+        });
+        strokeBufferRef.current = [];
+      }
+
       channelRef.current.send({
         type: 'broadcast',
         event: 'draw_stroke',
         payload: { type: 'stop' },
       });
+    }
+  };
+
+  // Mouse handlers
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    startDrawingAt(e.clientX, e.clientY);
+  };
+
+  const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    drawAt(e.clientX, e.clientY);
+  };
+
+  // Touch handlers for iPad / Stylus / Mobile
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (!canDraw) return;
+    if (e.touches.length === 1) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      startDrawingAt(touch.clientX, touch.clientY);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (!canDraw || !isDrawing) return;
+    if (e.touches.length === 1) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      drawAt(touch.clientX, touch.clientY);
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (e.touches.length === 0) {
+      e.preventDefault();
+      stopDrawing();
     }
   };
 
@@ -301,6 +510,7 @@ export default function ClassroomPage() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    saveSnapshot();
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -613,9 +823,32 @@ export default function ClassroomPage() {
                         <button
                           key={color}
                           onClick={() => { setPenColor(color); setTool('pen'); }}
-                          className="w-5 h-5 rounded-full border border-gray-300 transition-transform hover:scale-110"
+                          className={`w-5 h-5 rounded-full border transition-transform hover:scale-110 ${
+                            penColor === color && tool === 'pen' ? 'ring-2 ring-offset-1 ring-navy-800 scale-110 border-white' : 'border-gray-300'
+                          }`}
                           style={{ backgroundColor: color }}
+                          title={`Color: ${color}`}
                         />
+                      ))}
+                    </div>
+
+                    {/* Stroke Width Selector */}
+                    <div className="hidden sm:flex items-center gap-1 bg-white border border-gray-200 rounded p-0.5 ml-1">
+                      {[
+                        { label: 'Fine', width: 2 },
+                        { label: 'Medium', width: 4 },
+                        { label: 'Bold', width: 7 },
+                      ].map((sw) => (
+                        <button
+                          key={sw.width}
+                          onClick={() => setStrokeWidth(sw.width)}
+                          className={`px-1.5 py-0.5 rounded text-[11px] font-medium transition ${
+                            strokeWidth === sw.width ? 'bg-navy-800 text-white' : 'text-charcoal-600 hover:bg-gray-100'
+                          }`}
+                          title={`${sw.label} Stroke (${sw.width}px)`}
+                        >
+                          {sw.label}
+                        </button>
                       ))}
                     </div>
                   </>
@@ -657,14 +890,24 @@ export default function ClassroomPage() {
                 )}
 
                 {canDraw && (
-                  <button
-                    onClick={clearCanvas}
-                    className="px-2.5 py-1 bg-white border border-gray-200 rounded text-charcoal-600 hover:bg-gray-50 font-medium flex items-center gap-1"
-                    title="Clear Whiteboard"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">Clear</span>
-                  </button>
+                  <>
+                    <button
+                      onClick={handleUndo}
+                      className="px-2 py-1 bg-white border border-gray-200 rounded text-charcoal-600 hover:bg-gray-50 font-medium flex items-center gap-1"
+                      title="Undo Stroke"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">Undo</span>
+                    </button>
+                    <button
+                      onClick={clearCanvas}
+                      className="px-2.5 py-1 bg-white border border-gray-200 rounded text-charcoal-600 hover:bg-gray-50 font-medium flex items-center gap-1"
+                      title="Clear Whiteboard"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">Clear</span>
+                    </button>
+                  </>
                 )}
 
                 <button
@@ -682,13 +925,15 @@ export default function ClassroomPage() {
             <div className="flex-1 relative overflow-hidden bg-white">
               <canvas
                 ref={canvasRef}
-                width={1600}
-                height={1000}
                 onMouseDown={startDrawing}
                 onMouseMove={draw}
                 onMouseUp={stopDrawing}
                 onMouseLeave={stopDrawing}
-                className={`w-full h-full block bg-white ${canDraw ? 'cursor-crosshair' : 'cursor-not-allowed'}`}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                onTouchCancel={handleTouchEnd}
+                className={`w-full h-full block bg-white touch-none ${canDraw ? 'cursor-crosshair' : 'cursor-not-allowed'}`}
               />
 
               {/* Locked Overlay for Student when not permitted */}
