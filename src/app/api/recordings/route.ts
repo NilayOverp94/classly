@@ -122,6 +122,9 @@ export async function GET(request: Request) {
 
     const currentUser = allUsers.find((u: any) => u.id === userId);
     let userRecordings: SessionRecording[] = [];
+    const deletedIds: string[] = Array.isArray(currentUser?.user_metadata?.deleted_recording_ids)
+      ? currentUser.user_metadata.deleted_recording_ids
+      : [];
 
     if (currentUser) {
       const meta = currentUser.user_metadata || {};
@@ -147,12 +150,17 @@ export async function GET(request: Request) {
       }
     }
 
+    // Filter out deleted recordings
+    userRecordings = userRecordings.filter((r) => !deletedIds.includes(r.id));
+
     // If the user has no custom recordings yet, append demo recordings so they have rich past lesson playback
+    const allowedDemos = DEFAULT_DEMO_RECORDINGS.filter((d) => !deletedIds.includes(d.id));
+
     if (userRecordings.length === 0) {
-      userRecordings = [...DEFAULT_DEMO_RECORDINGS];
+      userRecordings = [...allowedDemos];
     } else {
       // Append default demo recordings that don't collide
-      for (const demo of DEFAULT_DEMO_RECORDINGS) {
+      for (const demo of allowedDemos) {
         if (!userRecordings.some((r) => r.id === demo.id)) {
           userRecordings.push(demo);
         }
@@ -287,6 +295,62 @@ export async function POST(request: Request) {
     });
   } catch (err: any) {
     console.error('Recording creation error:', err);
+    return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 });
+  }
+}
+
+// DELETE: Permanently delete a session recording
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const recordingId = searchParams.get('recordingId');
+    const userId = searchParams.get('userId');
+
+    if (!recordingId) {
+      return NextResponse.json({ error: 'Recording ID is required.' }, { status: 400 });
+    }
+
+    const { adminUrl, supabaseUrl, headers } = getAdminAuth();
+    const res = await fetch(adminUrl, { headers, cache: 'no-store' });
+
+    if (res.ok) {
+      const data = await res.json();
+      const allUsers: any[] = data.users || [];
+
+      // Update recordings list and record in deleted_recording_ids
+      for (const u of allUsers) {
+        const meta = u.user_metadata || {};
+        const recordings: SessionRecording[] = Array.isArray(meta.recordings) ? meta.recordings : [];
+        const hasRec = recordings.some((r) => r.id === recordingId);
+        const isTargetUser = userId && u.id === userId;
+
+        if (hasRec || isTargetUser) {
+          const updatedRecordings = recordings.filter((r) => r.id !== recordingId);
+          const existingDeleted = Array.isArray(meta.deleted_recording_ids) ? meta.deleted_recording_ids : [];
+          const updatedDeleted = Array.from(new Set([...existingDeleted, recordingId]));
+
+          await fetch(`${supabaseUrl}/auth/v1/admin/users/${u.id}`, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify({
+              user_metadata: {
+                ...meta,
+                recordings: updatedRecordings,
+                deleted_recording_ids: updatedDeleted,
+              },
+            }),
+          });
+        }
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Session recording deleted successfully.',
+      recordingId,
+    });
+  } catch (err: any) {
+    console.error('Delete recording error:', err);
     return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 });
   }
 }

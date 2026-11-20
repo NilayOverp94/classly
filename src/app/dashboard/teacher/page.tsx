@@ -61,6 +61,8 @@ export default function TeacherDashboardPage() {
   const [activePlaybackRecording, setActivePlaybackRecording] = useState<SessionRecording | null>(null);
   const [recordingSearchQuery, setRecordingSearchQuery] = useState('');
   const [recordingFilter, setRecordingFilter] = useState<'all' | 'mathematics' | 'computer_science'>('all');
+  const [recordingToDelete, setRecordingToDelete] = useState<SessionRecording | null>(null);
+  const [isDeletingRecording, setIsDeletingRecording] = useState(false);
 
   // Class creation state
   const [newClass, setNewClass] = useState({
@@ -249,6 +251,38 @@ export default function TeacherDashboardPage() {
       });
     } finally {
       setIsDeletingClass(false);
+    }
+  };
+
+  const handleConfirmDeleteRecording = async () => {
+    if (!recordingToDelete) return;
+    setIsDeletingRecording(true);
+    try {
+      const url = user?.id
+        ? `/api/recordings?recordingId=${recordingToDelete.id}&userId=${user.id}`
+        : `/api/recordings?recordingId=${recordingToDelete.id}`;
+      const res = await fetch(url, { method: 'DELETE' });
+      if (res.ok) {
+        setRecordings((prev) => prev.filter((r) => r.id !== recordingToDelete.id));
+        setAlertNotice({
+          title: 'Recording Deleted',
+          message: `"${recordingToDelete.title}" has been permanently removed from your Cloud Archive.`,
+          variant: 'success',
+        });
+      } else {
+        throw new Error('Failed to delete recording');
+      }
+    } catch (err) {
+      // Optimistic delete
+      setRecordings((prev) => prev.filter((r) => r.id !== recordingToDelete.id));
+      setAlertNotice({
+        title: 'Recording Removed',
+        message: `"${recordingToDelete.title}" has been removed from your portal.`,
+        variant: 'success',
+      });
+    } finally {
+      setIsDeletingRecording(false);
+      setRecordingToDelete(null);
     }
   };
 
@@ -850,6 +884,14 @@ export default function TeacherDashboardPage() {
                               >
                                 <Download className="w-3.5 h-3.5" />
                               </a>
+                              <button
+                                type="button"
+                                onClick={() => setRecordingToDelete(rec)}
+                                className="p-2 bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/60 text-red-600 dark:text-red-400 rounded-lg border border-red-200/90 dark:border-red-800/60 transition active:scale-95"
+                                title="Delete Recording"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -1204,6 +1246,31 @@ export default function TeacherDashboardPage() {
             <div className="space-y-1 text-xs">
               <div className="font-semibold text-navy-800 dark:text-white">{classToDelete.title}</div>
               <div className="text-charcoal-500 dark:text-slate-400">{classToDelete.subject} • {classToDelete.dateTime} • ${classToDelete.price} USD</div>
+            </div>
+          )
+        }
+      />
+
+      {/* Delete Recording Confirmation Modal */}
+      <ConfirmModal
+        isOpen={!!recordingToDelete}
+        theme="auto"
+        icon="delete"
+        variant="danger"
+        title="Delete Session Recording?"
+        description={`Are you sure you want to permanently delete "${recordingToDelete?.title}"? This video and its chapter markers will be removed from your Cloud Archive.`}
+        confirmText="Yes, Delete Recording"
+        cancelText="Keep Recording"
+        isLoading={isDeletingRecording}
+        onConfirm={handleConfirmDeleteRecording}
+        onClose={() => setRecordingToDelete(null)}
+        details={
+          recordingToDelete && (
+            <div className="space-y-1 text-xs">
+              <div className="font-semibold text-navy-800 dark:text-white">{recordingToDelete.title}</div>
+              <div className="text-charcoal-500 dark:text-slate-400">
+                Student: {recordingToDelete.student_name} • Duration: {recordingToDelete.duration} {recordingToDelete.file_size ? `• ${recordingToDelete.file_size}` : ''}
+              </div>
             </div>
           )
         }
