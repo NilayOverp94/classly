@@ -18,10 +18,18 @@ import {
   ChevronUp, 
   ChevronDown, 
   Lock,
-  Sparkles
+  Sparkles,
+  Zap,
+  Cpu,
+  Clock,
+  Layers,
+  FileCode,
+  CornerDownLeft
 } from 'lucide-react';
 
 export type SupportedLanguage = 'python' | 'java' | 'javascript' | 'cpp';
+
+export const ONECOMPILER_PUBLIC_KEY = 'oc_44zfkft93_44zfkft9n_05402516c95b05573f6f0091513676bcedcdd3e2777c9082';
 
 interface LiveCodeEditorProps {
   code: string;
@@ -36,7 +44,7 @@ interface LiveCodeEditorProps {
 export const STARTER_CODE: Record<SupportedLanguage, string> = {
   python: `# ==========================================
 # Classly Computer Science Studio
-# Subject: Python for Beginners & Algorithms
+# Powered by OneCompiler Cloud Engine
 # ==========================================
 
 def calculate_factorial(n):
@@ -50,12 +58,18 @@ def main():
     result = calculate_factorial(number)
     print(f"Factorial of {number} is: {result}")
 
+    # Interactive loops & arrays
+    primes = [2, 3, 5, 7, 11, 13, 17, 19]
+    squares = [x**2 for x in primes[:5]]
+    print(f"Squares of first 5 primes: {squares}")
+
 if __name__ == "__main__":
     main()
 `,
   java: `// ==========================================
 // Classly Computer Science Studio
 // Subject: AP Computer Science A (Java)
+// Powered by OneCompiler Cloud Engine
 // ==========================================
 
 public class Main {
@@ -72,14 +86,17 @@ public class Main {
         int[] scores = { 92, 88, 95, 100, 85 };
         int total = calculateSum(scores);
         double average = (double) total / scores.length;
+
         System.out.println("Total Score: " + total);
-        System.out.println("Class Average: " + average);
+        System.out.printf("Class Average: %.2f%n", average);
+        System.out.println("Execution verified on Java 17 Runtime.");
     }
 }
 `,
   javascript: `// ==========================================
 // Classly Computer Science Studio
-// Subject: Web Development & JavaScript
+// Subject: JavaScript & Algorithms (Node.js)
+// Powered by OneCompiler Cloud Engine
 // ==========================================
 
 function binarySearch(arr, target) {
@@ -99,26 +116,188 @@ const numbers = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
 const target = 23;
 const index = binarySearch(numbers, target);
 
-console.log("Searching in array:", numbers);
-console.log(\`Element \${target} found at index: \${index}\`);
+console.log("Searching in sorted array:", numbers);
+console.log(\`Target element \${target} found at index: \${index}\`);
+
+// Modern ES6 operations
+const doubled = numbers.slice(0, 5).map(n => n * 2);
+console.log("First 5 numbers doubled:", doubled);
 `,
   cpp: `// ==========================================
 // Classly Computer Science Studio
 // Subject: C++ Data Structures & Algorithms
+// Powered by OneCompiler Cloud Engine (GCC)
 // ==========================================
 
 #include <iostream>
 #include <vector>
 #include <numeric>
+#include <algorithm>
 
 int main() {
     std::cout << "Classly C++ Studio Initialized." << std::endl;
-    std::vector<int> data = {10, 20, 30, 40, 50};
+    std::vector<int> data = {10, 45, 23, 78, 12, 99};
+
+    std::sort(data.begin(), data.end());
+    std::cout << "Sorted elements: ";
+    for (int n : data) {
+        std::cout << n << " ";
+    }
+    std::cout << std::endl;
+
     int sum = std::accumulate(data.begin(), data.end(), 0);
     std::cout << "Sum of vector elements: " << sum << std::endl;
     return 0;
 }
 `,
+};
+
+export interface CodeSnippet {
+  title: string;
+  category: string;
+  code: string;
+}
+
+export const SNIPPETS_BY_LANG: Record<SupportedLanguage, CodeSnippet[]> = {
+  python: [
+    {
+      title: 'Recursion (Fibonacci & Memoization)',
+      category: 'Algorithms',
+      code: `def fib(n, memo={}):
+    if n in memo: return memo[n]
+    if n <= 2: return 1
+    memo[n] = fib(n-1, memo) + fib(n-2, memo)
+    return memo[n]
+
+for i in range(1, 11):
+    print(f"Fib({i}) = {fib(i)}")
+`,
+    },
+    {
+      title: 'User Input (Interactive STDIN)',
+      category: 'Basics',
+      code: `# Use the STDIN input drawer below to enter your name!
+import sys
+
+print("Reading input from STDIN...")
+line = sys.stdin.readline().strip()
+if not line:
+    line = "Classly Student"
+
+print(f"Hello, {line}! Welcome to interactive Python.")
+`,
+    },
+    {
+      title: 'Object-Oriented Programming (Class)',
+      category: 'OOP',
+      code: `class Student:
+    def __init__(self, name, grade):
+        self.name = name
+        self.grade = grade
+        self.subjects = []
+
+    def enroll(self, subject):
+        self.subjects.append(subject)
+
+    def summary(self):
+        return f"{self.name} (Grade {self.grade}) is studying: {', '.join(self.subjects)}"
+
+s1 = Student("Maya", 10)
+s1.enroll("AP Calculus")
+s1.enroll("Computer Science")
+print(s1.summary())
+`,
+    },
+  ],
+  java: [
+    {
+      title: 'AP CS A: 2D Array Traversal',
+      category: 'Arrays',
+      code: `public class Main {
+    public static void main(String[] args) {
+        int[][] matrix = {
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9}
+        };
+
+        System.out.println("2D Matrix Elements:");
+        for (int r = 0; r < matrix.length; r++) {
+            for (int c = 0; c < matrix[r].length; c++) {
+                System.out.print(matrix[r][c] + " ");
+            }
+            System.out.println();
+        }
+    }
+}
+`,
+    },
+    {
+      title: 'Java Scanner (STDIN Input)',
+      category: 'Input',
+      code: `import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Ready for input:");
+        if (sc.hasNextLine()) {
+            String name = sc.nextLine();
+            System.out.println("Received greeting for: " + name);
+        } else {
+            System.out.println("No STDIN input provided, using default 'Classly'");
+        }
+    }
+}
+`,
+    },
+  ],
+  javascript: [
+    {
+      title: 'Array High-Order Functions (Map, Filter, Reduce)',
+      category: 'Functional',
+      code: `const scores = [65, 82, 94, 71, 88, 99, 45, 90];
+
+const honors = scores.filter(s => s >= 85);
+const curved = scores.map(s => Math.min(100, s + 5));
+const total = scores.reduce((sum, s) => sum + s, 0);
+const avg = (total / scores.length).toFixed(1);
+
+console.log("Original scores:", scores);
+console.log("Honors (>=85):", honors);
+console.log("Curved (+5):", curved);
+console.log("Class Average:", avg);
+`,
+    },
+  ],
+  cpp: [
+    {
+      title: 'Binary Search Algorithm (C++)',
+      category: 'Algorithms',
+      code: `#include <iostream>
+#include <vector>
+
+int binarySearch(const std::vector<int>& arr, int target) {
+    int left = 0, right = arr.size() - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == target) return mid;
+        if (arr[mid] < target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return -1;
+}
+
+int main() {
+    std::vector<int> nums = {3, 7, 12, 19, 25, 34, 48, 56, 72};
+    int target = 25;
+    int idx = binarySearch(nums, target);
+    std::cout << "Target " << target << " found at index: " << idx << std::endl;
+    return 0;
+}
+`,
+    },
+  ],
 };
 
 export function LiveCodeEditor({
@@ -135,6 +314,19 @@ export function LiveCodeEditor({
   const [consoleOutput, setConsoleOutput] = useState<string>('');
   const [showConsole, setShowConsole] = useState(false);
   const [fontSize, setFontSize] = useState<number>(13);
+  
+  // STDIN input state
+  const [stdinInput, setStdinInput] = useState<string>('');
+  const [showStdinDrawer, setShowStdinDrawer] = useState(false);
+  const [showSnippetsMenu, setShowSnippetsMenu] = useState(false);
+
+  // Execution meta
+  const [executionStats, setExecutionStats] = useState<{
+    executionTime?: number;
+    compilationTime?: number;
+    memoryUsed?: number;
+    status?: string;
+  } | null>(null);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const preRef = useRef<HTMLPreElement | null>(null);
@@ -194,103 +386,130 @@ export function LiveCodeEditor({
     }
   };
 
-  // Execute Code Simulator
-  const handleRunCode = () => {
+  // REAL ONECOMPILER CLOUD EXECUTION
+  const handleRunCode = async () => {
     setIsRunning(true);
     setShowConsole(true);
 
     const timestamp = new Date().toLocaleTimeString();
-    let simulatedOutput = '';
+    setConsoleOutput(`[OneCompiler Cloud Engine ~ ${timestamp}]\nCompiling & executing ${language.toUpperCase()} in sandbox container...\n`);
 
-    setTimeout(() => {
+    try {
+      let result: any = null;
+
+      // 1. First attempt through our Next.js API Route (/api/compiler/run)
       try {
-        if (language === 'javascript') {
-          // Safe evaluation with console.log intercept
-          const logs: string[] = [];
-          const customConsole = {
-            log: (...args: any[]) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ')),
-            error: (...args: any[]) => logs.push('[ERROR] ' + args.join(' ')),
-            warn: (...args: any[]) => logs.push('[WARN] ' + args.join(' ')),
-          };
-          try {
-            const runner = new Function('console', code);
-            runner(customConsole);
-            simulatedOutput = logs.join('\n') || '[Process completed with no stdout]';
-          } catch (evalErr: any) {
-            simulatedOutput = `Runtime Error:\n${evalErr.message}`;
-          }
-        } else if (language === 'python') {
-          // Parse Python prints and simple expressions
-          const lines = code.split('\n');
-          const outputs: string[] = [];
-          
-          lines.forEach((line) => {
-            const trimmed = line.trim();
-            // Match print statements e.g. print(...)
-            const printMatch = trimmed.match(/^print\((.*)\)$/);
-            if (printMatch) {
-              let val = printMatch[1].trim();
-              if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
-                outputs.push(val.slice(1, -1));
-              } else if (val.startsWith('f"') || val.startsWith("f'")) {
-                // simple f-string simulation
-                let cleanStr = val.slice(2, -1);
-                cleanStr = cleanStr.replace(/{number}/g, '5').replace(/{result}/g, '120');
-                outputs.push(cleanStr);
-              } else {
-                outputs.push(val);
-              }
-            }
-          });
+        const res = await fetch('/api/compiler/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            language,
+            code,
+            stdin: stdinInput,
+          }),
+        });
 
-          if (outputs.length === 0) {
-            outputs.push('Welcome to Classly Live Coding Studio!');
-            outputs.push('Factorial of 5 is: 120');
-          }
-          simulatedOutput = outputs.join('\n');
-        } else if (language === 'java') {
-          const lines = code.split('\n');
-          const outputs: string[] = [];
-          lines.forEach((line) => {
-            const match = line.trim().match(/System\.out\.println\((.*)\);/);
-            if (match) {
-              let val = match[1].trim();
-              if (val.includes('"')) {
-                const parts = val.split('+').map(p => p.trim());
-                const resolved = parts.map(p => {
-                  if ((p.startsWith('"') && p.endsWith('"')) || (p.startsWith("'") && p.endsWith("'"))) {
-                    return p.slice(1, -1);
-                  }
-                  if (p.includes('total')) return '460';
-                  if (p.includes('average')) return '92.0';
-                  return p;
-                }).join('');
-                outputs.push(resolved);
-              } else {
-                outputs.push(val);
-              }
-            }
-          });
-          if (outputs.length === 0) {
-            outputs.push('Welcome to Classly AP Computer Science A Studio!');
-            outputs.push('Total Score: 460');
-            outputs.push('Class Average: 92.0');
-          }
-          simulatedOutput = outputs.join('\n');
-        } else {
-          simulatedOutput = 'Classly C++ Studio Initialized.\nSum of vector elements: 150';
+        if (res.ok) {
+          result = await res.json();
         }
-
-        const formattedResult = `[Classly Cloud Execution Engine ~ ${timestamp}]\nRunning ${language.toUpperCase()} session...\n──────────────────────────────────────────────────\n${simulatedOutput}\n──────────────────────────────────────────────────\nProcess finished with exit code 0 (Execution time: 0.04s)`;
-        
-        setConsoleOutput(formattedResult);
-        if (onRun) {
-          onRun(formattedResult);
-        }
-      } finally {
-        setIsRunning(false);
+      } catch (proxyErr) {
+        console.warn('Proxy API failed, attempting direct OneCompiler gateway:', proxyErr);
       }
-    }, 450);
+
+      // 2. Direct fallback to OneCompiler API if proxy fails
+      if (!result || (result.status === 'error' && result.stderr?.includes('HTTP status'))) {
+        const directLang = language === 'javascript' ? 'nodejs' : language;
+        let directFile = 'main.py';
+        if (language === 'java') {
+          const match = code.match(/public\s+class\s+([A-Za-z0-9_]+)/);
+          directFile = match && match[1] ? `${match[1]}.java` : 'Main.java';
+        } else if (language === 'cpp') {
+          directFile = 'main.cpp';
+        } else if (language === 'javascript') {
+          directFile = 'index.js';
+        }
+
+        const directRes = await fetch('https://api.onecompiler.com/v1/run', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': ONECOMPILER_PUBLIC_KEY,
+          },
+          body: JSON.stringify({
+            language: directLang,
+            stdin: stdinInput || '',
+            files: [{ name: directFile, content: code }],
+          }),
+        });
+
+        if (directRes.ok) {
+          const directData = await directRes.json();
+          let formattedOutput = '';
+          if (directData.stdout) formattedOutput += directData.stdout;
+          if (directData.stderr) formattedOutput += `\n[STDERR]\n${directData.stderr}`;
+          if (directData.exception) formattedOutput += `\n[EXCEPTION]\n${directData.exception}`;
+          if (!formattedOutput) formattedOutput = '[Process completed with 0 output]';
+
+          result = {
+            status: directData.status || 'success',
+            stdout: directData.stdout || '',
+            stderr: directData.stderr || null,
+            exception: directData.exception || null,
+            compilationTime: directData.compilationTime ?? null,
+            executionTime: directData.executionTime ?? null,
+            memoryUsed: directData.memoryUsed ?? null,
+            formattedOutput,
+          };
+        }
+      }
+
+      if (result) {
+        setExecutionStats({
+          executionTime: result.executionTime,
+          compilationTime: result.compilationTime,
+          memoryUsed: result.memoryUsed,
+          status: result.status,
+        });
+
+        const execTimeStr = result.executionTime !== null && result.executionTime !== undefined 
+          ? `${result.executionTime}ms` 
+          : '0.05s';
+        const compileTimeStr = result.compilationTime 
+          ? ` • Compilation: ${result.compilationTime}ms` 
+          : '';
+        const memoryStr = result.memoryUsed 
+          ? ` • Memory: ${Math.round(result.memoryUsed / 1024)} KB` 
+          : '';
+
+        const outputBody = result.formattedOutput || result.stdout || result.stderr || '[Process completed with no output]';
+
+        const finalFormattedTerminal = 
+`[OneCompiler Cloud Engine ~ ${timestamp}]
+Container: ${language.toUpperCase()} • Exec: ${execTimeStr}${compileTimeStr}${memoryStr}
+──────────────────────────────────────────────────
+${outputBody}
+──────────────────────────────────────────────────
+Process finished (Status: ${result.status || 'success'})`;
+
+        setConsoleOutput(finalFormattedTerminal);
+        if (onRun) {
+          onRun(finalFormattedTerminal);
+        }
+      } else {
+        throw new Error('Unable to obtain compiler response.');
+      }
+    } catch (err: any) {
+      console.error('Code execution error:', err);
+      const errorMsg = 
+`[OneCompiler Cloud Engine ~ ${timestamp}]
+[EXECUTION FAILED]
+Error: ${err.message || 'Network error connecting to OneCompiler server.'}
+Please ensure your internet connection is active and retry.`;
+      setConsoleOutput(errorMsg);
+      if (onRun) onRun(errorMsg);
+    } finally {
+      setIsRunning(false);
+    }
   };
 
   // Generate line numbers
@@ -311,7 +530,7 @@ export function LiveCodeEditor({
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5 font-bold text-white">
             <Code2 className="w-4 h-4 text-emerald-400" />
-            <span className="hidden sm:inline">CS Studio:</span>
+            <span className="hidden sm:inline">CS Studio</span>
           </div>
 
           <select
@@ -326,11 +545,51 @@ export function LiveCodeEditor({
             disabled={!canEdit}
             className="bg-[#21262D] text-slate-200 border border-[#30363D] rounded px-2.5 py-1 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
           >
-            <option value="python">Python 3.11 (Curriculum)</option>
-            <option value="java">Java 21 (AP Computer Science A)</option>
-            <option value="javascript">JavaScript (Web & Algorithms)</option>
-            <option value="cpp">C++ (Data Structures)</option>
+            <option value="python">Python 3 (OneCompiler)</option>
+            <option value="java">Java 17 (OneCompiler)</option>
+            <option value="javascript">JavaScript / Node.js (OneCompiler)</option>
+            <option value="cpp">C++ GCC (OneCompiler)</option>
           </select>
+
+          {/* Quick Snippets Menu */}
+          {canEdit && SNIPPETS_BY_LANG[language] && (
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowSnippetsMenu(!showSnippetsMenu)}
+                className="px-2 py-1 bg-[#21262D] hover:bg-[#30363D] text-slate-300 border border-[#30363D] rounded text-[11px] font-medium flex items-center gap-1 transition"
+                title="Curated Algorithm Snippets"
+              >
+                <Sparkles className="w-3 h-3 text-amber-400" />
+                <span className="hidden md:inline">Snippets</span>
+                <ChevronDown className="w-2.5 h-2.5 text-slate-400" />
+              </button>
+
+              {showSnippetsMenu && (
+                <div className="absolute left-0 top-full mt-1.5 w-64 bg-[#161B22] border border-[#30363D] rounded-xl shadow-2xl py-1.5 z-50 text-xs">
+                  <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Load {language.toUpperCase()} Snippet:
+                  </div>
+                  {SNIPPETS_BY_LANG[language].map((s, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        onChange(s.code);
+                        setShowSnippetsMenu(false);
+                      }}
+                      className="w-full text-left px-3 py-2 hover:bg-[#21262D] text-slate-200 flex items-center justify-between transition"
+                    >
+                      <div>
+                        <div className="font-semibold text-xs">{s.title}</div>
+                        <div className="text-[10px] text-slate-400">{s.category}</div>
+                      </div>
+                      <FileCode className="w-3.5 h-3.5 text-emerald-400 opacity-60" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {!canEdit && (
             <span className="hidden md:inline-flex items-center gap-1 text-[11px] font-semibold text-amber-400 bg-amber-950/40 border border-amber-800/60 px-2 py-0.5 rounded">
@@ -342,6 +601,12 @@ export function LiveCodeEditor({
 
         {/* Right: Controls & Run Button */}
         <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Powered by OneCompiler pill */}
+          <div className="hidden lg:flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-950/50 border border-emerald-800/60 text-emerald-300 text-[10px] font-mono">
+            <Zap className="w-3 h-3 text-emerald-400" />
+            <span>OneCompiler Live</span>
+          </div>
+
           {canEdit && (
             <button
               onClick={handleResetStarter}
@@ -389,7 +654,7 @@ export function LiveCodeEditor({
             onClick={handleRunCode}
             disabled={isRunning}
             className="px-3 sm:px-4 py-1 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded font-bold text-xs flex items-center gap-1.5 shadow-sm transition"
-            title="Compile & Run Code"
+            title="Compile & Run Code with OneCompiler"
           >
             {isRunning ? (
               <>
@@ -420,30 +685,26 @@ export function LiveCodeEditor({
           ))}
         </div>
 
-        {/* Code Content Area (Overlay Container) */}
-        <div className="flex-1 relative h-full overflow-hidden bg-[#0D1117]">
+        {/* Syntax-Highlighted & Editable Code Area */}
+        <div className="flex-1 relative h-full overflow-hidden">
           
-          {/* Syntax Highlighted Render Layer */}
+          {/* Syntax Highlighter View Layer */}
           <pre
             ref={preRef}
             aria-hidden="true"
-            className="absolute inset-0 p-4 m-0 overflow-hidden pointer-events-none whitespace-pre text-xs"
+            className="absolute inset-0 w-full h-full p-4 m-0 bg-transparent text-slate-200 overflow-auto pointer-events-none whitespace-pre text-xs z-0"
             style={{ fontSize: `${fontSize}px`, lineHeight: '21px', tabSize: 4 }}
-          >
-            <code
-              className={`language-${language}`}
-              dangerouslySetInnerHTML={{ __html: highlightedCode + '\n' }}
-            />
-          </pre>
+            dangerouslySetInnerHTML={{ __html: highlightedCode + '\n' }}
+          />
 
-          {/* Transparent Input Textarea */}
+          {/* Actual Editable Textarea Layer */}
           <textarea
             ref={textareaRef}
             value={code}
             onChange={(e) => onChange(e.target.value)}
             onScroll={handleScroll}
             onKeyDown={handleKeyDown}
-            disabled={!canEdit}
+            readOnly={!canEdit}
             spellCheck="false"
             autoCapitalize="off"
             autoComplete="off"
@@ -459,13 +720,34 @@ export function LiveCodeEditor({
 
       {/* Embedded Terminal Console Output Drawer */}
       {showConsole && (
-        <div className="h-44 sm:h-52 bg-[#0A0D12] border-t border-[#30363D] flex flex-col font-mono text-xs z-20 animate-in slide-in-from-bottom duration-150">
+        <div className="h-56 sm:h-64 bg-[#0A0D12] border-t border-[#30363D] flex flex-col font-mono text-xs z-20 animate-in slide-in-from-bottom duration-150">
+          
+          {/* Console Header */}
           <div className="h-8 bg-[#161B22] px-3 flex items-center justify-between text-[11px] text-slate-400 border-b border-[#21262D] select-none">
             <div className="flex items-center gap-2 text-slate-300 font-bold">
               <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Execution Terminal</span>
+              <span>OneCompiler Terminal</span>
+              {executionStats?.executionTime !== undefined && (
+                <span className="text-[10px] text-slate-500 font-normal">
+                  ({executionStats.executionTime}ms)
+                </span>
+              )}
             </div>
+            
             <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowStdinDrawer(!showStdinDrawer)}
+                className={`px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1 transition ${
+                  showStdinDrawer 
+                    ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-700' 
+                    : 'bg-[#21262D] text-slate-400 hover:text-white border border-[#30363D]'
+                }`}
+                title="Provide standard input (stdin) for interactive programs"
+              >
+                <CornerDownLeft className="w-2.5 h-2.5" />
+                <span>STDIN {stdinInput ? '●' : ''}</span>
+              </button>
+
               <button
                 onClick={() => setConsoleOutput('')}
                 className="hover:text-white p-1 rounded transition"
@@ -473,6 +755,7 @@ export function LiveCodeEditor({
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
+              
               <button
                 onClick={() => setShowConsole(false)}
                 className="hover:text-white p-1 rounded transition"
@@ -483,12 +766,37 @@ export function LiveCodeEditor({
             </div>
           </div>
 
+          {/* Optional STDIN Drawer */}
+          {showStdinDrawer && (
+            <div className="p-2 bg-[#10141C] border-b border-[#21262D] flex items-center gap-2">
+              <div className="text-[10px] text-slate-400 shrink-0 font-sans font-medium">
+                STDIN (Input):
+              </div>
+              <input
+                type="text"
+                value={stdinInput}
+                onChange={(e) => setStdinInput(e.target.value)}
+                placeholder="Enter input for input() / Scanner (e.g. 42 or Sarah)"
+                className="flex-1 bg-[#161B22] border border-[#30363D] text-white text-xs px-2.5 py-1 rounded focus:outline-none focus:ring-1 focus:ring-emerald-500 font-mono"
+              />
+              {stdinInput && (
+                <button
+                  onClick={() => setStdinInput('')}
+                  className="text-[10px] text-slate-400 hover:text-red-400 px-1.5 py-0.5 rounded"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Output Display */}
           <div className="flex-1 p-3 overflow-y-auto text-emerald-400 text-[11px] leading-relaxed whitespace-pre-wrap select-text">
             {consoleOutput ? (
               consoleOutput
             ) : (
               <span className="text-slate-600">
-                Click "Run" above to compile and execute your {language.toUpperCase()} code.
+                Click "Run" above to compile and execute your {language.toUpperCase()} code on the OneCompiler cloud engine.
               </span>
             )}
           </div>
