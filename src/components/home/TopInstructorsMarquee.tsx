@@ -18,7 +18,7 @@ const INSTRUCTORS: Instructor[] = [
   {
     name: 'Rajat Garg',
     rolePrefix: 'Bosscoder, Ex-',
-    companyLogo: '/images/faculty/logos/microsoft.webp',
+    companyLogo: '/images/faculty/logos/microsoft.png',
     companyAlt: 'Microsoft',
     image: '/images/faculty/rajat-garg.png',
     linkedin: 'https://www.linkedin.com/in/rajatgarg',
@@ -26,7 +26,7 @@ const INSTRUCTORS: Instructor[] = [
   {
     name: 'Manish Garg',
     rolePrefix: 'Bosscoder, Ex-',
-    companyLogo: '/images/faculty/logos/samsung.webp',
+    companyLogo: '/images/faculty/logos/samsung.png',
     companyAlt: 'Samsung',
     image: '/images/faculty/manish-garg.png',
     linkedin: 'https://www.linkedin.com/in/manish-garg',
@@ -34,7 +34,7 @@ const INSTRUCTORS: Instructor[] = [
   {
     name: 'Ashish Prasad',
     rolePrefix: 'SDE,',
-    companyLogo: '/images/faculty/logos/microsoft.webp',
+    companyLogo: '/images/faculty/logos/microsoft.png',
     companyAlt: 'Microsoft',
     image: '/images/faculty/ashish-prasad.png',
     linkedin: 'https://www.linkedin.com/in/ashish-prasad',
@@ -42,7 +42,7 @@ const INSTRUCTORS: Instructor[] = [
   {
     name: 'Geetika Singh',
     rolePrefix: 'SDE II,',
-    companyLogo: '/images/faculty/logos/amazon.webp',
+    companyLogo: '/images/faculty/logos/amazon.png',
     companyAlt: 'Amazon',
     image: '/images/faculty/geetika-singh.png',
     linkedin: 'https://www.linkedin.com/in/geetika-singh',
@@ -50,7 +50,7 @@ const INSTRUCTORS: Instructor[] = [
   {
     name: 'Mudita Sharma',
     rolePrefix: 'Data Engineer,',
-    companyLogo: '/images/faculty/logos/fractal.webp',
+    companyLogo: '/images/faculty/logos/fractal.png',
     companyAlt: 'Fractal Analytics',
     image: '/images/faculty/mudita-sharma.png',
     linkedin: 'https://www.linkedin.com/in/mudita-sharma',
@@ -58,7 +58,7 @@ const INSTRUCTORS: Instructor[] = [
   {
     name: 'Gaurav',
     rolePrefix: 'Data Engineer II,',
-    companyLogo: '/images/faculty/logos/mastercard.webp',
+    companyLogo: '/images/faculty/logos/mastercard.png',
     companyAlt: 'Mastercard',
     image: '/images/faculty/gaurav.png',
     linkedin: 'https://www.linkedin.com/in/gaurav',
@@ -66,10 +66,10 @@ const INSTRUCTORS: Instructor[] = [
 ];
 
 const MAANG_LOGOS = [
-  { name: 'Amazon', logo: '/images/faculty/logos/header-amazon.webp', width: 90, height: 28 },
-  { name: 'Microsoft', logo: '/images/faculty/logos/header-microsoft.webp', width: 95, height: 26 },
-  { name: 'PayPal', logo: '/images/faculty/logos/header-paypal.webp', width: 85, height: 24 },
-  { name: 'Meta', logo: '/images/faculty/logos/header-meta.webp', width: 80, height: 24 },
+  { name: 'Amazon', logo: '/images/faculty/logos/header-amazon.png', width: 90, height: 28 },
+  { name: 'Microsoft', logo: '/images/faculty/logos/header-microsoft.png', width: 95, height: 26 },
+  { name: 'PayPal', logo: '/images/faculty/logos/header-paypal.png', width: 85, height: 24 },
+  { name: 'Meta', logo: '/images/faculty/logos/header-meta.png', width: 80, height: 24 },
 ];
 
 export function TopInstructorsMarquee() {
@@ -182,7 +182,7 @@ export function TopInstructorsMarquee() {
                         alt={inst.companyAlt}
                         width={65}
                         height={16}
-                        className="object-contain h-3.5 sm:h-4 w-auto"
+                        className="object-contain h-3.5 sm:h-4 w-auto brightness-0 invert opacity-90"
                       />
                     </div>
                   </div>

@@ -165,17 +165,17 @@ export function FeaturedTutors() {
             </StaggerItem>
 
             <StaggerItem distance={18} duration={0.5}>
-              <div className="bg-white p-6 rounded-xl border border-gray-200/90 shadow-subtle hover:shadow-lift transition-all duration-300 flex flex-col justify-between h-full group hover:-translate-y-1">
+              <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200/90 dark:border-[#1E293B] shadow-subtle dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)] hover:shadow-lift transition-all duration-300 flex flex-col justify-between h-full group hover:-translate-y-1">
                 <div>
-                  <div className="w-10 h-10 rounded-lg bg-softblue-100 flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-105">
-                    <ShieldCheck className="w-5 h-5 text-accent-500" />
+                  <div className="w-10 h-10 rounded-lg bg-softblue-100 dark:bg-[#1E293B] flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-105">
+                    <ShieldCheck className="w-5 h-5 text-accent-500 dark:text-emerald-400" />
                   </div>
-                  <h3 className="font-bold text-base text-navy-800 mb-2">Identity & Safety</h3>
-                  <p className="text-xs text-charcoal-600 leading-relaxed">
+                  <h3 className="font-bold text-base text-navy-800 dark:text-white mb-2">Identity & Safety</h3>
+                  <p className="text-xs text-charcoal-600 dark:text-slate-300 leading-relaxed">
                     Government ID verification, COPPA compliant parent controls, and secure monitored classroom access.
                   </p>
                 </div>
-                <div className="mt-4 pt-3 border-t border-gray-100 text-[11px] font-semibold text-accent-700 flex items-center gap-1">
+                <div className="mt-4 pt-3 border-t border-gray-100 dark:border-[#1E293B] text-[11px] font-semibold text-accent-700 dark:text-emerald-400 flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>COPPA Safe Environment</span>
                 </div>
@@ -186,7 +186,7 @@ export function FeaturedTutors() {
           <div className="mt-10 text-center">
             <Link
               href="/tutors"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-navy-800 hover:bg-navy-900 text-white rounded-lg text-xs font-bold transition shadow-subtle"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition shadow-subtle"
             >
               <span>Explore Educator Directory</span>
               <ArrowRight className="w-4 h-4" />

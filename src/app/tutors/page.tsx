@@ -541,7 +541,7 @@ function TutorsContent() {
 
 export default function FindTutorsPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-sm text-charcoal-500">Loading tutors...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-sm text-charcoal-500 dark:text-slate-400">Loading tutors...</div>}>
       <TutorsContent />
     </Suspense>
   );

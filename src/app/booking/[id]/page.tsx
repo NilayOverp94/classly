@@ -160,10 +160,10 @@ function BookingContent() {
 
   if (loading) {
     return (
-      <div className="bg-offwhite min-h-[60vh] flex items-center justify-center py-16 px-4">
+      <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-[60vh] flex items-center justify-center py-16 px-4 transition-colors duration-200">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-navy-800 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-xs text-charcoal-500">Loading booking interface...</p>
+          <div className="w-8 h-8 border-2 border-navy-800 dark:border-emerald-400 border-t-transparent dark:border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-xs text-charcoal-500 dark:text-slate-400">Loading booking interface...</p>
         </div>
       </div>
     );
@@ -171,16 +171,16 @@ function BookingContent() {
 
   if (!tutor) {
     return (
-      <div className="bg-offwhite min-h-[60vh] flex items-center justify-center py-16 px-4">
-        <div className="bg-white p-8 max-w-md w-full rounded-2xl border border-gray-200 text-center shadow-card">
-          <ShieldCheck className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-          <h1 className="text-lg font-bold text-navy-800 mb-1">Educator Not Found</h1>
-          <p className="text-xs text-charcoal-600 mb-6">
+      <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-[60vh] flex items-center justify-center py-16 px-4 transition-colors duration-200">
+        <div className="bg-white dark:bg-[#111827] p-8 max-w-md w-full rounded-2xl border border-gray-200 dark:border-[#1E293B] text-center shadow-card dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)]">
+          <ShieldCheck className="w-12 h-12 text-gray-400 dark:text-slate-500 mx-auto mb-3" />
+          <h1 className="text-lg font-bold text-navy-800 dark:text-white mb-1">Educator Not Found</h1>
+          <p className="text-xs text-charcoal-600 dark:text-slate-300 mb-6">
             The educator you are attempting to book is not available or does not exist.
           </p>
           <Link
             href="/tutors"
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-navy-800 text-white rounded-lg text-xs font-bold hover:bg-navy-900 transition"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Return to Educator Directory</span>
@@ -474,7 +474,7 @@ function BookingContent() {
 
 export default function BookingPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-sm text-charcoal-500">Loading booking...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-sm text-charcoal-500 dark:text-slate-400">Loading booking...</div>}>
       <BookingContent />
     </Suspense>
   );

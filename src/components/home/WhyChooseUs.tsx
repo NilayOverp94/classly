@@ -17,37 +17,37 @@ export function WhyChooseUs() {
     {
       title: 'Audited Degree Credentials',
       description: 'Every educator undergoes a manual review of their university degree transcripts, teaching certifications, and identity before tutoring on Classly.',
-      icon: <ShieldCheck className="w-5 h-5 text-accent-500" />,
+      icon: <ShieldCheck className="w-5 h-5 text-accent-500 dark:text-emerald-400" />,
       tag: 'Rigorous Vetting',
     },
     {
       title: 'Timezone-Synced Scheduling',
       description: 'Find convenient afternoon and weekend time slots that seamlessly adapt to your student’s local US timezone (Eastern, Central, Mountain, Pacific).',
-      icon: <Clock className="w-5 h-5 text-navy-900" />,
+      icon: <Clock className="w-5 h-5 text-navy-900 dark:text-emerald-400" />,
       tag: 'Flexible Times',
     },
     {
       title: 'Aligned to US Syllabi',
       description: 'Curriculum instruction adapted to your child’s specific school coursework, textbooks, homework assignments, and AP/honors targets.',
-      icon: <Target className="w-5 h-5 text-accent-500" />,
+      icon: <Target className="w-5 h-5 text-accent-500 dark:text-emerald-400" />,
       tag: 'Custom Pace',
     },
     {
       title: '1-on-1 & Group Formats',
       description: 'Choose between highly focused private one-to-one tutoring or collaborative small-group classes with motivated peers.',
-      icon: <Users className="w-5 h-5 text-navy-900" />,
+      icon: <Users className="w-5 h-5 text-navy-900 dark:text-emerald-400" />,
       tag: 'Flexible Formats',
     },
     {
       title: 'Interactive HD Classrooms',
       description: 'Browser-based learning environment equipped with dual interactive whiteboards, screen sharing, syntax-highlighted code editors, and live video.',
-      icon: <Monitor className="w-5 h-5 text-accent-500" />,
+      icon: <Monitor className="w-5 h-5 text-accent-500 dark:text-emerald-400" />,
       tag: 'Native Tools',
     },
     {
       title: 'Pay-Per-Lesson Transparency',
       description: 'Zero lock-in subscriptions, zero hidden enrollment fees. Simply pay as you go per lesson, backed by our 100% first-lesson satisfaction guarantee.',
-      icon: <DollarSign className="w-5 h-5 text-navy-900" />,
+      icon: <DollarSign className="w-5 h-5 text-navy-900 dark:text-emerald-400" />,
       tag: 'Zero Subscriptions',
     },
   ];

@@ -127,10 +127,10 @@ export default function TutorProfilePage() {
 
   if (loading) {
     return (
-      <div className="bg-offwhite min-h-[60vh] flex items-center justify-center py-16 px-4">
+      <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-[60vh] flex items-center justify-center py-16 px-4 transition-colors duration-200">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-navy-800 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-xs text-charcoal-500">Loading educator profile...</p>
+          <div className="w-8 h-8 border-2 border-navy-800 dark:border-emerald-400 border-t-transparent dark:border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-xs text-charcoal-500 dark:text-slate-400">Loading educator profile...</p>
         </div>
       </div>
     );

@@ -123,10 +123,10 @@ export default function StudentDashboardPage() {
 
   if (loading) {
     return (
-      <div className="bg-offwhite min-h-screen py-16 flex items-center justify-center">
+      <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-screen py-16 flex items-center justify-center transition-colors duration-200">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-7 h-7 border-2 border-navy-800/20 border-t-navy-800 rounded-full animate-spin" />
-          <span className="text-xs text-charcoal-500 font-medium">Loading your student dashboard...</span>
+          <div className="w-7 h-7 border-2 border-navy-800/20 dark:border-emerald-500/20 border-t-navy-800 dark:border-t-emerald-400 rounded-full animate-spin" />
+          <span className="text-xs text-charcoal-500 dark:text-slate-400 font-medium">Loading your student dashboard...</span>
         </div>
       </div>
     );
