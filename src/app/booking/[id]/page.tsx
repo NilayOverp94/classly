@@ -18,6 +18,7 @@ import { createClient } from '@/lib/supabase/client';
 import { TeacherProfile } from '@/lib/types';
 import { AlertModal } from '@/components/ui/AlertModal';
 import { FadeIn } from '@/components/ui/MotionComponents';
+import { CalendarSyncDropdown } from '@/components/calendar/CalendarSyncDropdown';
 
 function BookingContent() {
   const params = useParams();
@@ -292,6 +293,24 @@ function BookingContent() {
                 <span className="text-charcoal-500 dark:text-slate-400">Amount Paid</span>
                 <span className="font-bold text-navy-800 dark:text-emerald-400">${totalAmount.toFixed(2)} USD</span>
               </div>
+            </div>
+
+            {/* 1-Click Calendar Sync Button */}
+            <div className="mb-6 flex justify-center">
+              <CalendarSyncDropdown
+                event={{
+                  title: `${tutor.subjects?.[0] || 'Mathematics'} Tutoring with ${tutor.full_name}`,
+                  subject: tutor.subjects?.[0] || 'Mathematics',
+                  teacherName: tutor.full_name,
+                  dateStr: selectedDate,
+                  timeSlotStr: selectedTimeSlot,
+                  durationMinutes: 60,
+                  meetingUrl: `/classroom/room-${confirmedBookingId}?subject=${encodeURIComponent(tutor.subjects?.[0] || 'Mathematics')}`,
+                  notes: studentNotes,
+                }}
+                variant="primary"
+                label="Add Lesson to Calendar (Google / Apple / Outlook)"
+              />
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

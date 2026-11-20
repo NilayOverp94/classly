@@ -36,6 +36,8 @@ import { FadeIn } from '@/components/ui/MotionComponents';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SessionRecording } from '@/lib/types';
 import { RecordingPlaybackModal } from '@/components/classroom/RecordingPlaybackModal';
+import { SessionCountdownBanner } from '@/components/calendar/SessionCountdownBanner';
+import { CalendarSyncDropdown } from '@/components/calendar/CalendarSyncDropdown';
 
 export default function TeacherDashboardPage() {
   const router = useRouter();
@@ -354,6 +356,11 @@ export default function TeacherDashboardPage() {
 
           {/* Main Panel with Fluid Tab Transitions */}
           <main className="lg:col-span-9 space-y-6">
+            {/* Live Session Countdown & Sync Banner */}
+            {bookings.length > 0 && (
+              <SessionCountdownBanner booking={bookings[0]} userRole="teacher" />
+            )}
+
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
@@ -384,6 +391,21 @@ export default function TeacherDashboardPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2 w-full sm:w-auto">
+                      <CalendarSyncDropdown
+                        event={{
+                          title: `${bookings[0].subject} Tutoring with ${bookings[0].student_name}`,
+                          subject: bookings[0].subject,
+                          teacherName: teacherDisplayName,
+                          studentName: bookings[0].student_name,
+                          dateStr: bookings[0].date || bookings[0].formatted_time,
+                          timeSlotStr: bookings[0].time_slot,
+                          durationMinutes: bookings[0].duration_minutes || 60,
+                          meetingUrl: user ? `/classroom/room-tutor-${user.id}?subject=${encodeURIComponent(bookings[0]?.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}` : (bookings[0]?.meeting_url || '/classroom/room-tutor'),
+                          notes: bookings[0].notes,
+                        }}
+                        variant="secondary"
+                        label="Sync Calendar"
+                      />
                       <Link
                         href={user ? `/classroom/room-tutor-${user.id}?subject=${encodeURIComponent(bookings[0]?.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}` : (bookings[0]?.meeting_url || '/classroom/room-tutor')}
                         className="flex-1 sm:flex-none px-4 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-subtle"
@@ -548,13 +570,30 @@ export default function TeacherDashboardPage() {
                           )}
                         </div>
 
-                        <Link
-                          href={user ? `/classroom/room-tutor-${user.id}?subject=${encodeURIComponent(b.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}` : (b.meeting_url || `/classroom/room-${b.id}?subject=${encodeURIComponent(b.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}`)}
-                          className="px-4 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-subtle flex-shrink-0"
-                        >
-                          <Video className="w-3.5 h-3.5" />
-                          <span>Open Classroom</span>
-                        </Link>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <CalendarSyncDropdown
+                            event={{
+                              title: `${b.subject} Lesson with ${b.student_name}`,
+                              subject: b.subject,
+                              teacherName: teacherDisplayName,
+                              studentName: b.student_name,
+                              dateStr: b.date || b.formatted_time,
+                              timeSlotStr: b.time_slot,
+                              durationMinutes: b.duration_minutes || 60,
+                              meetingUrl: user ? `/classroom/room-tutor-${user.id}?subject=${encodeURIComponent(b.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}` : (b.meeting_url || `/classroom/room-${b.id}?subject=${encodeURIComponent(b.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}`),
+                              notes: b.notes,
+                            }}
+                            variant="secondary"
+                            label="Sync"
+                          />
+                          <Link
+                            href={user ? `/classroom/room-tutor-${user.id}?subject=${encodeURIComponent(b.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}` : (b.meeting_url || `/classroom/room-${b.id}?subject=${encodeURIComponent(b.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}`)}
+                            className="px-4 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-subtle flex-shrink-0"
+                          >
+                            <Video className="w-3.5 h-3.5" />
+                            <span>Open Classroom</span>
+                          </Link>
+                        </div>
                       </div>
                     ))}
 
