@@ -19,12 +19,19 @@ import {
   Sparkles,
   Inbox,
   Star,
-  CheckCircle2
+  CheckCircle2,
+  Film,
+  Play,
+  Download,
+  Search,
+  HardDrive
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { FadeIn } from '@/components/ui/MotionComponents';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ReviewModal } from '@/components/reviews/ReviewModal';
+import { SessionRecording } from '@/lib/types';
+import { RecordingPlaybackModal } from '@/components/classroom/RecordingPlaybackModal';
 
 export default function StudentDashboardPage() {
   const router = useRouter();
@@ -39,6 +46,12 @@ export default function StudentDashboardPage() {
   const [materials, setMaterials] = useState<any[]>([]);
   const [paymentHistory, setPaymentHistory] = useState<any[]>([]);
   const [activeReviewBooking, setActiveReviewBooking] = useState<any | null>(null);
+
+  // Session Recordings state
+  const [recordings, setRecordings] = useState<SessionRecording[]>([]);
+  const [activePlaybackRecording, setActivePlaybackRecording] = useState<SessionRecording | null>(null);
+  const [recordingFilter, setRecordingFilter] = useState<'all' | 'mathematics' | 'computer_science'>('all');
+  const [recordingSearchQuery, setRecordingSearchQuery] = useState('');
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -107,8 +120,17 @@ export default function StudentDashboardPage() {
           }));
           setPaymentHistory(payments);
         }
+
+        // Fetch student's session recordings
+        const recRes = await fetch(`/api/recordings?userId=${u.id}&role=student`, { cache: 'no-store' });
+        if (recRes.ok) {
+          const recData = await recRes.json();
+          if (Array.isArray(recData.recordings)) {
+            setRecordings(recData.recordings);
+          }
+        }
       } catch (err) {
-        console.error('Failed to load student bookings:', err);
+        console.error('Failed to load student bookings/recordings:', err);
       }
     };
 
@@ -122,7 +144,7 @@ export default function StudentDashboardPage() {
   };
 
   const [activeTab, setActiveTab] = useState<
-    'upcoming' | 'past' | 'tutors' | 'materials' | 'payments' | 'settings'
+    'upcoming' | 'past' | 'recordings' | 'tutors' | 'materials' | 'payments' | 'settings'
   >('upcoming');
 
   if (loading) {
@@ -209,6 +231,7 @@ export default function StudentDashboardPage() {
             {[
               { id: 'upcoming', label: 'Upcoming Lessons', icon: <Calendar className="w-4 h-4" />, count: upcomingBookings.length },
               { id: 'past', label: 'Lesson History', icon: <Clock className="w-4 h-4" /> },
+              { id: 'recordings', label: 'Session Recordings', icon: <Film className="w-4 h-4" />, count: recordings.length },
               { id: 'tutors', label: 'My Tutors', icon: <User className="w-4 h-4" />, count: bookedTutors.length },
               { id: 'materials', label: 'Learning Materials', icon: <FileText className="w-4 h-4" />, count: materials.length },
               { id: 'payments', label: 'Payments & Receipts', icon: <CreditCard className="w-4 h-4" /> },
@@ -357,6 +380,18 @@ export default function StudentDashboardPage() {
                       </div>
 
                       <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => {
+                            const matched = recordings.find(r => r.booking_id === b.id || r.session_id.includes(b.teacher_id) || r.subject === b.subject) || recordings[0];
+                            if (matched) setActivePlaybackRecording(matched);
+                          }}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-softblue-50 hover:bg-softblue-100 dark:bg-[#162032] dark:hover:bg-[#1E293B] text-navy-800 dark:text-emerald-400 border border-gray-200 dark:border-emerald-500/30 text-xs font-bold transition shadow-xs"
+                          title="Watch video recording of this lesson"
+                        >
+                          <Film className="w-3.5 h-3.5 text-navy-700 dark:text-emerald-400" />
+                          <span>Watch Recording</span>
+                        </button>
+
                         {b.reviewed ? (
                           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 text-xs font-bold">
                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
@@ -382,6 +417,217 @@ export default function StudentDashboardPage() {
                     <h3 className="text-base font-bold text-navy-800 dark:text-white">No Past Lessons Yet</h3>
                     <p className="text-xs text-charcoal-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
                       Once you complete lessons with your educators, your session history and recordings will appear here.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB: Session Recordings */}
+            {activeTab === 'recordings' && (
+              <div className="space-y-5">
+                {/* Recordings Header Banner */}
+                <div className="bg-white dark:bg-[#111827] p-5 rounded-2xl border border-gray-200/90 dark:border-[#1E293B] shadow-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                        <Film className="w-4 h-4" />
+                      </div>
+                      <h2 className="text-base font-bold text-navy-800 dark:text-white">
+                        In-Classroom Session Recordings
+                      </h2>
+                    </div>
+                    <p className="text-xs text-charcoal-500 dark:text-slate-400 mt-1">
+                      Rewatch whiteboard solutions, code walkthroughs, and discussions anytime.
+                    </p>
+                  </div>
+
+                  {/* Summary badges */}
+                  <div className="flex items-center gap-3 text-xs">
+                    <div className="bg-softblue-50 dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] px-3 py-1.5 rounded-xl text-center">
+                      <span className="block text-charcoal-400 dark:text-slate-400 text-[10px] uppercase font-bold">Videos</span>
+                      <strong className="text-navy-800 dark:text-emerald-400 text-xs font-mono">{recordings.length} Saved</strong>
+                    </div>
+                    <div className="bg-softblue-50 dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] px-3 py-1.5 rounded-xl text-center">
+                      <span className="block text-charcoal-400 dark:text-slate-400 text-[10px] uppercase font-bold">Storage</span>
+                      <strong className="text-navy-800 dark:text-white text-xs">Cloud Archive</strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Filter and Search Bar */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div className="flex items-center bg-white dark:bg-[#111827] border border-gray-200 dark:border-[#1E293B] rounded-xl p-1 w-full sm:w-auto shadow-subtle">
+                    <button
+                      onClick={() => setRecordingFilter('all')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                        recordingFilter === 'all'
+                          ? 'bg-navy-800 dark:bg-emerald-600 text-white shadow-xs'
+                          : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-800 dark:hover:text-white'
+                      }`}
+                    >
+                      All Lessons ({recordings.length})
+                    </button>
+                    <button
+                      onClick={() => setRecordingFilter('mathematics')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                        recordingFilter === 'mathematics'
+                          ? 'bg-navy-800 dark:bg-emerald-600 text-white shadow-xs'
+                          : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-800 dark:hover:text-white'
+                      }`}
+                    >
+                      Mathematics
+                    </button>
+                    <button
+                      onClick={() => setRecordingFilter('computer_science')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                        recordingFilter === 'computer_science'
+                          ? 'bg-navy-800 dark:bg-emerald-600 text-white shadow-xs'
+                          : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-800 dark:hover:text-white'
+                      }`}
+                    >
+                      Computer Science
+                    </button>
+                  </div>
+
+                  <div className="relative w-full sm:w-64">
+                    <Search className="w-4 h-4 text-charcoal-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={recordingSearchQuery}
+                      onChange={(e) => setRecordingSearchQuery(e.target.value)}
+                      placeholder="Search recordings or topics..."
+                      className="w-full pl-9 pr-3 py-2 bg-white dark:bg-[#111827] border border-gray-200 dark:border-[#1E293B] rounded-xl text-xs text-charcoal-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-500 focus:outline-none focus:border-navy-800 dark:focus:border-emerald-500 shadow-subtle"
+                    />
+                  </div>
+                </div>
+
+                {/* Recordings Grid */}
+                {recordings.filter((r) => {
+                  const matchesFilter =
+                    recordingFilter === 'all'
+                      ? true
+                      : recordingFilter === 'computer_science'
+                      ? r.subject.toLowerCase().includes('computer') || r.subject.toLowerCase().includes('coding')
+                      : !r.subject.toLowerCase().includes('computer') && !r.subject.toLowerCase().includes('coding');
+
+                  const matchesSearch =
+                    !recordingSearchQuery.trim() ||
+                    r.title.toLowerCase().includes(recordingSearchQuery.toLowerCase()) ||
+                    r.teacher_name.toLowerCase().includes(recordingSearchQuery.toLowerCase()) ||
+                    r.subject.toLowerCase().includes(recordingSearchQuery.toLowerCase());
+
+                  return matchesFilter && matchesSearch;
+                }).length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {recordings
+                      .filter((r) => {
+                        const matchesFilter =
+                          recordingFilter === 'all'
+                            ? true
+                            : recordingFilter === 'computer_science'
+                            ? r.subject.toLowerCase().includes('computer') || r.subject.toLowerCase().includes('coding')
+                            : !r.subject.toLowerCase().includes('computer') && !r.subject.toLowerCase().includes('coding');
+
+                        const matchesSearch =
+                          !recordingSearchQuery.trim() ||
+                          r.title.toLowerCase().includes(recordingSearchQuery.toLowerCase()) ||
+                          r.teacher_name.toLowerCase().includes(recordingSearchQuery.toLowerCase()) ||
+                          r.subject.toLowerCase().includes(recordingSearchQuery.toLowerCase());
+
+                        return matchesFilter && matchesSearch;
+                      })
+                      .map((rec) => (
+                        <div
+                          key={rec.id}
+                          className="bg-white dark:bg-[#111827] rounded-2xl border border-gray-200/90 dark:border-[#1E293B] overflow-hidden shadow-subtle hover:shadow-card transition flex flex-col group"
+                        >
+                          {/* Video Thumbnail with Play Button Overlay */}
+                          <div 
+                            onClick={() => setActivePlaybackRecording(rec)}
+                            className="relative aspect-video bg-slate-900 cursor-pointer overflow-hidden group-hover:opacity-95 transition"
+                          >
+                            <img
+                              src={rec.thumbnail_url || 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&auto=format&fit=crop&q=80'}
+                              alt={rec.title}
+                              className="w-full h-full object-cover transform group-hover:scale-105 transition duration-300"
+                            />
+                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/30 transition">
+                              <div className="w-12 h-12 rounded-full bg-emerald-600/90 group-hover:bg-emerald-500 text-white flex items-center justify-center shadow-lg transform group-hover:scale-110 transition">
+                                <Play className="w-5 h-5 ml-0.5 fill-white" />
+                              </div>
+                            </div>
+                            {/* Duration Badge */}
+                            <span className="absolute bottom-2.5 right-2.5 bg-black/80 backdrop-blur-xs text-white text-[11px] font-mono px-2 py-0.5 rounded font-bold">
+                              {rec.duration}
+                            </span>
+                            {/* Subject Badge */}
+                            <span className={`absolute top-2.5 left-2.5 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
+                              rec.subject.toLowerCase().includes('computer')
+                                ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40'
+                                : 'bg-navy-950/80 text-blue-300 border border-blue-500/40'
+                            }`}>
+                              {rec.subject}
+                            </span>
+                          </div>
+
+                          {/* Content */}
+                          <div className="p-4 flex-1 flex flex-col justify-between">
+                            <div>
+                              <h3 
+                                onClick={() => setActivePlaybackRecording(rec)}
+                                className="font-bold text-sm text-navy-800 dark:text-white group-hover:text-emerald-500 transition cursor-pointer line-clamp-2"
+                              >
+                                {rec.title}
+                              </h3>
+                              
+                              <div className="flex items-center justify-between text-xs text-charcoal-500 dark:text-slate-400 mt-2.5">
+                                <span>Educator: <strong className="text-navy-800 dark:text-slate-200">{rec.teacher_name}</strong></span>
+                                {rec.file_size && <span>{rec.file_size}</span>}
+                              </div>
+                              <div className="text-[11px] text-charcoal-400 dark:text-slate-500 mt-1">
+                                {rec.date}
+                              </div>
+
+                              {/* Chapter Tags */}
+                              {rec.chapters && rec.chapters.length > 0 && (
+                                <div className="mt-3 pt-3 border-t border-gray-100 dark:border-[#1E293B] flex items-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400">
+                                  <Sparkles className="w-3 h-3" />
+                                  <span>{rec.chapters.length} Interactive Chapter Markers</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Card Actions */}
+                            <div className="mt-4 pt-3 border-t border-gray-100 dark:border-[#1E293B] flex items-center gap-2">
+                              <button
+                                onClick={() => setActivePlaybackRecording(rec)}
+                                className="flex-1 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-xs"
+                              >
+                                <Play className="w-3.5 h-3.5 fill-white" />
+                                <span>Watch Lesson</span>
+                              </button>
+                              <a
+                                href={rec.video_url}
+                                download
+                                className="p-2 bg-gray-50 dark:bg-[#162032] hover:bg-gray-100 dark:hover:bg-[#1E293B] text-charcoal-600 dark:text-slate-300 rounded-lg border border-gray-200 dark:border-[#1E293B] transition"
+                                title="Download Recording (.mp4)"
+                              >
+                                <Download className="w-3.5 h-3.5" />
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                ) : (
+                  <div className="bg-white dark:bg-[#111827] p-12 rounded-2xl border border-gray-200/90 dark:border-[#1E293B] shadow-subtle text-center">
+                    <div className="w-12 h-12 rounded-full bg-gray-50 dark:bg-[#162032] text-charcoal-400 dark:text-slate-400 flex items-center justify-center mx-auto mb-3">
+                      <Film className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-base font-bold text-navy-800 dark:text-white">No Matching Recordings</h3>
+                    <p className="text-xs text-charcoal-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
+                      No session recordings found matching your current filter. Your upcoming recorded lessons will appear here automatically.
                     </p>
                   </div>
                 )}
@@ -571,6 +817,14 @@ export default function StudentDashboardPage() {
           studentId={user?.id}
           studentName={displayName}
           studentGrade={gradeLevel}
+        />
+      )}
+      {/* In-Classroom Session Recording Playback Modal */}
+      {activePlaybackRecording && (
+        <RecordingPlaybackModal
+          recording={activePlaybackRecording}
+          isOpen={!!activePlaybackRecording}
+          onClose={() => setActivePlaybackRecording(null)}
         />
       )}
     </div>

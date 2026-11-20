@@ -32,7 +32,11 @@ import {
   FileText,
   Code2,
   Terminal,
-  Laptop
+  Laptop,
+  Circle,
+  Square,
+  Radio,
+  Film
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
@@ -43,6 +47,7 @@ import {
   STARTER_CODE, 
   SupportedLanguage 
 } from '@/components/classroom/LiveCodeEditor';
+import { RecordingCompleteModal } from '@/components/classroom/RecordingCompleteModal';
 
 export default function ClassroomPage() {
   const params = useParams();
@@ -179,6 +184,119 @@ export default function ClassroomPage() {
     const m = Math.floor(totalSeconds / 60);
     const s = totalSeconds % 60;
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  // In-Classroom Session Recording State
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const [remoteRecordingActive, setRemoteRecordingActive] = useState(false);
+  const [remoteRecorderName, setRemoteRecorderName] = useState('Educator');
+  const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
+  const [recordedUrl, setRecordedUrl] = useState<string | null>(null);
+  const [showRecordingCompleteModal, setShowRecordingCompleteModal] = useState(false);
+
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recordingStreamRef = useRef<MediaStream | null>(null);
+  const recordingChunksRef = useRef<Blob[]>([]);
+  const recordingTimerRef = useRef<any>(null);
+
+  const handleStartRecording = async () => {
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+        alert('Session Recording is not supported in this browser. Please use Chrome, Edge, or Safari on desktop.');
+        return;
+      }
+
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: { displaySurface: 'browser' },
+        audio: true,
+      });
+
+      if (!stream) return;
+
+      recordingStreamRef.current = stream;
+      recordingChunksRef.current = [];
+
+      let mimeType = 'video/webm;codecs=vp9,opus';
+      if (typeof MediaRecorder !== 'undefined') {
+        if (!MediaRecorder.isTypeSupported(mimeType)) {
+          mimeType = 'video/webm';
+          if (!MediaRecorder.isTypeSupported(mimeType)) {
+            mimeType = 'video/mp4';
+          }
+        }
+      }
+
+      const recorder = new MediaRecorder(stream, { mimeType });
+      mediaRecorderRef.current = recorder;
+
+      recorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) {
+          recordingChunksRef.current.push(e.data);
+        }
+      };
+
+      recorder.onstop = () => {
+        const finalBlob = new Blob(recordingChunksRef.current, { type: mimeType });
+        const finalUrl = URL.createObjectURL(finalBlob);
+        setRecordedBlob(finalBlob);
+        setRecordedUrl(finalUrl);
+        setShowRecordingCompleteModal(true);
+        setIsRecording(false);
+        if (recordingTimerRef.current) {
+          clearInterval(recordingTimerRef.current);
+          recordingTimerRef.current = null;
+        }
+
+        if (channelRef.current) {
+          channelRef.current.send({
+            type: 'broadcast',
+            event: 'recording_status',
+            payload: { isRecording: false },
+          });
+        }
+      };
+
+      // Handle user stopping screen share from browser banner
+      stream.getVideoTracks()[0].onended = () => {
+        handleStopRecording();
+      };
+
+      recorder.start(1000);
+      setIsRecording(true);
+      setRecordingSeconds(0);
+
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingSeconds((prev) => prev + 1);
+      }, 1000);
+
+      if (channelRef.current) {
+        channelRef.current.send({
+          type: 'broadcast',
+          event: 'recording_status',
+          payload: { isRecording: true, recorderName: userName },
+        });
+      }
+    } catch (err: any) {
+      if (err.name !== 'NotAllowedError') {
+        console.error('Failed to start recording:', err);
+        alert('Unable to initialize recording stream. Please ensure screen/tab permissions are granted.');
+      }
+    }
+  };
+
+  const handleStopRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+    }
+    if (recordingStreamRef.current) {
+      recordingStreamRef.current.getTracks().forEach((track) => track.stop());
+      recordingStreamRef.current = null;
+    }
+    if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = null;
+    }
   };
 
   // Determine if the current active user can draw
@@ -412,6 +530,14 @@ export default function ClassroomPage() {
       .on('broadcast', { event: 'subject_change' }, ({ payload }) => {
         if (payload?.subject) {
           setClassSubject(payload.subject);
+        }
+      })
+      .on('broadcast', { event: 'recording_status' }, ({ payload }) => {
+        if (payload) {
+          setRemoteRecordingActive(!!payload.isRecording);
+          if (payload.recorderName) {
+            setRemoteRecorderName(payload.recorderName);
+          }
         }
       })
       .subscribe();
@@ -1257,6 +1383,42 @@ export default function ClassroomPage() {
             </button>
           </div>
 
+          {/* Live Session Recording Controls */}
+          {userRole === 'teacher' ? (
+            !isRecording ? (
+              <button
+                onClick={handleStartRecording}
+                className="px-2.5 py-1 bg-red-950/70 hover:bg-red-900 border border-red-500/50 text-red-300 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-xs"
+                title="Record lesson video and audio for student review and playback"
+              >
+                <Circle className="w-3 h-3 fill-red-500 text-red-500 animate-pulse" />
+                <span className="hidden sm:inline">Record Lesson</span>
+              </button>
+            ) : (
+              <div className="flex items-center gap-1.5 bg-red-950/90 border border-red-500 rounded-lg px-2.5 py-1 text-xs">
+                <Radio className="w-3.5 h-3.5 text-red-400 animate-pulse" />
+                <span className="font-mono font-bold text-red-300">
+                  REC {Math.floor(recordingSeconds / 60).toString().padStart(2, '0')}:{(recordingSeconds % 60).toString().padStart(2, '0')}
+                </span>
+                <button
+                  onClick={handleStopRecording}
+                  className="ml-1 px-2 py-0.5 bg-red-600 hover:bg-red-700 text-white rounded text-[11px] font-bold transition flex items-center gap-1"
+                  title="Stop recording and review video"
+                >
+                  <Square className="w-2.5 h-2.5 fill-white" />
+                  <span>Stop</span>
+                </button>
+              </div>
+            )
+          ) : (
+            remoteRecordingActive && (
+              <div className="hidden sm:flex items-center gap-1.5 bg-red-950/80 border border-red-500/60 rounded-lg px-2.5 py-1 text-xs text-red-300 animate-pulse">
+                <Radio className="w-3.5 h-3.5 text-red-400" />
+                <span className="font-semibold text-[11px]">REC (Session being recorded)</span>
+              </div>
+            )
+          )}
+
           {/* Elapsed Timer */}
           <div className="bg-navy-950 px-3 py-1 rounded-md text-xs font-mono font-semibold text-emerald-400 border border-navy-800">
             {formatTimer(seconds)}
@@ -1525,6 +1687,26 @@ export default function ClassroomPage() {
           subject="Classly Live Lesson"
           studentId={currentUserId || undefined}
           studentName={userName}
+        />
+      )}
+
+      {/* In-Classroom Session Recording Complete Modal */}
+      {showRecordingCompleteModal && (
+        <RecordingCompleteModal
+          isOpen={showRecordingCompleteModal}
+          onClose={() => setShowRecordingCompleteModal(false)}
+          recordedBlob={recordedBlob}
+          recordedUrl={recordedUrl}
+          durationSeconds={recordingSeconds}
+          sessionId={canonicalRoomName}
+          subject={classSubject}
+          teacherId={userRole === 'teacher' ? (currentUserId || undefined) : undefined}
+          teacherName={userRole === 'teacher' ? userName : 'Classly Educator'}
+          studentId={userRole === 'student' ? (currentUserId || undefined) : undefined}
+          studentName={userRole === 'student' ? userName : 'Student'}
+          onSaved={() => {
+            // Keep modal open with success badge
+          }}
         />
       )}
 

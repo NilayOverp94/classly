@@ -110,3 +110,26 @@ export interface GroupClass {
   description: string;
 }
 
+export interface SessionRecording {
+  id: string;
+  session_id: string;
+  booking_id?: string;
+  title: string;
+  subject: string;
+  teacher_id: string;
+  teacher_name: string;
+  teacher_avatar?: string;
+  student_id?: string;
+  student_name: string;
+  student_avatar?: string;
+  duration: string;
+  duration_seconds: number;
+  video_url: string;
+  thumbnail_url?: string;
+  file_size?: string;
+  date: string;
+  created_at: string;
+  chapters?: { time: string; title: string }[];
+}
+
+

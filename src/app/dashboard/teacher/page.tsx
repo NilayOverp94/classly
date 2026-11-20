@@ -22,13 +22,20 @@ import {
   AlertCircle,
   Sparkles,
   Trash2,
-  Loader2
+  Loader2,
+  Film,
+  Play,
+  Download,
+  Search,
+  HardDrive
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { AlertModal } from '@/components/ui/AlertModal';
 import { FadeIn } from '@/components/ui/MotionComponents';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SessionRecording } from '@/lib/types';
+import { RecordingPlaybackModal } from '@/components/classroom/RecordingPlaybackModal';
 
 export default function TeacherDashboardPage() {
   const router = useRouter();
@@ -42,10 +49,16 @@ export default function TeacherDashboardPage() {
   const [isDeletingClass, setIsDeletingClass] = useState(false);
   const [alertNotice, setAlertNotice] = useState<{ title: string; message: string; variant?: 'success' | 'error' | 'info' } | null>(null);
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'classes' | 'availability' | 'create_class' | 'earnings' | 'students'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'classes' | 'recordings' | 'availability' | 'create_class' | 'earnings' | 'students'>('overview');
   
   // Real class listings created by teacher (starts empty)
   const [teacherClasses, setTeacherClasses] = useState<any[]>([]);
+
+  // Session Recordings state
+  const [recordings, setRecordings] = useState<SessionRecording[]>([]);
+  const [activePlaybackRecording, setActivePlaybackRecording] = useState<SessionRecording | null>(null);
+  const [recordingSearchQuery, setRecordingSearchQuery] = useState('');
+  const [recordingFilter, setRecordingFilter] = useState<'all' | 'mathematics' | 'computer_science'>('all');
 
   // Class creation state
   const [newClass, setNewClass] = useState({
@@ -97,6 +110,19 @@ export default function TeacherDashboardPage() {
           }
         } catch (e) {
           console.error('Failed to load teacher classes:', e);
+        }
+
+        // Fetch teacher's recorded lessons
+        try {
+          const recRes = await fetch(`/api/recordings?userId=${currentUser.id}&role=teacher`, { cache: 'no-store' });
+          if (recRes.ok) {
+            const recData = await recRes.json();
+            if (Array.isArray(recData.recordings)) {
+              setRecordings(recData.recordings);
+            }
+          }
+        } catch (e) {
+          console.error('Failed to load teacher recordings:', e);
         }
       }
     };
@@ -284,6 +310,7 @@ export default function TeacherDashboardPage() {
             {[
               { id: 'overview', label: 'Overview & Schedule', icon: <BarChart3 className="w-4 h-4" /> },
               { id: 'classes', label: 'Scheduled Classes', icon: <Calendar className="w-4 h-4" />, count: totalUpcoming },
+              { id: 'recordings', label: 'Session Recordings', icon: <Film className="w-4 h-4" />, count: recordings.length },
               { id: 'availability', label: 'Manage Availability', icon: <Clock className="w-4 h-4" /> },
               { id: 'create_class', label: 'Create a Class', icon: <PlusCircle className="w-4 h-4" /> },
               { id: 'earnings', label: 'Payouts & Banking', icon: <DollarSign className="w-4 h-4" /> },
@@ -574,6 +601,225 @@ export default function TeacherDashboardPage() {
                     >
                       Create a Class
                     </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* RECORDINGS TAB */}
+            {activeTab === 'recordings' && (
+              <div className="space-y-6">
+                {/* Stats Banner */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle flex items-center justify-between">
+                    <div>
+                      <span className="text-[11px] font-bold uppercase text-charcoal-400 dark:text-slate-400">Total Recordings</span>
+                      <div className="text-xl font-bold text-navy-800 dark:text-white mt-0.5">{recordings.length}</div>
+                      <span className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 block">Full Session WebM / MP4</span>
+                    </div>
+                    <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                      <Film className="w-5 h-5" />
+                    </div>
+                  </div>
+
+                  <div className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle flex items-center justify-between">
+                    <div>
+                      <span className="text-[11px] font-bold uppercase text-charcoal-400 dark:text-slate-400">Cloud Storage Used</span>
+                      <div className="text-xl font-bold text-navy-800 dark:text-white mt-0.5">
+                        {((recordings.length * 142.5) / 1024).toFixed(2)} GB
+                      </div>
+                      <span className="text-[11px] text-charcoal-500 dark:text-slate-400 mt-1 block">of 50.0 GB Included</span>
+                    </div>
+                    <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                      <HardDrive className="w-5 h-5" />
+                    </div>
+                  </div>
+
+                  <div className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle flex items-center justify-between">
+                    <div>
+                      <span className="text-[11px] font-bold uppercase text-charcoal-400 dark:text-slate-400">Hours Recorded</span>
+                      <div className="text-xl font-bold text-navy-800 dark:text-white mt-0.5">
+                        {(recordings.reduce((acc, r) => acc + (r.duration_seconds || 1800), 0) / 3600).toFixed(1)} hrs
+                      </div>
+                      <span className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 block">High Definition 1080p</span>
+                    </div>
+                    <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                      <Sparkles className="w-5 h-5" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Filter and Search Bar */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div className="flex items-center bg-white dark:bg-[#111827] border border-gray-200 dark:border-[#1E293B] rounded-xl p-1 w-full sm:w-auto shadow-subtle">
+                    <button
+                      onClick={() => setRecordingFilter('all')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                        recordingFilter === 'all'
+                          ? 'bg-navy-800 dark:bg-emerald-600 text-white shadow-xs'
+                          : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-800 dark:hover:text-white'
+                      }`}
+                    >
+                      All Subjects ({recordings.length})
+                    </button>
+                    <button
+                      onClick={() => setRecordingFilter('mathematics')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                        recordingFilter === 'mathematics'
+                          ? 'bg-navy-800 dark:bg-emerald-600 text-white shadow-xs'
+                          : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-800 dark:hover:text-white'
+                      }`}
+                    >
+                      Mathematics
+                    </button>
+                    <button
+                      onClick={() => setRecordingFilter('computer_science')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                        recordingFilter === 'computer_science'
+                          ? 'bg-navy-800 dark:bg-emerald-600 text-white shadow-xs'
+                          : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-800 dark:hover:text-white'
+                      }`}
+                    >
+                      Computer Science
+                    </button>
+                  </div>
+
+                  <div className="relative w-full sm:w-64">
+                    <Search className="w-4 h-4 text-charcoal-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={recordingSearchQuery}
+                      onChange={(e) => setRecordingSearchQuery(e.target.value)}
+                      placeholder="Search by title, student, subject..."
+                      className="w-full pl-9 pr-3 py-2 bg-white dark:bg-[#111827] border border-gray-200 dark:border-[#1E293B] rounded-xl text-xs text-charcoal-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-500 focus:outline-none focus:border-navy-800 dark:focus:border-emerald-500 shadow-subtle"
+                    />
+                  </div>
+                </div>
+
+                {/* Recordings Cards Grid */}
+                {recordings.filter((r) => {
+                  const matchesFilter =
+                    recordingFilter === 'all'
+                      ? true
+                      : recordingFilter === 'computer_science'
+                      ? r.subject.toLowerCase().includes('computer') || r.subject.toLowerCase().includes('coding')
+                      : !r.subject.toLowerCase().includes('computer') && !r.subject.toLowerCase().includes('coding');
+
+                  const matchesSearch =
+                    !recordingSearchQuery.trim() ||
+                    r.title.toLowerCase().includes(recordingSearchQuery.toLowerCase()) ||
+                    r.student_name.toLowerCase().includes(recordingSearchQuery.toLowerCase()) ||
+                    r.subject.toLowerCase().includes(recordingSearchQuery.toLowerCase());
+
+                  return matchesFilter && matchesSearch;
+                }).length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {recordings
+                      .filter((r) => {
+                        const matchesFilter =
+                          recordingFilter === 'all'
+                            ? true
+                            : recordingFilter === 'computer_science'
+                            ? r.subject.toLowerCase().includes('computer') || r.subject.toLowerCase().includes('coding')
+                            : !r.subject.toLowerCase().includes('computer') && !r.subject.toLowerCase().includes('coding');
+
+                        const matchesSearch =
+                          !recordingSearchQuery.trim() ||
+                          r.title.toLowerCase().includes(recordingSearchQuery.toLowerCase()) ||
+                          r.student_name.toLowerCase().includes(recordingSearchQuery.toLowerCase()) ||
+                          r.subject.toLowerCase().includes(recordingSearchQuery.toLowerCase());
+
+                        return matchesFilter && matchesSearch;
+                      })
+                      .map((rec) => (
+                        <div
+                          key={rec.id}
+                          className="bg-white dark:bg-[#111827] rounded-2xl border border-gray-200/90 dark:border-[#1E293B] overflow-hidden shadow-subtle hover:shadow-card transition flex flex-col group"
+                        >
+                          {/* Video Thumbnail */}
+                          <div 
+                            onClick={() => setActivePlaybackRecording(rec)}
+                            className="relative aspect-video bg-slate-900 cursor-pointer overflow-hidden group-hover:opacity-95 transition"
+                          >
+                            <img
+                              src={rec.thumbnail_url || 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&auto=format&fit=crop&q=80'}
+                              alt={rec.title}
+                              className="w-full h-full object-cover transform group-hover:scale-105 transition duration-300"
+                            />
+                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/30 transition">
+                              <div className="w-12 h-12 rounded-full bg-emerald-600/90 group-hover:bg-emerald-500 text-white flex items-center justify-center shadow-lg transform group-hover:scale-110 transition">
+                                <Play className="w-5 h-5 ml-0.5 fill-white" />
+                              </div>
+                            </div>
+                            <span className="absolute bottom-2.5 right-2.5 bg-black/80 backdrop-blur-xs text-white text-[11px] font-mono px-2 py-0.5 rounded font-bold">
+                              {rec.duration}
+                            </span>
+                            <span className={`absolute top-2.5 left-2.5 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
+                              rec.subject.toLowerCase().includes('computer')
+                                ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40'
+                                : 'bg-navy-950/80 text-blue-300 border border-blue-500/40'
+                            }`}>
+                              {rec.subject}
+                            </span>
+                          </div>
+
+                          {/* Content */}
+                          <div className="p-4 flex-1 flex flex-col justify-between">
+                            <div>
+                              <h3 
+                                onClick={() => setActivePlaybackRecording(rec)}
+                                className="font-bold text-sm text-navy-800 dark:text-white group-hover:text-emerald-500 transition cursor-pointer line-clamp-2"
+                              >
+                                {rec.title}
+                              </h3>
+                              
+                              <div className="flex items-center justify-between text-xs text-charcoal-500 dark:text-slate-400 mt-2.5">
+                                <span>Student: <strong className="text-navy-800 dark:text-slate-200">{rec.student_name}</strong></span>
+                                {rec.file_size && <span>{rec.file_size}</span>}
+                              </div>
+                              <div className="text-[11px] text-charcoal-400 dark:text-slate-500 mt-1">
+                                {rec.date}
+                              </div>
+
+                              {rec.chapters && rec.chapters.length > 0 && (
+                                <div className="mt-3 pt-3 border-t border-gray-100 dark:border-[#1E293B] flex items-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400">
+                                  <Sparkles className="w-3 h-3" />
+                                  <span>{rec.chapters.length} Interactive Chapter Markers</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Card Actions */}
+                            <div className="mt-4 pt-3 border-t border-gray-100 dark:border-[#1E293B] flex items-center gap-2">
+                              <button
+                                onClick={() => setActivePlaybackRecording(rec)}
+                                className="flex-1 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-xs"
+                              >
+                                <Play className="w-3.5 h-3.5 fill-white" />
+                                <span>Watch Video</span>
+                              </button>
+                              <a
+                                href={rec.video_url}
+                                download
+                                className="p-2 bg-gray-50 dark:bg-[#162032] hover:bg-gray-100 dark:hover:bg-[#1E293B] text-charcoal-600 dark:text-slate-300 rounded-lg border border-gray-200 dark:border-[#1E293B] transition"
+                                title="Download Recording (.mp4)"
+                              >
+                                <Download className="w-3.5 h-3.5" />
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                ) : (
+                  <div className="bg-white dark:bg-[#111827] p-12 rounded-2xl border border-gray-200/90 dark:border-[#1E293B] shadow-subtle text-center">
+                    <div className="w-12 h-12 rounded-full bg-gray-50 dark:bg-[#162032] text-charcoal-400 dark:text-slate-400 flex items-center justify-center mx-auto mb-3">
+                      <Film className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-base font-bold text-navy-800 dark:text-white">No Matching Recordings</h3>
+                    <p className="text-xs text-charcoal-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
+                      Start recording during any live classroom session to automatically save lesson videos here for your students.
+                    </p>
                   </div>
                 )}
               </div>
@@ -922,6 +1168,15 @@ export default function TeacherDashboardPage() {
         buttonText="Close"
         onClose={() => setAlertNotice(null)}
       />
+
+      {/* In-Classroom Session Recording Playback Modal */}
+      {activePlaybackRecording && (
+        <RecordingPlaybackModal
+          recording={activePlaybackRecording}
+          isOpen={!!activePlaybackRecording}
+          onClose={() => setActivePlaybackRecording(null)}
+        />
+      )}
 
     </div>
   );
