@@ -296,7 +296,7 @@ function BookingContent() {
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href={`/classroom/room-${confirmedBookingId}`}
+                href={`/classroom/room-${confirmedBookingId}?subject=${encodeURIComponent(tutor.subjects?.[0] || 'Mathematics')}`}
                 className="w-full sm:w-auto px-8 py-3 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold shadow-subtle transition flex items-center justify-center gap-2"
               >
                 <Video className="w-4 h-4" />

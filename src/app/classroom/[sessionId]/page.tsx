@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { 
   LiveKitRoom, 
   VideoConference, 
@@ -29,12 +29,20 @@ import {
   ChevronLeft,
   ChevronRight,
   Plus,
-  FileText
+  FileText,
+  Code2,
+  Terminal,
+  Laptop
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { AlertModal } from '@/components/ui/AlertModal';
 import { ReviewModal } from '@/components/reviews/ReviewModal';
+import { 
+  LiveCodeEditor, 
+  STARTER_CODE, 
+  SupportedLanguage 
+} from '@/components/classroom/LiveCodeEditor';
 
 export default function ClassroomPage() {
   const params = useParams();
@@ -99,6 +107,67 @@ export default function ClassroomPage() {
   const totalPagesRef = useRef(totalPages);
   totalPagesRef.current = totalPages;
 
+  // Computer Science & Subject Track State (Live Code Editor is exclusive to CS classes)
+  const searchParams = useSearchParams();
+  const urlSubject = searchParams?.get('subject') || '';
+  const [classSubject, setClassSubject] = useState<string>(urlSubject || 'Mathematics');
+
+  const isComputerScienceClass =
+    classSubject.toLowerCase().includes('computer') ||
+    classSubject.toLowerCase().includes('coding') ||
+    classSubject.toLowerCase().includes('python') ||
+    classSubject.toLowerCase().includes('java') ||
+    urlSubject.toLowerCase().includes('computer') ||
+    urlSubject.toLowerCase().includes('coding') ||
+    rawSessionId.toLowerCase().includes('cs') ||
+    rawSessionId.toLowerCase().includes('code');
+
+  // CS Studio Workspace Tab: 'code' | 'split' | 'whiteboard'
+  const [csWorkspaceTab, setCsWorkspaceTab] = useState<'code' | 'split' | 'whiteboard'>('code');
+
+  // Live Code Editor State (Python / Java / JS / C++)
+  const [code, setCode] = useState<string>(STARTER_CODE['python']);
+  const [codeLanguage, setCodeLanguage] = useState<SupportedLanguage>('python');
+  const [remoteConsoleOutput, setRemoteConsoleOutput] = useState<string>('');
+  const codeFlushTimeoutRef = useRef<any>(null);
+
+  const handleCodeChange = (newCode: string) => {
+    setCode(newCode);
+    if (!codeFlushTimeoutRef.current && channelRef.current && canDraw) {
+      codeFlushTimeoutRef.current = setTimeout(() => {
+        if (channelRef.current) {
+          channelRef.current.send({
+            type: 'broadcast',
+            event: 'code_change',
+            payload: { code: newCode, language: codeLanguage },
+          });
+        }
+        codeFlushTimeoutRef.current = null;
+      }, 50);
+    }
+  };
+
+  const handleLanguageChange = (newLang: SupportedLanguage) => {
+    setCodeLanguage(newLang);
+    if (channelRef.current && canDraw) {
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'code_change',
+        payload: { code, language: newLang },
+      });
+    }
+  };
+
+  const handleRunCode = (output: string) => {
+    if (channelRef.current && canDraw) {
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'code_run',
+        payload: { output },
+      });
+    }
+  };
+
   // Elapsed timer
   const [seconds, setSeconds] = useState(0);
   useEffect(() => {
@@ -160,6 +229,24 @@ export default function ClassroomPage() {
           setUserRole(role);
           setUserName(participantName);
           if (currentUser) setCurrentUserId(currentUser.id);
+
+          // Resolve classroom subject for Computer Science vs Math
+          if (urlSubject) {
+            setClassSubject(urlSubject);
+          } else {
+            const userMeta = currentUser?.user_metadata || {};
+            const bookings = Array.isArray(userMeta.bookings) ? userMeta.bookings : [];
+            const matchedBooking = bookings.find((b: any) => 
+              b.id === rawSessionId.replace('room-', '') || 
+              b.meeting_room_id === rawSessionId || 
+              (b.teacher_id && rawSessionId.includes(b.teacher_id))
+            );
+            if (matchedBooking?.subject) {
+              setClassSubject(matchedBooking.subject);
+            } else if (userMeta.teaching_subjects?.some((s: string) => s.toLowerCase().includes('computer') || s.toLowerCase().includes('coding'))) {
+              setClassSubject('Computer Science');
+            }
+          }
         }
       } catch (err: any) {
         if (!isCancelled) {
@@ -307,6 +394,24 @@ export default function ClassroomPage() {
       .on('broadcast', { event: 'add_page' }, ({ payload }) => {
         if (typeof payload?.page === 'number') {
           applyAddPage(payload.page, payload.totalPages);
+        }
+      })
+      .on('broadcast', { event: 'code_change' }, ({ payload }) => {
+        if (typeof payload?.code === 'string') {
+          setCode(payload.code);
+        }
+        if (payload?.language) {
+          setCodeLanguage(payload.language);
+        }
+      })
+      .on('broadcast', { event: 'code_run' }, ({ payload }) => {
+        if (payload?.output) {
+          setRemoteConsoleOutput(payload.output);
+        }
+      })
+      .on('broadcast', { event: 'subject_change' }, ({ payload }) => {
+        if (payload?.subject) {
+          setClassSubject(payload.subject);
         }
       })
       .subscribe();
@@ -792,6 +897,227 @@ export default function ClassroomPage() {
     }
   };
 
+  const renderWhiteboard = () => (
+    <div className="flex-1 flex flex-col h-full bg-white dark:bg-[#0E1526] text-charcoal-800 dark:text-slate-200 relative overflow-hidden">
+      {/* Whiteboard Toolbar */}
+      <div className="h-12 bg-gray-100 dark:bg-[#111827] border-b border-gray-200 dark:border-[#1E293B] px-3 sm:px-4 flex items-center justify-between text-xs flex-shrink-0 transition-colors gap-2 overflow-x-auto">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <span className="font-bold text-navy-800 dark:text-white flex items-center gap-1.5 mr-1">
+            <PenTool className="w-4 h-4 text-navy-800 dark:text-emerald-400" />
+            <span className="hidden md:inline">Whiteboard</span>
+          </span>
+
+          {/* If the user can draw, show tools */}
+          {canDraw ? (
+            <>
+              <button
+                onClick={() => setTool('pen')}
+                className={`px-2.5 py-1 rounded font-semibold transition ${
+                  tool === 'pen' ? 'bg-navy-800 dark:bg-emerald-600 text-white' : 'bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] text-charcoal-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1E293B]'
+                }`}
+              >
+                Pen
+              </button>
+              <button
+                onClick={() => setTool('eraser')}
+                className={`px-2.5 py-1 rounded font-semibold transition ${
+                  tool === 'eraser' ? 'bg-navy-800 dark:bg-emerald-600 text-white' : 'bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] text-charcoal-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1E293B]'
+                }`}
+              >
+                Eraser
+              </button>
+
+              <div className="flex items-center gap-1 sm:gap-1.5 ml-1">
+                {['#183153', '#059669', '#DC2626', '#2563EB', '#7C3AED'].map((color) => (
+                  <button
+                    key={color}
+                    onClick={() => { setPenColor(color); setTool('pen'); }}
+                    className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border transition-transform hover:scale-110 ${
+                      penColor === color && tool === 'pen' ? 'ring-2 ring-offset-1 ring-navy-800 dark:ring-emerald-400 scale-110 border-white' : 'border-gray-300 dark:border-gray-600'
+                    }`}
+                    style={{ backgroundColor: color }}
+                    title={`Color: ${color}`}
+                  />
+                ))}
+              </div>
+
+              {/* Stroke Width Selector */}
+              <div className="hidden xl:flex items-center gap-1 bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded p-0.5 ml-1">
+                {[
+                  { label: 'Fine', width: 2 },
+                  { label: 'Medium', width: 4 },
+                  { label: 'Bold', width: 7 },
+                ].map((sw) => (
+                  <button
+                    key={sw.width}
+                    onClick={() => setStrokeWidth(sw.width)}
+                    className={`px-1.5 py-0.5 rounded text-[11px] font-medium transition ${
+                      strokeWidth === sw.width ? 'bg-navy-800 dark:bg-emerald-600 text-white' : 'text-charcoal-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#1E293B]'
+                    }`}
+                    title={`${sw.label} Stroke (${sw.width}px)`}
+                  >
+                    {sw.label}
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            /* Student Locked Status */
+            <div className="flex items-center gap-1.5 text-xs text-charcoal-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 px-2.5 py-1 rounded-md">
+              <Lock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+              <span className="font-medium">Student Drawing Locked</span>
+            </div>
+          )}
+        </div>
+
+        {/* Center / Right Toolbar Controls */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          {/* Whiteboard Page Navigation */}
+          <div className="flex items-center bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded-md px-1 py-0.5 shadow-xs">
+            <button
+              onClick={() => handleSwitchPage(currentPage - 1)}
+              disabled={currentPage <= 1}
+              className="p-1 rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-[#1E293B] disabled:opacity-30 disabled:hover:bg-transparent transition"
+              title="Previous Page"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+            </button>
+            <span className="px-1.5 text-[11px] font-semibold text-charcoal-700 dark:text-slate-200 whitespace-nowrap">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => handleSwitchPage(currentPage + 1)}
+              disabled={currentPage >= totalPages}
+              className="p-1 rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-[#1E293B] disabled:opacity-30 disabled:hover:bg-transparent transition"
+              title="Next Page"
+            >
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+            {canDraw && (
+              <button
+                onClick={handleAddPage}
+                disabled={totalPages >= 15}
+                className="ml-1 pl-1.5 border-l border-gray-200 dark:border-[#1E293B] py-0.5 text-navy-800 dark:text-emerald-400 hover:text-navy-950 dark:hover:text-emerald-300 disabled:opacity-30 flex items-center gap-0.5 text-[11px] font-bold transition"
+                title="Add New Whiteboard Page"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Add</span>
+              </button>
+            )}
+          </div>
+
+          {/* Teacher Whiteboard Permission Toggle inside Toolbar */}
+          {userRole === 'teacher' && (
+            <button
+              onClick={() => handleToggleStudentWhiteboard(!studentWhiteboardAllowed)}
+              className={`px-2 py-1 rounded text-xs font-bold flex items-center gap-1 transition ${
+                studentWhiteboardAllowed 
+                  ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 hover:bg-emerald-200' 
+                  : 'bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 hover:bg-amber-200'
+              }`}
+            >
+              {studentWhiteboardAllowed ? <Unlock className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
+              <span className="hidden lg:inline">{studentWhiteboardAllowed ? 'Student: Allowed' : 'Student: Locked'}</span>
+            </button>
+          )}
+
+          {/* Student Request Access Button */}
+          {userRole === 'student' && !studentWhiteboardAllowed && (
+            <button
+              onClick={handleRequestWhiteboardAccess}
+              disabled={accessRequestSent}
+              className="px-2.5 py-1 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 disabled:bg-gray-400 dark:disabled:bg-gray-700 text-white rounded text-xs font-semibold flex items-center gap-1 transition"
+            >
+              <Hand className="w-3 h-3" />
+              <span>{accessRequestSent ? 'Requested' : 'Request Access'}</span>
+            </button>
+          )}
+
+          {canDraw && (
+            <>
+              <button
+                onClick={handleUndo}
+                className="px-2 py-1 bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] font-medium flex items-center gap-1 transition"
+                title="Undo Stroke"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span className="hidden xl:inline">Undo</span>
+              </button>
+              <button
+                onClick={clearCanvas}
+                className="px-2 py-1 bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] font-medium flex items-center gap-1 transition"
+                title="Clear Whiteboard"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span className="hidden xl:inline">Clear</span>
+              </button>
+            </>
+          )}
+
+          {/* PNG Download */}
+          <button
+            onClick={downloadCanvas}
+            className="px-2 py-1 bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] font-medium flex items-center gap-1 transition"
+            title="Download Current Page as PNG"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span className="hidden md:inline">PNG</span>
+          </button>
+
+          {/* Export All Pages as PDF Notes */}
+          <button
+            onClick={exportAllPagesToPdf}
+            disabled={isExportingPdf}
+            className="px-2.5 py-1 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 disabled:opacity-60 text-white rounded font-medium flex items-center gap-1 shadow-sm transition"
+            title="Export All Whiteboard Pages as PDF Notes"
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>{isExportingPdf ? 'Exporting...' : 'Export PDF'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Drawing Canvas Area */}
+      <div className="flex-1 relative overflow-hidden bg-white">
+        <canvas
+          ref={canvasRef}
+          onMouseDown={startDrawing}
+          onMouseMove={draw}
+          onMouseUp={stopDrawing}
+          onMouseLeave={stopDrawing}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchEnd}
+          className={`w-full h-full block bg-white touch-none ${canDraw ? 'cursor-crosshair' : 'cursor-not-allowed'}`}
+        />
+
+        {/* Locked Overlay for Student when not permitted */}
+        {!canDraw && (
+          <div className="absolute inset-0 bg-white/85 dark:bg-[#0A0F1D]/90 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center z-10 transition-colors">
+            <div className="w-14 h-14 rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-amber-700 dark:text-amber-400 mb-3 shadow-subtle">
+              <Lock className="w-7 h-7" />
+            </div>
+            <h3 className="text-base font-bold text-navy-800 dark:text-white mb-1">
+              Whiteboard Access Locked
+            </h3>
+            <p className="text-xs text-charcoal-600 dark:text-slate-300 max-w-sm mb-4 leading-relaxed">
+              Drawing access is currently restricted by your instructor. You will be able to draw, solve formulas, and write once your teacher grants permission.
+            </p>
+            <button
+              onClick={handleRequestWhiteboardAccess}
+              disabled={accessRequestSent}
+              className="px-5 py-2.5 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 disabled:bg-gray-400 dark:disabled:bg-gray-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm"
+            >
+              <Hand className="w-4 h-4" />
+              <span>{accessRequestSent ? 'Access Requested — Waiting for Teacher...' : 'Request Whiteboard Access'}</span>
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
   if (!isMounted) {
     return (
       <div className="bg-navy-950 text-white min-h-screen flex items-center justify-center">
@@ -825,6 +1151,43 @@ export default function ClassroomPage() {
         {/* Center / Right Controls */}
         <div className="flex items-center gap-2 sm:gap-3">
           
+          {/* Subject Track Indicator & Switcher */}
+          <div className="hidden lg:flex items-center gap-1.5">
+            {isComputerScienceClass ? (
+              <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-950/70 border border-emerald-500/50 text-emerald-300 flex items-center gap-1.5 shadow-xs">
+                <Code2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span>CS Class (Python/Java)</span>
+              </span>
+            ) : (
+              <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-navy-950 border border-navy-800 text-gray-300 flex items-center gap-1.5">
+                <PenTool className="w-3.5 h-3.5 text-gray-400" />
+                <span>Mathematics Class</span>
+              </span>
+            )}
+
+            {userRole === 'teacher' && (
+              <select
+                value={isComputerScienceClass ? 'Computer Science' : 'Mathematics'}
+                onChange={(e) => {
+                  const newSubj = e.target.value;
+                  setClassSubject(newSubj);
+                  if (channelRef.current) {
+                    channelRef.current.send({
+                      type: 'broadcast',
+                      event: 'subject_change',
+                      payload: { subject: newSubj },
+                    });
+                  }
+                }}
+                className="bg-navy-950 text-gray-300 border border-navy-800 hover:border-navy-700 rounded-lg px-2 py-1 text-[11px] font-medium cursor-pointer focus:outline-none"
+                title="Educator track toggle: Switch room between Computer Science and Mathematics"
+              >
+                <option value="Computer Science">Track: Computer Science</option>
+                <option value="Mathematics">Track: Mathematics</option>
+              </select>
+            )}
+          </div>
+
           {/* Teacher Whiteboard Permission Controller in Header */}
           {userRole === 'teacher' && (
             <div className="hidden md:flex items-center gap-1.5">
@@ -1011,229 +1374,91 @@ export default function ClassroomPage() {
 
         </div>
 
-        {/* INTERACTIVE WHITEBOARD PANE (Rendered in Split View or Whiteboard Only) */}
+        {/* INTERACTIVE WORKSPACE PANE: CS Studio (Code / Split / Whiteboard) or Mathematics Whiteboard */}
         {(viewMode === 'split' || viewMode === 'whiteboard_only') && (
           <div className={`${
             viewMode === 'split' ? 'w-full lg:w-1/2 border-l border-navy-800 dark:border-[#1E293B]' : 'flex-1'
-          } bg-white dark:bg-[#0E1526] flex flex-col text-charcoal-800 dark:text-slate-200 relative shadow-2xl`}>
+          } bg-white dark:bg-[#0E1526] flex flex-col text-charcoal-800 dark:text-slate-200 relative shadow-2xl overflow-hidden`}>
             
-            {/* Whiteboard Toolbar */}
-            <div className="h-12 bg-gray-100 dark:bg-[#111827] border-b border-gray-200 dark:border-[#1E293B] px-3 sm:px-4 flex items-center justify-between text-xs flex-shrink-0 transition-colors gap-2 overflow-x-auto">
-              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                <span className="font-bold text-navy-800 dark:text-white flex items-center gap-1.5 mr-1">
-                  <PenTool className="w-4 h-4 text-navy-800 dark:text-emerald-400" />
-                  <span className="hidden md:inline">Whiteboard</span>
-                </span>
-
-                {/* If the user can draw, show tools */}
-                {canDraw ? (
-                  <>
-                    <button
-                      onClick={() => setTool('pen')}
-                      className={`px-2.5 py-1 rounded font-semibold transition ${
-                        tool === 'pen' ? 'bg-navy-800 dark:bg-emerald-600 text-white' : 'bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] text-charcoal-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1E293B]'
-                      }`}
-                    >
-                      Pen
-                    </button>
-                    <button
-                      onClick={() => setTool('eraser')}
-                      className={`px-2.5 py-1 rounded font-semibold transition ${
-                        tool === 'eraser' ? 'bg-navy-800 dark:bg-emerald-600 text-white' : 'bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] text-charcoal-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1E293B]'
-                      }`}
-                    >
-                      Eraser
-                    </button>
-
-                    <div className="flex items-center gap-1 sm:gap-1.5 ml-1">
-                      {['#183153', '#059669', '#DC2626', '#2563EB', '#7C3AED'].map((color) => (
-                        <button
-                          key={color}
-                          onClick={() => { setPenColor(color); setTool('pen'); }}
-                          className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border transition-transform hover:scale-110 ${
-                            penColor === color && tool === 'pen' ? 'ring-2 ring-offset-1 ring-navy-800 dark:ring-emerald-400 scale-110 border-white' : 'border-gray-300 dark:border-gray-600'
-                          }`}
-                          style={{ backgroundColor: color }}
-                          title={`Color: ${color}`}
-                        />
-                      ))}
-                    </div>
-
-                    {/* Stroke Width Selector */}
-                    <div className="hidden xl:flex items-center gap-1 bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded p-0.5 ml-1">
-                      {[
-                        { label: 'Fine', width: 2 },
-                        { label: 'Medium', width: 4 },
-                        { label: 'Bold', width: 7 },
-                      ].map((sw) => (
-                        <button
-                          key={sw.width}
-                          onClick={() => setStrokeWidth(sw.width)}
-                          className={`px-1.5 py-0.5 rounded text-[11px] font-medium transition ${
-                            strokeWidth === sw.width ? 'bg-navy-800 dark:bg-emerald-600 text-white' : 'text-charcoal-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-[#1E293B]'
-                          }`}
-                          title={`${sw.label} Stroke (${sw.width}px)`}
-                        >
-                          {sw.label}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  /* Student Locked Status */
-                  <div className="flex items-center gap-1.5 text-xs text-charcoal-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 px-2.5 py-1 rounded-md">
-                    <Lock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                    <span className="font-medium">Student Drawing Locked</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Center / Right Toolbar Controls */}
-              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                {/* Whiteboard Page Navigation */}
-                <div className="flex items-center bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded-md px-1 py-0.5 shadow-xs">
-                  <button
-                    onClick={() => handleSwitchPage(currentPage - 1)}
-                    disabled={currentPage <= 1}
-                    className="p-1 rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-[#1E293B] disabled:opacity-30 disabled:hover:bg-transparent transition"
-                    title="Previous Page"
-                  >
-                    <ChevronLeft className="w-3.5 h-3.5" />
-                  </button>
-                  <span className="px-1.5 text-[11px] font-semibold text-charcoal-700 dark:text-slate-200 whitespace-nowrap">
-                    Page {currentPage} of {totalPages}
+            {/* Exclusive CS Workspace Tab Bar (Only displayed for Computer Science / Coding lessons) */}
+            {isComputerScienceClass && (
+              <div className="h-10 bg-[#161B22] border-b border-[#30363D] px-3 sm:px-4 flex items-center justify-between text-xs flex-shrink-0 select-none">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-emerald-400 flex items-center gap-1.5 text-xs">
+                    <Code2 className="w-4 h-4 text-emerald-400" />
+                    <span>CS Workspace:</span>
                   </span>
-                  <button
-                    onClick={() => handleSwitchPage(currentPage + 1)}
-                    disabled={currentPage >= totalPages}
-                    className="p-1 rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-[#1E293B] disabled:opacity-30 disabled:hover:bg-transparent transition"
-                    title="Next Page"
-                  >
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                  {canDraw && (
+                  <div className="bg-[#0D1117] p-0.5 rounded-lg border border-[#30363D] flex items-center">
                     <button
-                      onClick={handleAddPage}
-                      disabled={totalPages >= 15}
-                      className="ml-1 pl-1.5 border-l border-gray-200 dark:border-[#1E293B] py-0.5 text-navy-800 dark:text-emerald-400 hover:text-navy-950 dark:hover:text-emerald-300 disabled:opacity-30 flex items-center gap-0.5 text-[11px] font-bold transition"
-                      title="Add New Whiteboard Page"
+                      onClick={() => setCsWorkspaceTab('code')}
+                      className={`px-2.5 py-1 rounded text-xs font-semibold transition ${
+                        csWorkspaceTab === 'code' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'
+                      }`}
                     >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline">Add</span>
-                    </button>
-                  )}
-                </div>
-
-                {/* Teacher Whiteboard Permission Toggle inside Toolbar */}
-                {userRole === 'teacher' && (
-                  <button
-                    onClick={() => handleToggleStudentWhiteboard(!studentWhiteboardAllowed)}
-                    className={`px-2 py-1 rounded text-xs font-bold flex items-center gap-1 transition ${
-                      studentWhiteboardAllowed 
-                        ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 hover:bg-emerald-200' 
-                        : 'bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 hover:bg-amber-200'
-                    }`}
-                  >
-                    {studentWhiteboardAllowed ? <Unlock className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
-                    <span className="hidden lg:inline">{studentWhiteboardAllowed ? 'Student: Allowed' : 'Student: Locked'}</span>
-                  </button>
-                )}
-
-                {/* Student Request Access Button */}
-                {userRole === 'student' && !studentWhiteboardAllowed && (
-                  <button
-                    onClick={handleRequestWhiteboardAccess}
-                    disabled={accessRequestSent}
-                    className="px-2.5 py-1 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 disabled:bg-gray-400 dark:disabled:bg-gray-700 text-white rounded text-xs font-semibold flex items-center gap-1 transition"
-                  >
-                    <Hand className="w-3 h-3" />
-                    <span>{accessRequestSent ? 'Requested' : 'Request Access'}</span>
-                  </button>
-                )}
-
-                {canDraw && (
-                  <>
-                    <button
-                      onClick={handleUndo}
-                      className="px-2 py-1 bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] font-medium flex items-center gap-1 transition"
-                      title="Undo Stroke"
-                    >
-                      <RotateCcw className="w-3.5 h-3.5" />
-                      <span className="hidden xl:inline">Undo</span>
+                      Live Code Editor
                     </button>
                     <button
-                      onClick={clearCanvas}
-                      className="px-2 py-1 bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] font-medium flex items-center gap-1 transition"
-                      title="Clear Whiteboard"
+                      onClick={() => setCsWorkspaceTab('split')}
+                      className={`px-2.5 py-1 rounded text-xs font-semibold transition ${
+                        csWorkspaceTab === 'split' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'
+                      }`}
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      <span className="hidden xl:inline">Clear</span>
+                      Split (Code + Board)
                     </button>
-                  </>
-                )}
-
-                {/* PNG Download */}
-                <button
-                  onClick={downloadCanvas}
-                  className="px-2 py-1 bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] font-medium flex items-center gap-1 transition"
-                  title="Download Current Page as PNG"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span className="hidden md:inline">PNG</span>
-                </button>
-
-                {/* Export All Pages as PDF Notes */}
-                <button
-                  onClick={exportAllPagesToPdf}
-                  disabled={isExportingPdf}
-                  className="px-2.5 py-1 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 disabled:opacity-60 text-white rounded font-medium flex items-center gap-1 shadow-sm transition"
-                  title="Export All Whiteboard Pages as PDF Notes"
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>{isExportingPdf ? 'Exporting...' : 'Export PDF'}</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Drawing Canvas Area */}
-            <div className="flex-1 relative overflow-hidden bg-white">
-              <canvas
-                ref={canvasRef}
-                onMouseDown={startDrawing}
-                onMouseMove={draw}
-                onMouseUp={stopDrawing}
-                onMouseLeave={stopDrawing}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                onTouchCancel={handleTouchEnd}
-                className={`w-full h-full block bg-white touch-none ${canDraw ? 'cursor-crosshair' : 'cursor-not-allowed'}`}
-              />
-
-              {/* Locked Overlay for Student when not permitted */}
-              {!canDraw && (
-                <div className="absolute inset-0 bg-white/85 dark:bg-[#0A0F1D]/90 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center z-10 transition-colors">
-                  <div className="w-14 h-14 rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-amber-700 dark:text-amber-400 mb-3 shadow-subtle">
-                    <Lock className="w-7 h-7" />
+                    <button
+                      onClick={() => setCsWorkspaceTab('whiteboard')}
+                      className={`px-2.5 py-1 rounded text-xs font-semibold transition ${
+                        csWorkspaceTab === 'whiteboard' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      Whiteboard
+                    </button>
                   </div>
-                  <h3 className="text-base font-bold text-navy-800 dark:text-white mb-1">
-                    Whiteboard Access Locked
-                  </h3>
-                  <p className="text-xs text-charcoal-600 dark:text-slate-300 max-w-sm mb-4 leading-relaxed">
-                    Drawing access is currently restricted by your instructor. You will be able to draw, solve formulas, and write once your teacher grants permission.
-                  </p>
-                  <button
-                    onClick={handleRequestWhiteboardAccess}
-                    disabled={accessRequestSent}
-                    className="px-5 py-2.5 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 disabled:bg-gray-400 dark:disabled:bg-gray-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm"
-                  >
-                    <Hand className="w-4 h-4" />
-                    <span>{accessRequestSent ? 'Access Requested — Waiting for Teacher...' : 'Request Whiteboard Access'}</span>
-                  </button>
                 </div>
-              )}
+                <div className="hidden sm:flex items-center gap-1.5 text-[11px] text-slate-400 font-mono">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>Python & Java Studio</span>
+                </div>
+              </div>
+            )}
 
-            </div>
+            {/* Main Interactive Content: Exclusively Code / Split / Board in CS; Pure Whiteboard in Math */}
+            {isComputerScienceClass ? (
+              csWorkspaceTab === 'code' ? (
+                <div className="flex-1 flex flex-col h-full overflow-hidden">
+                  <LiveCodeEditor
+                    code={code}
+                    onChange={handleCodeChange}
+                    language={codeLanguage}
+                    onLanguageChange={handleLanguageChange}
+                    canEdit={canDraw}
+                    onRun={handleRunCode}
+                    remoteOutput={remoteConsoleOutput}
+                  />
+                </div>
+              ) : csWorkspaceTab === 'split' ? (
+                <div className="flex-1 flex flex-col xl:flex-row h-full overflow-hidden">
+                  <div className="flex-1 h-1/2 xl:h-full overflow-hidden border-b xl:border-b-0 xl:border-r border-[#1E293B]">
+                    <LiveCodeEditor
+                      code={code}
+                      onChange={handleCodeChange}
+                      language={codeLanguage}
+                      onLanguageChange={handleLanguageChange}
+                      canEdit={canDraw}
+                      onRun={handleRunCode}
+                      remoteOutput={remoteConsoleOutput}
+                    />
+                  </div>
+                  <div className="flex-1 h-1/2 xl:h-full flex flex-col overflow-hidden relative">
+                    {renderWhiteboard()}
+                  </div>
+                </div>
+              ) : (
+                renderWhiteboard()
+              )
+            ) : (
+              renderWhiteboard()
+            )}
 
           </div>
         )}

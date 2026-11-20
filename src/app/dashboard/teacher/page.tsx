@@ -358,7 +358,7 @@ export default function TeacherDashboardPage() {
                     </div>
                     <div className="flex items-center gap-2 w-full sm:w-auto">
                       <Link
-                        href={user ? `/classroom/room-tutor-${user.id}` : (bookings[0]?.meeting_url || '/classroom/room-tutor')}
+                        href={user ? `/classroom/room-tutor-${user.id}?subject=${encodeURIComponent(bookings[0]?.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}` : (bookings[0]?.meeting_url || '/classroom/room-tutor')}
                         className="flex-1 sm:flex-none px-4 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-subtle"
                       >
                         <Video className="w-4 h-4" />
@@ -430,7 +430,7 @@ export default function TeacherDashboardPage() {
                         Subject: <strong className="text-navy-800 dark:text-slate-200">{bookings[0].subject}</strong> • Earnings: <strong className="text-accent-700 dark:text-emerald-400">${bookings[0].hourly_rate || teacherHourlyRate} USD</strong> (Ready for payout)
                       </div>
                       <Link
-                        href={user ? `/classroom/room-tutor-${user.id}` : (bookings[0]?.meeting_url || '/classroom/room-tutor')}
+                        href={user ? `/classroom/room-tutor-${user.id}?subject=${encodeURIComponent(bookings[0]?.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}` : (bookings[0]?.meeting_url || '/classroom/room-tutor')}
                         className="px-5 py-2.5 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-subtle"
                       >
                         <Video className="w-4 h-4" />
@@ -454,7 +454,7 @@ export default function TeacherDashboardPage() {
                         Class Type: <strong className="text-navy-800 dark:text-slate-200">Group Class</strong> • Rate: <strong className="text-navy-800 dark:text-slate-200">${teacherClasses[0]?.price}</strong>
                       </div>
                       <Link
-                        href={`/classroom/room-${teacherClasses[0]?.id}`}
+                        href={`/classroom/room-${teacherClasses[0]?.id}?subject=${encodeURIComponent(teacherClasses[0]?.subject || 'Mathematics')}`}
                         className="px-4 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-subtle"
                       >
                         <Video className="w-4 h-4" />
@@ -522,7 +522,7 @@ export default function TeacherDashboardPage() {
                         </div>
 
                         <Link
-                          href={user ? `/classroom/room-tutor-${user.id}` : (b.meeting_url || `/classroom/room-${b.id}`)}
+                          href={user ? `/classroom/room-tutor-${user.id}?subject=${encodeURIComponent(b.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}` : (b.meeting_url || `/classroom/room-${b.id}?subject=${encodeURIComponent(b.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}`)}
                           className="px-4 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-subtle flex-shrink-0"
                         >
                           <Video className="w-3.5 h-3.5" />
@@ -548,7 +548,7 @@ export default function TeacherDashboardPage() {
 
                         <div className="flex items-center gap-2">
                           <Link
-                            href={user ? `/classroom/room-tutor-${user.id}` : `/classroom/room-${cls.id}`}
+                            href={user ? `/classroom/room-tutor-${user.id}?subject=${encodeURIComponent(cls.subject || 'Mathematics')}` : `/classroom/room-${cls.id}?subject=${encodeURIComponent(cls.subject || 'Mathematics')}`}
                             className="px-4 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5"
                           >
                             <Video className="w-3.5 h-3.5" />
@@ -859,7 +859,7 @@ export default function TeacherDashboardPage() {
 
                         <div className="flex items-center gap-2">
                           <Link
-                            href={user ? `/classroom/room-tutor-${user.id}` : (b.meeting_url || `/classroom/room-${b.id}`)}
+                            href={user ? `/classroom/room-tutor-${user.id}?subject=${encodeURIComponent(b.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}` : (b.meeting_url || `/classroom/room-${b.id}?subject=${encodeURIComponent(b.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}`)}
                             className="px-3.5 py-1.5 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5"
                           >
                             <Video className="w-3.5 h-3.5" />

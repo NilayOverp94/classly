@@ -302,7 +302,7 @@ export default function StudentDashboardPage() {
 
                       <div className="w-full md:w-auto flex flex-col sm:flex-row items-center gap-2.5">
                         <Link
-                          href={b.meeting_url || (b.teacher_id ? `/classroom/room-tutor-${b.teacher_id}` : `/classroom/room-${b.id}`)}
+                          href={b.meeting_url ? (b.meeting_url.includes('?') ? `${b.meeting_url}&subject=${encodeURIComponent(b.subject || 'Mathematics')}` : `${b.meeting_url}?subject=${encodeURIComponent(b.subject || 'Mathematics')}`) : (b.teacher_id ? `/classroom/room-tutor-${b.teacher_id}?subject=${encodeURIComponent(b.subject || 'Mathematics')}` : `/classroom/room-${b.id}?subject=${encodeURIComponent(b.subject || 'Mathematics')}`)}
                           className="w-full md:w-auto px-5 py-2.5 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition shadow-subtle flex items-center justify-center gap-2"
                         >
                           <Video className="w-4 h-4" />
