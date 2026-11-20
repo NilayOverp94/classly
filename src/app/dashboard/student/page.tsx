@@ -17,11 +17,14 @@ import {
   LogOut,
   ArrowRight,
   Sparkles,
-  Inbox
+  Inbox,
+  Star,
+  CheckCircle2
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { FadeIn } from '@/components/ui/MotionComponents';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ReviewModal } from '@/components/reviews/ReviewModal';
 
 export default function StudentDashboardPage() {
   const router = useRouter();
@@ -35,6 +38,7 @@ export default function StudentDashboardPage() {
   const [bookedTutors, setBookedTutors] = useState<any[]>([]);
   const [materials, setMaterials] = useState<any[]>([]);
   const [paymentHistory, setPaymentHistory] = useState<any[]>([]);
+  const [activeReviewBooking, setActiveReviewBooking] = useState<any | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -338,12 +342,36 @@ export default function StudentDashboardPage() {
                 
                 {pastBookings.length > 0 ? (
                   pastBookings.map((b) => (
-                    <div key={b.id} className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle flex items-center justify-between">
+                    <div key={b.id} className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div>
-                        <div className="font-bold text-sm text-navy-800 dark:text-white">{b.subject} with {b.teacher_name}</div>
-                        <div className="text-xs text-charcoal-500 dark:text-slate-400 mt-0.5">Completed • {b.duration_minutes} mins</div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-sm text-navy-800 dark:text-white">{b.subject}</span>
+                          <span className="text-xs text-charcoal-500 dark:text-slate-400">with <strong>{b.teacher_name}</strong></span>
+                        </div>
+                        <div className="text-xs text-charcoal-500 dark:text-slate-400 mt-1 flex items-center gap-2">
+                          <Clock className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400" />
+                          <span>{b.formatted_time || b.start_time || `${b.duration_minutes || 60} mins lesson`}</span>
+                          <span>•</span>
+                          <span>${b.price || b.total_amount || 25} Paid</span>
+                        </div>
                       </div>
-                      <span className="text-xs font-semibold text-gray-500 dark:text-slate-400">${b.price} Paid</span>
+
+                      <div className="flex items-center gap-2">
+                        {b.reviewed ? (
+                          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 text-xs font-bold">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                            <span>Reviewed {b.review_rating ? `★ ${b.review_rating}` : '★ 5.0'}</span>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setActiveReviewBooking(b)}
+                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white text-xs font-bold transition shadow-xs"
+                          >
+                            <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                            <span>Leave Review</span>
+                          </button>
+                        )}
+                      </div>
                     </div>
                   ))
                 ) : (
@@ -520,6 +548,31 @@ export default function StudentDashboardPage() {
         </div>
 
       </div>
+
+      {/* Post-Lesson Review Modal */}
+      {activeReviewBooking && (
+        <ReviewModal
+          isOpen={!!activeReviewBooking}
+          onClose={() => setActiveReviewBooking(null)}
+          onSuccess={(newReview) => {
+            setPastBookings((prev) =>
+              prev.map((item) =>
+                item.id === activeReviewBooking.id || item.bookingId === activeReviewBooking.id
+                  ? { ...item, reviewed: true, review_rating: newReview.rating }
+                  : item
+              )
+            );
+          }}
+          bookingId={activeReviewBooking.id || activeReviewBooking.bookingId}
+          tutorId={activeReviewBooking.teacher_id}
+          tutorName={activeReviewBooking.teacher_name}
+          tutorAvatar={activeReviewBooking.teacher_avatar}
+          subject={activeReviewBooking.subject}
+          studentId={user?.id}
+          studentName={displayName}
+          studentGrade={gradeLevel}
+        />
+      )}
     </div>
   );
 }

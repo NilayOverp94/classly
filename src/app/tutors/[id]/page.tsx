@@ -14,10 +14,14 @@ import {
   CheckCircle, 
   ArrowLeft,
   ChevronRight,
-  BookOpen
+  BookOpen,
+  MessageSquare,
+  ThumbsUp,
+  CheckCircle2,
+  Sparkles
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import { TeacherProfile } from '@/lib/types';
+import { TeacherProfile, ReviewItem } from '@/lib/types';
 import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/MotionComponents';
 
 export default function TutorProfilePage() {
@@ -29,6 +33,18 @@ export default function TutorProfilePage() {
   const [loading, setLoading] = useState(true);
   const [bookingMode, setBookingMode] = useState<'one_on_one' | 'group'>('one_on_one');
   const [selectedDay, setSelectedDay] = useState<string>('Monday');
+
+  // Reviews & Ratings State
+  const [reviews, setReviews] = useState<ReviewItem[]>([]);
+  const [reviewStats, setReviewStats] = useState<{
+    total: number;
+    averageRating: number;
+    distribution: Record<number, number>;
+  }>({
+    total: 0,
+    averageRating: 5.0,
+    distribution: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 },
+  });
 
   const supabase = createClient();
 
@@ -122,7 +138,31 @@ export default function TutorProfilePage() {
       }
     }
 
+    async function loadReviews() {
+      if (!tutorId) return;
+      try {
+        const res = await fetch(`/api/reviews?tutorId=${tutorId}`, { cache: 'no-store' });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.reviews)) {
+            setReviews(json.reviews);
+            if (json.stats) {
+              setReviewStats(json.stats);
+              setTutor((prev) => prev ? {
+                ...prev,
+                rating: json.stats.averageRating || prev.rating,
+                review_count: json.stats.total || prev.review_count,
+              } : null);
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load reviews:', err);
+      }
+    }
+
     loadTutor();
+    loadReviews();
   }, [tutorId]);
 
   if (loading) {
@@ -299,21 +339,169 @@ export default function TutorProfilePage() {
             </div>
 
             {/* Student Reviews Section */}
-            <div className="bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle">
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100 dark:border-[#1E293B]">
+            <div className="bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100 dark:border-[#1E293B]">
                 <div>
-                  <h2 className="text-lg font-bold text-navy-800 dark:text-white">
-                    Student & Parent Reviews
-                  </h2>
-                  <p className="text-xs text-charcoal-500 dark:text-slate-400">
-                    Feedback from verified lessons booked through Classly
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-lg font-bold text-navy-800 dark:text-white">
+                      Student & Parent Reviews
+                    </h2>
+                    {reviewStats.total > 0 && (
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-[11px] font-bold border border-emerald-200 dark:border-emerald-800/60">
+                        {reviewStats.total} Verified
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-charcoal-500 dark:text-slate-400 mt-0.5">
+                    100% authentic feedback from verified 1-on-1 lessons on Classly
                   </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 px-3 py-1 rounded-lg">
+                    <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                    <span className="text-sm font-extrabold text-navy-900 dark:text-amber-300">
+                      {reviewStats.averageRating.toFixed(1)}
+                    </span>
+                    <span className="text-[11px] text-charcoal-500 dark:text-slate-400">
+                      ({reviewStats.total})
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <div className="p-8 text-center text-xs text-charcoal-500 dark:text-slate-400 bg-gray-50/50 dark:bg-[#162032]/40 rounded-lg border border-dashed border-gray-200 dark:border-[#2D3B4F]">
-                No student reviews submitted yet. Reviews appear automatically after students complete verified lessons.
-              </div>
+              {reviews.length > 0 ? (
+                <>
+                  {/* Rating Breakdown Dashboard */}
+                  <div className="p-5 bg-gray-50/70 dark:bg-[#162032]/60 rounded-xl border border-gray-200/80 dark:border-[#1E293B] flex flex-col md:flex-row items-center gap-6">
+                    {/* Big Score Block */}
+                    <div className="text-center md:border-r border-gray-200 dark:border-[#2D3B4F] md:pr-8 min-w-[140px]">
+                      <div className="text-4xl font-extrabold text-navy-800 dark:text-white">
+                        {reviewStats.averageRating.toFixed(1)}
+                      </div>
+                      <div className="flex items-center justify-center gap-1 my-1.5">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <Star
+                            key={s}
+                            className={`w-4 h-4 ${
+                              s <= Math.round(reviewStats.averageRating)
+                                ? 'text-amber-400 fill-amber-400'
+                                : 'text-gray-300 dark:text-gray-600'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <p className="text-[11px] text-charcoal-500 dark:text-slate-400">
+                        Based on {reviewStats.total} lesson{reviewStats.total === 1 ? '' : 's'}
+                      </p>
+                    </div>
+
+                    {/* Distribution Bars */}
+                    <div className="flex-1 w-full space-y-1.5 text-xs">
+                      {[5, 4, 3, 2, 1].map((stars) => {
+                        const count = reviewStats.distribution[stars] || 0;
+                        const pct = reviewStats.total > 0 ? Math.round((count / reviewStats.total) * 100) : 0;
+                        return (
+                          <div key={stars} className="flex items-center gap-2">
+                            <span className="w-12 text-[11px] font-semibold text-charcoal-600 dark:text-slate-300 flex items-center gap-0.5">
+                              <span>{stars}</span>
+                              <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                            </span>
+                            <div className="flex-1 h-2 bg-gray-200 dark:bg-navy-950 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-amber-400 rounded-full transition-all duration-500"
+                                style={{ width: `${pct}%` }}
+                              />
+                            </div>
+                            <span className="w-9 text-right text-[11px] text-charcoal-400 dark:text-slate-400 font-mono">
+                              {count}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Review Cards */}
+                  <div className="space-y-4 pt-2">
+                    {reviews.map((r) => (
+                      <div
+                        key={r.id}
+                        className="p-5 rounded-xl border border-gray-100 dark:border-[#1E293B] bg-white dark:bg-[#111827] shadow-xs hover:border-gray-300 dark:hover:border-slate-700 transition"
+                      >
+                        <div className="flex items-start justify-between gap-3 mb-2.5">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-navy-800 dark:bg-emerald-700 text-white flex items-center justify-center font-bold text-sm shadow-xs">
+                              {r.student_name.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h4 className="text-sm font-bold text-navy-800 dark:text-white">
+                                  {r.student_name}
+                                </h4>
+                                <span className="text-[10px] font-semibold text-accent-700 dark:text-emerald-400 bg-accent-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded border border-accent-200 dark:border-emerald-800/60">
+                                  {r.student_grade || 'Student'}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1.5 text-[11px] text-charcoal-400 dark:text-slate-400 mt-0.5">
+                                <span className="flex items-center gap-0.5 text-emerald-600 dark:text-emerald-400 font-medium">
+                                  <CheckCircle2 className="w-3 h-3" />
+                                  <span>Verified Lesson</span>
+                                </span>
+                                <span>•</span>
+                                <span>{r.date}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-0.5">
+                            {[1, 2, 3, 4, 5].map((s) => (
+                              <Star
+                                key={s}
+                                className={`w-3.5 h-3.5 ${
+                                  s <= r.rating ? 'text-amber-400 fill-amber-400' : 'text-gray-200 dark:text-gray-700'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Subject Badge & Praise Tags */}
+                        <div className="flex flex-wrap items-center gap-1.5 mb-2.5">
+                          <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-[#162032] text-navy-800 dark:text-slate-300 text-[10px] font-semibold border border-gray-200 dark:border-[#2D3B4F]">
+                            {r.subject}
+                          </span>
+                          {r.tags && r.tags.map((t) => (
+                            <span
+                              key={t}
+                              className="px-2 py-0.5 rounded-full bg-softblue-50 dark:bg-[#162032] text-navy-800 dark:text-emerald-300 text-[10px] font-medium border border-blue-100 dark:border-[#2D3B4F]"
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+
+                        {/* Written feedback */}
+                        {r.comment && (
+                          <p className="text-xs text-charcoal-700 dark:text-slate-300 leading-relaxed">
+                            "{r.comment}"
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="p-8 text-center text-xs text-charcoal-500 dark:text-slate-400 bg-gray-50/50 dark:bg-[#162032]/40 rounded-xl border border-dashed border-gray-200 dark:border-[#2D3B4F]">
+                  <MessageSquare className="w-8 h-8 text-gray-400 dark:text-slate-500 mx-auto mb-2 opacity-60" />
+                  <h4 className="font-bold text-sm text-navy-800 dark:text-white mb-1">
+                    No Reviews Yet for this Educator
+                  </h4>
+                  <p className="max-w-md mx-auto leading-relaxed">
+                    Reviews on Classly are 100% verified — they can only be submitted by students who have booked and attended a live lesson with {tutor.full_name}.
+                  </p>
+                </div>
+              )}
             </div>
 
             </FadeIn>

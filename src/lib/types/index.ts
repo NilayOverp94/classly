@@ -79,12 +79,18 @@ export interface Booking {
 
 export interface ReviewItem {
   id: string;
+  booking_id?: string;
+  teacher_id?: string;
+  student_id?: string;
   student_name: string;
+  student_avatar?: string;
   student_grade: string;
   date: string;
   rating: number;
   comment: string;
   subject: string;
+  tags?: string[];
+  created_at?: string;
 }
 
 export interface GroupClass {

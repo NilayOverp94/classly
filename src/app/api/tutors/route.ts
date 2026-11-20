@@ -30,6 +30,13 @@ export async function GET() {
         const meta = u.user_metadata || {};
         const fullName = meta.full_name || meta.name || 'Verified Educator';
         const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=0B121E&color=ffffff&size=256&bold=true`;
+        
+        const reviews = Array.isArray(meta.reviews) ? meta.reviews : [];
+        const reviewCount = reviews.length;
+        const avgRating = reviewCount > 0
+          ? Number((reviews.reduce((sum: number, r: any) => sum + (Number(r.rating) || 5), 0) / reviewCount).toFixed(1))
+          : (Number(meta.rating) || 5.0);
+
         return {
           id: u.id,
           user_id: u.id,
@@ -44,9 +51,9 @@ export async function GET() {
           qualifications: [],
           education: meta.education || meta.qualifications || 'University Degree',
           teaching_methodology: '',
-          rating: 5.0,
-          review_count: 0,
-          total_hours_taught: 0,
+          rating: avgRating,
+          review_count: reviewCount,
+          total_hours_taught: Number(meta.total_hours_taught) || 0,
           city: meta.city || 'India',
           country: meta.country || 'India',
           subjects: meta.teaching_subjects || meta.subjects || ['Mathematics'],

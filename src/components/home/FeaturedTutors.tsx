@@ -67,6 +67,13 @@ export function FeaturedTutors() {
           }));
           setFeatured(mapped);
         } else {
+          // Fallback to /api/tutors to populate real ratings and reviews
+          const res = await fetch('/api/tutors', { cache: 'no-store' });
+          if (res.ok) {
+            const json = await res.json();
+            setFeatured((json.tutors || []).slice(0, 4));
+            return;
+          }
           setFeatured([]);
         }
       } catch (err) {

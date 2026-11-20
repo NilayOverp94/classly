@@ -34,6 +34,7 @@ import {
 import { createClient } from '@/lib/supabase/client';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { AlertModal } from '@/components/ui/AlertModal';
+import { ReviewModal } from '@/components/reviews/ReviewModal';
 
 export default function ClassroomPage() {
   const params = useParams();
@@ -67,6 +68,8 @@ export default function ClassroomPage() {
 
   // Modal Dialog States (replaces ugly browser alerts/confirms)
   const [showExitModal, setShowExitModal] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [disconnectNotice, setDisconnectNotice] = useState<string | null>(null);
 
   // Real-time channel ref
@@ -156,6 +159,7 @@ export default function ClassroomPage() {
           if (data.roomName) setCanonicalRoomName(data.roomName);
           setUserRole(role);
           setUserName(participantName);
+          if (currentUser) setCurrentUserId(currentUser.id);
         }
       } catch (err: any) {
         if (!isCancelled) {
@@ -781,7 +785,11 @@ export default function ClassroomPage() {
 
   const handleConfirmExit = () => {
     setShowExitModal(false);
-    router.push(userRole === 'teacher' ? '/dashboard/teacher' : '/dashboard/student');
+    if (userRole === 'student') {
+      setShowReviewModal(true);
+    } else {
+      router.push('/dashboard/teacher');
+    }
   };
 
   if (!isMounted) {
@@ -1269,6 +1277,31 @@ export default function ClassroomPage() {
           router.push(userRole === 'teacher' ? '/dashboard/teacher' : '/dashboard/student');
         }}
       />
+
+      {/* Post-Lesson Review Modal for Students on Session Exit */}
+      {showReviewModal && (
+        <ReviewModal
+          isOpen={showReviewModal}
+          onClose={() => {
+            setShowReviewModal(false);
+            router.push('/dashboard/student');
+          }}
+          onSuccess={() => {
+            setTimeout(() => {
+              router.push('/dashboard/student');
+            }, 1000);
+          }}
+          tutorId={
+            canonicalRoomName.includes('room-tutor-')
+              ? canonicalRoomName.replace('room-tutor-', '')
+              : canonicalRoomName.replace('room-', '')
+          }
+          tutorName="Your Educator"
+          subject="Classly Live Lesson"
+          studentId={currentUserId || undefined}
+          studentName={userName}
+        />
+      )}
 
     </div>
   );
