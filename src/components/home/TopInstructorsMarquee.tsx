@@ -3,73 +3,67 @@
 import React from 'react';
 import Image from 'next/image';
 import { FadeIn } from '@/components/ui/MotionComponents';
+import {
+  AmazonLogo,
+  MicrosoftLogo,
+  PayPalLogo,
+  MetaLogo,
+  SamsungLogo,
+  MastercardLogo,
+  FractalLogo,
+} from './CompanyLogos';
 
 interface Instructor {
   name: string;
   rolePrefix: string;
-  companyLogo: string;
-  companyAlt: string;
+  logo: React.ReactNode;
   image: string;
   linkedin: string;
-  logoHeight?: number;
 }
 
 const INSTRUCTORS: Instructor[] = [
   {
     name: 'Rajat Garg',
     rolePrefix: 'Bosscoder, Ex-',
-    companyLogo: '/images/faculty/logos/microsoft.png',
-    companyAlt: 'Microsoft',
+    logo: <MicrosoftLogo className="h-3.5 w-auto text-white" />,
     image: '/images/faculty/rajat-garg.png',
     linkedin: 'https://www.linkedin.com/in/rajatgarg',
   },
   {
     name: 'Manish Garg',
     rolePrefix: 'Bosscoder, Ex-',
-    companyLogo: '/images/faculty/logos/samsung.png',
-    companyAlt: 'Samsung',
+    logo: <SamsungLogo className="h-3 w-auto text-white" />,
     image: '/images/faculty/manish-garg.png',
     linkedin: 'https://www.linkedin.com/in/manish-garg',
   },
   {
     name: 'Ashish Prasad',
     rolePrefix: 'SDE,',
-    companyLogo: '/images/faculty/logos/microsoft.png',
-    companyAlt: 'Microsoft',
+    logo: <MicrosoftLogo className="h-3.5 w-auto text-white" />,
     image: '/images/faculty/ashish-prasad.png',
     linkedin: 'https://www.linkedin.com/in/ashish-prasad',
   },
   {
     name: 'Geetika Singh',
     rolePrefix: 'SDE II,',
-    companyLogo: '/images/faculty/logos/amazon.png',
-    companyAlt: 'Amazon',
+    logo: <AmazonLogo className="h-3.5 w-auto text-white" />,
     image: '/images/faculty/geetika-singh.png',
     linkedin: 'https://www.linkedin.com/in/geetika-singh',
   },
   {
     name: 'Mudita Sharma',
     rolePrefix: 'Data Engineer,',
-    companyLogo: '/images/faculty/logos/fractal.png',
-    companyAlt: 'Fractal Analytics',
+    logo: <FractalLogo className="h-3.5 w-auto" />,
     image: '/images/faculty/mudita-sharma.png',
     linkedin: 'https://www.linkedin.com/in/mudita-sharma',
   },
   {
     name: 'Gaurav',
     rolePrefix: 'Data Engineer II,',
-    companyLogo: '/images/faculty/logos/mastercard.png',
-    companyAlt: 'Mastercard',
+    logo: <MastercardLogo className="h-4 w-auto text-white" />,
     image: '/images/faculty/gaurav.png',
     linkedin: 'https://www.linkedin.com/in/gaurav',
   },
-];
-
-const MAANG_LOGOS = [
-  { name: 'Amazon', logo: '/images/faculty/logos/header-amazon.png', width: 90, height: 28 },
-  { name: 'Microsoft', logo: '/images/faculty/logos/header-microsoft.png', width: 95, height: 26 },
-  { name: 'PayPal', logo: '/images/faculty/logos/header-paypal.png', width: 85, height: 24 },
-  { name: 'Meta', logo: '/images/faculty/logos/header-meta.png', width: 80, height: 24 },
 ];
 
 export function TopInstructorsMarquee() {
@@ -99,18 +93,19 @@ export function TopInstructorsMarquee() {
               <p className="text-xs sm:text-sm font-medium text-charcoal-500 dark:text-slate-400">
                 Working in Top MAANG companies
               </p>
-              <div className="flex items-center gap-5 sm:gap-6 flex-wrap">
-                {MAANG_LOGOS.map((company) => (
-                  <div key={company.name} className="h-6 sm:h-7 relative flex items-center transition-transform hover:scale-105 duration-200">
-                    <Image
-                      src={company.logo}
-                      alt={company.name}
-                      width={company.width}
-                      height={company.height}
-                      className="object-contain h-full w-auto opacity-80 hover:opacity-100 transition-opacity dark:brightness-0 dark:invert dark:opacity-85"
-                    />
-                  </div>
-                ))}
+              <div className="flex items-center gap-5 sm:gap-6 flex-wrap text-navy-950 dark:text-white">
+                <div className="h-6 sm:h-7 flex items-center opacity-85 hover:opacity-100 transition-all hover:scale-105 duration-200" title="Amazon">
+                  <AmazonLogo className="h-5 sm:h-5.5 w-auto" />
+                </div>
+                <div className="h-6 sm:h-7 flex items-center opacity-85 hover:opacity-100 transition-all hover:scale-105 duration-200" title="Microsoft">
+                  <MicrosoftLogo className="h-4.5 sm:h-5 w-auto" />
+                </div>
+                <div className="h-6 sm:h-7 flex items-center opacity-85 hover:opacity-100 transition-all hover:scale-105 duration-200" title="PayPal">
+                  <PayPalLogo className="h-4.5 sm:h-5 w-auto" />
+                </div>
+                <div className="h-6 sm:h-7 flex items-center opacity-85 hover:opacity-100 transition-all hover:scale-105 duration-200" title="Meta">
+                  <MetaLogo className="h-4.5 sm:h-5 w-auto" />
+                </div>
               </div>
             </div>
 
@@ -177,13 +172,7 @@ export function TopInstructorsMarquee() {
                       {inst.rolePrefix}
                     </span>
                     <div className="relative h-4 sm:h-4.5 w-auto flex-shrink-0 flex items-center">
-                      <Image
-                        src={inst.companyLogo}
-                        alt={inst.companyAlt}
-                        width={65}
-                        height={16}
-                        className="object-contain h-3.5 sm:h-4 w-auto brightness-0 invert opacity-90"
-                      />
+                      {inst.logo}
                     </div>
                   </div>
 
