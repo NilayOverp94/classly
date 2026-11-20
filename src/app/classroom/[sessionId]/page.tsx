@@ -25,7 +25,11 @@ import {
   CheckCircle2,
   Bell,
   X,
-  RotateCcw
+  RotateCcw,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  FileText
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
@@ -81,6 +85,16 @@ export default function ClassroomPage() {
   const remoteLastPointRef = useRef<{ x: number; y: number } | null>(null);
   const strokeBufferRef = useRef<Array<{ nx: number; ny: number }>>([]);
   const flushTimeoutRef = useRef<any>(null);
+
+  // Multi-Page Whiteboard & PDF Export State
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const pagesDataRef = useRef<Record<number, string>>({});
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
+  const currentPageRef = useRef(currentPage);
+  currentPageRef.current = currentPage;
+  const totalPagesRef = useRef(totalPages);
+  totalPagesRef.current = totalPages;
 
   // Elapsed timer
   const [seconds, setSeconds] = useState(0);
@@ -161,6 +175,89 @@ export default function ClassroomPage() {
     };
   }, [rawSessionId]);
 
+  // Save current canvas state to memory for current page
+  const saveCurrentPageToStore = () => {
+    const canvas = canvasRef.current;
+    if (!canvas || canvas.width === 0 || canvas.height === 0) return;
+    try {
+      pagesDataRef.current[currentPageRef.current] = canvas.toDataURL('image/png');
+    } catch (e) {
+      console.warn('Unable to store page image:', e);
+    }
+  };
+
+  // Restore page state from memory onto canvas
+  const loadPageFromStore = (targetPage: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    historyRef.current = [];
+
+    // Clear canvas to pristine white
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const savedData = pagesDataRef.current[targetPage];
+    if (savedData) {
+      const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      };
+      img.src = savedData;
+    }
+  };
+
+  const applySwitchPage = (targetPage: number, remoteTotalPages?: number) => {
+    if (targetPage < 1) return;
+    saveCurrentPageToStore();
+
+    if (remoteTotalPages && remoteTotalPages > totalPagesRef.current) {
+      setTotalPages(remoteTotalPages);
+    } else if (targetPage > totalPagesRef.current) {
+      setTotalPages(targetPage);
+    }
+
+    setCurrentPage(targetPage);
+    loadPageFromStore(targetPage);
+  };
+
+  const applyAddPage = (newPageNum: number, remoteTotalPages?: number) => {
+    saveCurrentPageToStore();
+    const count = remoteTotalPages || Math.max(newPageNum, totalPagesRef.current + 1);
+    setTotalPages(count);
+    setCurrentPage(newPageNum);
+    loadPageFromStore(newPageNum);
+  };
+
+  const handleSwitchPage = (targetPage: number) => {
+    if (targetPage < 1 || targetPage > totalPages || targetPage === currentPage) return;
+    applySwitchPage(targetPage, totalPages);
+
+    if (channelRef.current) {
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'switch_page',
+        payload: { page: targetPage, totalPages },
+      });
+    }
+  };
+
+  const handleAddPage = () => {
+    if (totalPages >= 15) return;
+    const newPageNum = totalPages + 1;
+    applyAddPage(newPageNum, newPageNum);
+
+    if (channelRef.current) {
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'add_page',
+        payload: { page: newPageNum, totalPages: newPageNum },
+      });
+    }
+  };
+
   // Set up real-time broadcast channel for Whiteboard Permissions & Live Drawing Sync
   useEffect(() => {
     if (!canonicalRoomName) return;
@@ -196,6 +293,17 @@ export default function ClassroomPage() {
         if (!ctx) return;
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+        delete pagesDataRef.current[currentPageRef.current];
+      })
+      .on('broadcast', { event: 'switch_page' }, ({ payload }) => {
+        if (typeof payload?.page === 'number') {
+          applySwitchPage(payload.page, payload.totalPages);
+        }
+      })
+      .on('broadcast', { event: 'add_page' }, ({ payload }) => {
+        if (typeof payload?.page === 'number') {
+          applyAddPage(payload.page, payload.totalPages);
+        }
       })
       .subscribe();
 
@@ -301,6 +409,10 @@ export default function ClassroomPage() {
 
   // Remote stroke renderer with smooth curve interpolation and batch handling
   const drawRemoteStroke = (payload: any) => {
+    if (payload.page && payload.page !== currentPageRef.current) {
+      return;
+    }
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -376,6 +488,7 @@ export default function ClassroomPage() {
         event: 'draw_stroke',
         payload: {
           type: 'start',
+          page: currentPageRef.current,
           nx: pt.nx,
           ny: pt.ny,
           x: pt.nx * 1600,
@@ -421,6 +534,7 @@ export default function ClassroomPage() {
             event: 'draw_stroke',
             payload: {
               type: 'batch',
+              page: currentPageRef.current,
               points: strokeBufferRef.current,
               color: penColor,
               tool,
@@ -452,6 +566,7 @@ export default function ClassroomPage() {
           event: 'draw_stroke',
           payload: {
             type: 'batch',
+            page: currentPageRef.current,
             points: strokeBufferRef.current,
             color: penColor,
             tool,
@@ -464,7 +579,7 @@ export default function ClassroomPage() {
       channelRef.current.send({
         type: 'broadcast',
         event: 'draw_stroke',
-        payload: { type: 'stop' },
+        payload: { type: 'stop', page: currentPageRef.current },
       });
     }
   };
@@ -513,6 +628,7 @@ export default function ClassroomPage() {
     saveSnapshot();
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    delete pagesDataRef.current[currentPageRef.current];
 
     if (channelRef.current) {
       channelRef.current.send({
@@ -526,9 +642,112 @@ export default function ClassroomPage() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const link = document.createElement('a');
-    link.download = `Classly-Whiteboard-${canonicalRoomName}.png`;
+    link.download = `Classly-Whiteboard-${canonicalRoomName}-Page-${currentPage}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
+  };
+
+  // Export all whiteboard pages to high-resolution presentation PDF notes
+  const exportAllPagesToPdf = async () => {
+    try {
+      setIsExportingPdf(true);
+      // Ensure current canvas state is saved to memory first
+      saveCurrentPageToStore();
+
+      const { jsPDF } = await import('jspdf');
+      const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'pt',
+        format: 'a4',
+      });
+
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+
+      for (let p = 1; p <= totalPages; p++) {
+        if (p > 1) {
+          doc.addPage('a4', 'landscape');
+        }
+
+        // Header Background Bar (Navy)
+        doc.setFillColor(15, 23, 42);
+        doc.rect(0, 0, pageWidth, 42, 'F');
+
+        // Brand Title
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(13);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Classly Live Classroom Notes', 24, 26);
+
+        // Room & Timestamp
+        doc.setTextColor(148, 163, 184);
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        const sessionDate = new Date().toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+        doc.text(`Room #${canonicalRoomName.replace('room-', '')} • ${sessionDate}`, 230, 26);
+
+        // Page Number Indicator in Header
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`Page ${p} of ${totalPages}`, pageWidth - 90, 26);
+
+        // Whiteboard Canvas Border & Background
+        const marginX = 24;
+        const marginY = 52;
+        const contentWidth = pageWidth - (marginX * 2);
+        const contentHeight = pageHeight - marginY - 28;
+
+        // White background for content
+        doc.setFillColor(255, 255, 255);
+        doc.rect(marginX, marginY, contentWidth, contentHeight, 'F');
+
+        // Add page image if available
+        let pageImg = pagesDataRef.current[p];
+        if (p === currentPage && canvasRef.current) {
+          try {
+            pageImg = canvasRef.current.toDataURL('image/png');
+          } catch (e) {}
+        }
+
+        if (pageImg) {
+          try {
+            doc.addImage(pageImg, 'PNG', marginX, marginY, contentWidth, contentHeight, undefined, 'FAST');
+          } catch (e) {
+            console.error('Failed to embed page image in PDF:', e);
+          }
+        }
+
+        // Clean border around canvas
+        doc.setDrawColor(226, 232, 240);
+        doc.setLineWidth(1);
+        doc.rect(marginX, marginY, contentWidth, contentHeight, 'S');
+
+        // Footer note
+        doc.setTextColor(148, 163, 184);
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'normal');
+        doc.text(
+          'Generated from Classly Interactive Live Classroom • Learn Together, Grow Together',
+          marginX,
+          pageHeight - 12
+        );
+      }
+
+      const cleanFileName = `Classly-Notes-${canonicalRoomName.replace(/[^a-zA-Z0-9_-]/g, '_')}-${new Date().toISOString().slice(0, 10)}.pdf`;
+      doc.save(cleanFileName);
+    } catch (err: any) {
+      console.error('PDF generation error:', err);
+      alert('Unable to export PDF at this moment. Please try again.');
+    } finally {
+      setIsExportingPdf(false);
+    }
   };
 
   // Teacher Action: Toggle student whiteboard permission
@@ -791,11 +1010,11 @@ export default function ClassroomPage() {
           } bg-white dark:bg-[#0E1526] flex flex-col text-charcoal-800 dark:text-slate-200 relative shadow-2xl`}>
             
             {/* Whiteboard Toolbar */}
-            <div className="h-12 bg-gray-100 dark:bg-[#111827] border-b border-gray-200 dark:border-[#1E293B] px-4 flex items-center justify-between text-xs flex-shrink-0 transition-colors">
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-navy-800 dark:text-white flex items-center gap-1.5 mr-2">
+            <div className="h-12 bg-gray-100 dark:bg-[#111827] border-b border-gray-200 dark:border-[#1E293B] px-3 sm:px-4 flex items-center justify-between text-xs flex-shrink-0 transition-colors gap-2 overflow-x-auto">
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                <span className="font-bold text-navy-800 dark:text-white flex items-center gap-1.5 mr-1">
                   <PenTool className="w-4 h-4 text-navy-800 dark:text-emerald-400" />
-                  <span>Whiteboard</span>
+                  <span className="hidden md:inline">Whiteboard</span>
                 </span>
 
                 {/* If the user can draw, show tools */}
@@ -818,12 +1037,12 @@ export default function ClassroomPage() {
                       Eraser
                     </button>
 
-                    <div className="flex items-center gap-1.5 ml-2">
+                    <div className="flex items-center gap-1 sm:gap-1.5 ml-1">
                       {['#183153', '#059669', '#DC2626', '#2563EB', '#7C3AED'].map((color) => (
                         <button
                           key={color}
                           onClick={() => { setPenColor(color); setTool('pen'); }}
-                          className={`w-5 h-5 rounded-full border transition-transform hover:scale-110 ${
+                          className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border transition-transform hover:scale-110 ${
                             penColor === color && tool === 'pen' ? 'ring-2 ring-offset-1 ring-navy-800 dark:ring-emerald-400 scale-110 border-white' : 'border-gray-300 dark:border-gray-600'
                           }`}
                           style={{ backgroundColor: color }}
@@ -833,7 +1052,7 @@ export default function ClassroomPage() {
                     </div>
 
                     {/* Stroke Width Selector */}
-                    <div className="hidden sm:flex items-center gap-1 bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded p-0.5 ml-1">
+                    <div className="hidden xl:flex items-center gap-1 bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded p-0.5 ml-1">
                       {[
                         { label: 'Fine', width: 2 },
                         { label: 'Medium', width: 4 },
@@ -861,19 +1080,54 @@ export default function ClassroomPage() {
                 )}
               </div>
 
-              <div className="flex items-center gap-2">
+              {/* Center / Right Toolbar Controls */}
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                {/* Whiteboard Page Navigation */}
+                <div className="flex items-center bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded-md px-1 py-0.5 shadow-xs">
+                  <button
+                    onClick={() => handleSwitchPage(currentPage - 1)}
+                    disabled={currentPage <= 1}
+                    className="p-1 rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-[#1E293B] disabled:opacity-30 disabled:hover:bg-transparent transition"
+                    title="Previous Page"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="px-1.5 text-[11px] font-semibold text-charcoal-700 dark:text-slate-200 whitespace-nowrap">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <button
+                    onClick={() => handleSwitchPage(currentPage + 1)}
+                    disabled={currentPage >= totalPages}
+                    className="p-1 rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-[#1E293B] disabled:opacity-30 disabled:hover:bg-transparent transition"
+                    title="Next Page"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                  {canDraw && (
+                    <button
+                      onClick={handleAddPage}
+                      disabled={totalPages >= 15}
+                      className="ml-1 pl-1.5 border-l border-gray-200 dark:border-[#1E293B] py-0.5 text-navy-800 dark:text-emerald-400 hover:text-navy-950 dark:hover:text-emerald-300 disabled:opacity-30 flex items-center gap-0.5 text-[11px] font-bold transition"
+                      title="Add New Whiteboard Page"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">Add</span>
+                    </button>
+                  )}
+                </div>
+
                 {/* Teacher Whiteboard Permission Toggle inside Toolbar */}
                 {userRole === 'teacher' && (
                   <button
                     onClick={() => handleToggleStudentWhiteboard(!studentWhiteboardAllowed)}
-                    className={`px-2.5 py-1 rounded text-xs font-bold flex items-center gap-1 transition ${
+                    className={`px-2 py-1 rounded text-xs font-bold flex items-center gap-1 transition ${
                       studentWhiteboardAllowed 
                         ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 hover:bg-emerald-200' 
                         : 'bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 hover:bg-amber-200'
                     }`}
                   >
                     {studentWhiteboardAllowed ? <Unlock className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
-                    <span>{studentWhiteboardAllowed ? 'Student: Allowed' : 'Student: Locked'}</span>
+                    <span className="hidden lg:inline">{studentWhiteboardAllowed ? 'Student: Allowed' : 'Student: Locked'}</span>
                   </button>
                 )}
 
@@ -885,7 +1139,7 @@ export default function ClassroomPage() {
                     className="px-2.5 py-1 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 disabled:bg-gray-400 dark:disabled:bg-gray-700 text-white rounded text-xs font-semibold flex items-center gap-1 transition"
                   >
                     <Hand className="w-3 h-3" />
-                    <span>{accessRequestSent ? 'Request Sent ✋' : 'Request Access'}</span>
+                    <span>{accessRequestSent ? 'Requested' : 'Request Access'}</span>
                   </button>
                 )}
 
@@ -893,30 +1147,42 @@ export default function ClassroomPage() {
                   <>
                     <button
                       onClick={handleUndo}
-                      className="px-2 py-1 bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] font-medium flex items-center gap-1"
+                      className="px-2 py-1 bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] font-medium flex items-center gap-1 transition"
                       title="Undo Stroke"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline">Undo</span>
+                      <span className="hidden xl:inline">Undo</span>
                     </button>
                     <button
                       onClick={clearCanvas}
-                      className="px-2.5 py-1 bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] font-medium flex items-center gap-1"
+                      className="px-2 py-1 bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] font-medium flex items-center gap-1 transition"
                       title="Clear Whiteboard"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline">Clear</span>
+                      <span className="hidden xl:inline">Clear</span>
                     </button>
                   </>
                 )}
 
+                {/* PNG Download */}
                 <button
                   onClick={downloadCanvas}
-                  className="px-2.5 py-1 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded font-medium flex items-center gap-1 shadow-sm"
-                  title="Save Whiteboard PNG"
+                  className="px-2 py-1 bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded text-charcoal-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1E293B] font-medium flex items-center gap-1 transition"
+                  title="Download Current Page as PNG"
                 >
                   <Download className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Download</span>
+                  <span className="hidden md:inline">PNG</span>
+                </button>
+
+                {/* Export All Pages as PDF Notes */}
+                <button
+                  onClick={exportAllPagesToPdf}
+                  disabled={isExportingPdf}
+                  className="px-2.5 py-1 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 disabled:opacity-60 text-white rounded font-medium flex items-center gap-1 shadow-sm transition"
+                  title="Export All Whiteboard Pages as PDF Notes"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>{isExportingPdf ? 'Exporting...' : 'Export PDF'}</span>
                 </button>
               </div>
             </div>
