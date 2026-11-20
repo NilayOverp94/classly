@@ -1,22 +1,23 @@
 import React from 'react';
-import { NewHero } from '@/components/home/NewHero';
+import { Hero } from '@/components/home/Hero';
+import { PopularSubjects } from '@/components/home/PopularSubjects';
 import { TopInstructorsMarquee } from '@/components/home/TopInstructorsMarquee';
-import { InteractiveClassroomShowcase } from '@/components/home/InteractiveClassroomShowcase';
-import { CurriculumBentoMatrix } from '@/components/home/CurriculumBentoMatrix';
 import { FeaturedTutors } from '@/components/home/FeaturedTutors';
-import { InteractiveHowItWorks } from '@/components/home/InteractiveHowItWorks';
+import { HowItWorksSection } from '@/components/home/HowItWorksSection';
+import { WhyChooseUs } from '@/components/home/WhyChooseUs';
 import { CTASection } from '@/components/home/CTASection';
 
 export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <NewHero />
+      <Hero />
+      <PopularSubjects />
       <TopInstructorsMarquee />
-      <InteractiveClassroomShowcase />
-      <CurriculumBentoMatrix />
       <FeaturedTutors />
-      <InteractiveHowItWorks />
+      <HowItWorksSection />
+      <WhyChooseUs />
       <CTASection />
     </div>
   );
 }
+
