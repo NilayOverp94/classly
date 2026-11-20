@@ -150,16 +150,16 @@ html {
   }
   ::view-transition-old(root),
   ::view-transition-new(root) {
-    filter: none !important;
+    animation: none !important;
     clip-path: none !important;
   }
 }
 
 /* =========================================================================
-   Organic Liquid Ink / Fluid Wave Theme Transition
+   Smooth Circular Reveal Theme Transition (View Transitions API)
    ========================================================================= */
 
-/* Disable standard browser opacity fade so the liquid ink wavefront stays crisp */
+/* Disable standard browser opacity fade so the circular wavefront stays crisp */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
@@ -172,12 +172,9 @@ html {
   z-index: 1;
 }
 
-/* Incoming new theme expands on top with the turbulent liquid displacement filter */
+/* Incoming new theme expands on top via animated clip-path */
 ::view-transition-new(root) {
   z-index: 999999;
-  filter: url(#liquid-theme-filter);
-  isolation: isolate;
-  will-change: clip-path, filter;
 }
 
 .dark::view-transition-old(root) {

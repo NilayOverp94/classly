@@ -44,105 +44,62 @@ export function ThemeToggle({ className = '', showLabel = false }: ThemeTogglePr
 
     const doc = document as any;
 
-    // Direct toggle if reduced motion is requested
-    if (prefersReducedMotion) {
+    // Direct toggle if reduced motion is requested or View Transitions not supported
+    if (prefersReducedMotion || !doc.startViewTransition) {
       setTheme(nextTheme);
       return;
     }
 
-    // Determine liquid ripple origin point (click position or button center)
-    const rect = e.currentTarget?.getBoundingClientRect() || buttonRef.current?.getBoundingClientRect();
-    let x = e.clientX;
-    let y = e.clientY;
+    // Determine circular ripple origin point (click position or button center)
+    const rect = buttonRef.current?.getBoundingClientRect();
+    const x = e.clientX && e.clientX > 0 ? e.clientX : (rect ? rect.left + rect.width / 2 : window.innerWidth / 2);
+    const y = e.clientY && e.clientY > 0 ? e.clientY : (rect ? rect.top + rect.height / 2 : window.innerHeight / 2);
 
-    if (!x || !y || (x === 0 && y === 0)) {
-      if (rect) {
-        x = rect.left + rect.width / 2;
-        y = rect.top + rect.height / 2;
-      } else {
-        x = window.innerWidth / 2;
-        y = window.innerHeight / 2;
-      }
-    }
+    // Calculate maximum radius to screen corners with safety padding for total coverage
+    const endRadius = Math.ceil(
+      Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      )
+    ) + 12;
 
-    // Calculate maximum radius to screen corners
-    const endRadius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y)
-    );
-
-    // Primary: Native View Transitions API with SVG Liquid Displacement Filter
-    if (doc.startViewTransition) {
-      setIsTransitioning(true);
-      try {
-        const transition = doc.startViewTransition(async () => {
-          setTheme(nextTheme);
-          // Allow microtask for Next-Themes to commit class change
-          await new Promise((resolve) => setTimeout(resolve, 15));
-        });
-
-        await transition.ready;
-
-        const animation = document.documentElement.animate(
-          [
-            {
-              clipPath: `circle(0px at ${x}px ${y}px)`,
-            },
-            {
-              clipPath: `circle(${endRadius * 1.3}px at ${x}px ${y}px)`,
-            },
-          ],
-          {
-            duration: 800,
-            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
-            pseudoElement: '::view-transition-new(root)',
-          }
-        );
-
-        animation.onfinish = () => {
-          setIsTransitioning(false);
-        };
-      } catch (err) {
+    // Native View Transitions API with expanding circular reveal
+    setIsTransitioning(true);
+    try {
+      const transition = doc.startViewTransition(() => {
+        // Immediately sync root dark class for instant snapshot capture
+        if (nextTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
         setTheme(nextTheme);
-        setIsTransitioning(false);
-      }
-    } else {
-      // Graceful Fallback for browsers without View Transitions (e.g. older Firefox/WebKit):
-      // Dynamic organic liquid ink wave overlay
-      setIsTransitioning(true);
-      const overlay = document.createElement('div');
-      overlay.style.position = 'fixed';
-      overlay.style.top = '0';
-      overlay.style.left = '0';
-      overlay.style.width = '100vw';
-      overlay.style.height = '100vh';
-      overlay.style.pointerEvents = 'none';
-      overlay.style.zIndex = '999999';
-      overlay.style.backgroundColor = nextTheme === 'dark' ? '#0A0F1D' : '#FAFAF8';
-      overlay.style.filter = 'url(#liquid-theme-filter)';
-      overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`;
-      overlay.style.transition = 'clip-path 0.75s cubic-bezier(0.22, 1, 0.36, 1)';
-      document.body.appendChild(overlay);
-
-      // Force layout repaint then expand
-      requestAnimationFrame(() => {
-        overlay.style.clipPath = `circle(${endRadius * 1.3}px at ${x}px ${y}px)`;
       });
 
-      setTimeout(() => {
-        setTheme(nextTheme);
-      }, 350);
+      await transition.ready;
 
-      setTimeout(() => {
-        overlay.style.opacity = '0';
-        overlay.style.transition = 'opacity 0.2s ease';
-        setTimeout(() => {
-          if (overlay.parentNode) {
-            overlay.parentNode.removeChild(overlay);
-          }
-          setIsTransitioning(false);
-        }, 200);
-      }, 750);
+      const animation = document.documentElement.animate(
+        [
+          {
+            clipPath: `circle(0px at ${x}px ${y}px)`,
+          },
+          {
+            clipPath: `circle(${endRadius}px at ${x}px ${y}px)`,
+          },
+        ],
+        {
+          duration: 520,
+          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+          pseudoElement: '::view-transition-new(root)',
+        }
+      );
+
+      animation.onfinish = () => {
+        setIsTransitioning(false);
+      };
+    } catch (err) {
+      setTheme(nextTheme);
+      setIsTransitioning(false);
     }
   };
 

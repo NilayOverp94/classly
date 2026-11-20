@@ -4,7 +4,6 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { ScrollProgressBar } from '@/components/ui/ScrollProgressBar';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
-import { LiquidThemeFilter } from '@/components/theme/LiquidThemeFilter';
 
 export const metadata: Metadata = {
   title: 'Classly — Learn Together. Grow Anywhere.',
@@ -36,7 +35,6 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange={true}
         >
-          <LiquidThemeFilter />
           <ScrollProgressBar />
           <Navbar />
           <main className="flex-1">
