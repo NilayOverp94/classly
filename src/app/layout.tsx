@@ -4,6 +4,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { ScrollProgressBar } from '@/components/ui/ScrollProgressBar';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { LiquidThemeFilter } from '@/components/theme/LiquidThemeFilter';
 
 export const metadata: Metadata = {
   title: 'Classly — Learn Together. Grow Anywhere.',
@@ -28,13 +29,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="font-sans min-h-screen flex flex-col bg-offwhite text-charcoal-800 antialiased dark:bg-[#0A0F1D] dark:text-slate-100 transition-colors duration-200">
+      <body className="font-sans min-h-screen flex flex-col bg-offwhite text-charcoal-800 antialiased dark:bg-[#0A0F1D] dark:text-slate-100">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
           enableSystem={false}
-          disableTransitionOnChange={false}
+          disableTransitionOnChange={true}
         >
+          <LiquidThemeFilter />
           <ScrollProgressBar />
           <Navbar />
           <main className="flex-1">

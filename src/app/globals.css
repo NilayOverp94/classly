@@ -148,6 +148,44 @@ html {
     animation: none !important;
     transform: none !important;
   }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    filter: none !important;
+    clip-path: none !important;
+  }
+}
+
+/* =========================================================================
+   Organic Liquid Ink / Fluid Wave Theme Transition
+   ========================================================================= */
+
+/* Disable standard browser opacity fade so the liquid ink wavefront stays crisp */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  transform-origin: center;
+}
+
+/* Old snapshot remains visible underneath */
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+/* Incoming new theme expands on top with the turbulent liquid displacement filter */
+::view-transition-new(root) {
+  z-index: 999999;
+  filter: url(#liquid-theme-filter);
+  isolation: isolate;
+  will-change: clip-path, filter;
+}
+
+.dark::view-transition-old(root) {
+  z-index: 1;
+}
+
+.dark::view-transition-new(root) {
+  z-index: 999999;
 }
 
 
