@@ -24,16 +24,22 @@ import {
   Play,
   Download,
   Search,
-  HardDrive
+  HardDrive,
+  Gift,
+  Package,
+  Layers,
+  Award
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { FadeIn } from '@/components/ui/MotionComponents';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ReviewModal } from '@/components/reviews/ReviewModal';
-import { SessionRecording } from '@/lib/types';
+import { SessionRecording, StudentPrepaidPackage, ReferralProfile } from '@/lib/types';
 import { RecordingPlaybackModal } from '@/components/classroom/RecordingPlaybackModal';
 import { SessionCountdownBanner } from '@/components/calendar/SessionCountdownBanner';
 import { CalendarSyncDropdown } from '@/components/calendar/CalendarSyncDropdown';
+import { ReferralShareCard } from '@/components/referrals/ReferralShareCard';
+import { getInitialReferralProfile } from '@/lib/referrals/referralService';
 
 export default function StudentDashboardPage() {
   const router = useRouter();
@@ -48,6 +54,10 @@ export default function StudentDashboardPage() {
   const [materials, setMaterials] = useState<any[]>([]);
   const [paymentHistory, setPaymentHistory] = useState<any[]>([]);
   const [activeReviewBooking, setActiveReviewBooking] = useState<any | null>(null);
+
+  // Lesson Packages & Referral state
+  const [prepaidPackages, setPrepaidPackages] = useState<StudentPrepaidPackage[]>([]);
+  const [referralProfile, setReferralProfile] = useState<ReferralProfile | null>(null);
 
   // Session Recordings state
   const [recordings, setRecordings] = useState<SessionRecording[]>([]);
@@ -90,6 +100,12 @@ export default function StudentDashboardPage() {
         return;
       }
       setUser(u);
+
+      // Hydrate prepaid packages and referral profile from user metadata
+      const pkgs: StudentPrepaidPackage[] = u.user_metadata?.prepaid_packages || [];
+      setPrepaidPackages(pkgs);
+      const refProf = getInitialReferralProfile(u);
+      setReferralProfile(refProf);
 
       // Fetch confirmed student bookings from API
       try {
@@ -146,7 +162,7 @@ export default function StudentDashboardPage() {
   };
 
   const [activeTab, setActiveTab] = useState<
-    'upcoming' | 'past' | 'recordings' | 'tutors' | 'materials' | 'payments' | 'settings'
+    'upcoming' | 'past' | 'recordings' | 'tutors' | 'materials' | 'payments' | 'referrals' | 'settings'
   >('upcoming');
 
   if (loading) {
@@ -232,6 +248,7 @@ export default function StudentDashboardPage() {
 
             {[
               { id: 'upcoming', label: 'Upcoming Lessons', icon: <Calendar className="w-4 h-4" />, count: upcomingBookings.length },
+              { id: 'referrals', label: 'Referrals & Rewards', icon: <Gift className="w-4 h-4 text-emerald-500" />, badge: '$20' },
               { id: 'past', label: 'Lesson History', icon: <Clock className="w-4 h-4" /> },
               { id: 'recordings', label: 'Session Recordings', icon: <Film className="w-4 h-4" />, count: recordings.length },
               { id: 'tutors', label: 'My Tutors', icon: <User className="w-4 h-4" />, count: bookedTutors.length },
@@ -252,6 +269,11 @@ export default function StudentDashboardPage() {
                   {item.icon}
                   <span>{item.label}</span>
                 </div>
+                {item.badge && (
+                  <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">
+                    {item.badge}
+                  </span>
+                )}
                 {item.count !== undefined && item.count > 0 && (
                   <span className={`px-1.5 py-0.5 rounded text-[10px] ${
                     activeTab === item.id ? 'bg-navy-900 dark:bg-emerald-700 text-white' : 'bg-softblue-100 dark:bg-[#162032] text-navy-800 dark:text-emerald-400 border border-transparent dark:border-[#2D3B4F]'
@@ -297,6 +319,73 @@ export default function StudentDashboardPage() {
                   </h2>
                   <span className="text-xs text-charcoal-500 dark:text-slate-400">Live WebRTC Classrooms</span>
                 </div>
+
+                {/* Active Prepaid Lesson Packages Card */}
+                {prepaidPackages.filter(p => (p.remainingLessons || 0) > 0).length > 0 && (
+                  <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-blue-500/10 dark:from-emerald-950/40 dark:via-teal-950/30 dark:to-blue-950/20 border border-emerald-200 dark:border-emerald-800/60 rounded-2xl p-5 shadow-sm space-y-4 mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2.5 rounded-xl bg-emerald-500 text-white dark:bg-emerald-600 shadow-sm">
+                          <Package className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-bold text-navy-900 dark:text-white flex items-center gap-1.5">
+                            <span>Prepaid Lesson Credits Ready to Schedule</span>
+                            <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300">
+                              $0 Checkout
+                            </span>
+                          </h3>
+                          <p className="text-xs text-charcoal-500 dark:text-slate-400">
+                            You have prepaid bundle credits with your saved tutors. Schedule upcoming dates anytime.
+                          </p>
+                        </div>
+                      </div>
+                      <span className="self-start sm:self-auto text-xs font-bold px-3 py-1 rounded-full bg-white dark:bg-[#111827] text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50 shadow-subtle">
+                        {prepaidPackages.reduce((acc, p) => acc + (p.remainingLessons || 0), 0)} Credits Available
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                      {prepaidPackages.filter(p => (p.remainingLessons || 0) > 0).map((pkg) => (
+                        <div key={pkg.id} className="bg-white dark:bg-[#111827] rounded-xl p-4 border border-gray-200 dark:border-[#1E293B] shadow-subtle flex flex-col justify-between">
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-xs font-bold text-navy-800 dark:text-white">{pkg.subject}</span>
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200/60">
+                                {pkg.packageTier || pkg.totalLessons || 5}-Lesson Pack
+                              </span>
+                            </div>
+                            <p className="text-xs text-charcoal-600 dark:text-slate-300">
+                              Tutor: <strong>{pkg.teacherName}</strong>
+                            </p>
+                            <div className="mt-3 space-y-1.5">
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="text-charcoal-500 dark:text-slate-400">Credits:</span>
+                                <span className="font-extrabold text-emerald-600 dark:text-emerald-400">
+                                  {pkg.remainingLessons} of {pkg.totalLessons} remaining
+                                </span>
+                              </div>
+                              <div className="w-full bg-gray-100 dark:bg-[#1C283F] h-2 rounded-full overflow-hidden">
+                                <div
+                                  className="bg-emerald-500 dark:bg-emerald-400 h-full rounded-full transition-all duration-500"
+                                  style={{ width: `${Math.round(((pkg.totalLessons - (pkg.remainingLessons || 0)) / (pkg.totalLessons || 1)) * 100)}%` }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          <Link
+                            href={`/booking/${pkg.teacherId}?useCredit=true`}
+                            className="mt-4 w-full py-2 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold text-center shadow-subtle transition flex items-center justify-center gap-1.5"
+                          >
+                            <Calendar className="w-3.5 h-3.5" />
+                            <span>Schedule Lesson ($0)</span>
+                          </Link>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {upcomingBookings.length > 0 ? (
                   upcomingBookings.map((b) => (
@@ -766,6 +855,28 @@ export default function StudentDashboardPage() {
                       Receipts and invoices will be automatically generated and stored here when you book a lesson.
                     </p>
                   </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB: Referrals & Rewards ("Give $20, Get $20") */}
+            {activeTab === 'referrals' && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-base font-bold text-navy-800 dark:text-white flex items-center gap-2">
+                    <Gift className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                    <span>Parent Referral Engine ("Give $20, Get $20")</span>
+                  </h2>
+                  <p className="text-xs text-charcoal-500 dark:text-slate-400 mt-0.5">
+                    Share your family referral code with school parent groups, WhatsApp, or email. Both families get $20 lesson credit!
+                  </p>
+                </div>
+
+                {referralProfile && (
+                  <ReferralShareCard
+                    profile={referralProfile}
+                    parentName={displayName}
+                  />
                 )}
               </div>
             )}

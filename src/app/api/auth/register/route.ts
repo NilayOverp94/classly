@@ -21,7 +21,8 @@ export async function POST(request: Request) {
       teachingFormat,
       city,
       country,
-      bio
+      bio,
+      appliedReferralCode
     } = body;
 
     const cleanEmail = (email || '').trim().toLowerCase();
@@ -122,6 +123,8 @@ export async function POST(request: Request) {
           country: country || 'US',
           bio: bio || '',
           onboarding_completed: true,
+          applied_referral_code: appliedReferralCode || null,
+          available_credits_usd: appliedReferralCode ? 20 : 0,
         },
       }),
     });

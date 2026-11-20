@@ -556,6 +556,11 @@ export default function TeacherDashboardPage() {
                         <div>
                           <div className="flex items-center gap-2">
                             <h3 className="font-bold text-sm text-navy-800 dark:text-white">{b.subject} — 1-on-1 Private Lesson</h3>
+                            {b.package_tier && b.package_tier > 1 && (
+                              <span className="px-2 py-0.5 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 rounded text-[10px] font-bold">
+                                {b.package_tier}-Lesson Bundle
+                              </span>
+                            )}
                             <span className="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded text-[10px] font-bold">
                               Confirmed & Paid
                             </span>
@@ -1082,7 +1087,14 @@ export default function TeacherDashboardPage() {
                               <tr key={b.id} className="hover:bg-gray-50 dark:hover:bg-[#162032]/60 transition">
                                 <td className="py-3 text-navy-800 dark:text-white font-medium">{b.formatted_time || `${b.date} at ${b.time_slot}`}</td>
                                 <td className="py-3 text-charcoal-700 dark:text-slate-300">{b.student_name}</td>
-                                <td className="py-3 text-charcoal-700 dark:text-slate-300">{b.subject}</td>
+                                <td className="py-3 text-charcoal-700 dark:text-slate-300">
+                                  <span>{b.subject}</span>
+                                  {b.package_tier && b.package_tier > 1 && (
+                                    <span className="ml-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300">
+                                      {b.package_tier}x Bundle
+                                    </span>
+                                  )}
+                                </td>
                                 <td className="py-3 text-charcoal-700 dark:text-slate-300">${gross.toFixed(2)}</td>
                                 <td className="py-3 text-charcoal-400 dark:text-slate-500">-${fee.toFixed(2)}</td>
                                 <td className="py-3 font-bold text-accent-700 dark:text-emerald-400">${net.toFixed(2)}</td>

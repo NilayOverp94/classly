@@ -18,10 +18,13 @@ import {
   MessageSquare,
   ThumbsUp,
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  Gift,
+  Percent
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import { TeacherProfile, ReviewItem } from '@/lib/types';
+import { TeacherProfile, ReviewItem, PackageTier } from '@/lib/types';
+import { calculatePackagePricing, LESSON_PACKAGES } from '@/lib/packages/lessonPackages';
 import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/MotionComponents';
 
 export default function TutorProfilePage() {
@@ -32,6 +35,7 @@ export default function TutorProfilePage() {
   const [tutor, setTutor] = useState<TeacherProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [bookingMode, setBookingMode] = useState<'one_on_one' | 'group'>('one_on_one');
+  const [selectedPackage, setSelectedPackage] = useState<PackageTier>(1);
   const [selectedDay, setSelectedDay] = useState<string>('Monday');
 
   // Reviews & Ratings State
@@ -510,102 +514,173 @@ export default function TutorProfilePage() {
           {/* Sticky Booking Sidebar (4 cols) */}
           <div className="lg:col-span-4 sticky top-24">
             <FadeIn direction="left" delay={0.15} duration={0.55} className="space-y-4">
-              <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-lift hover:shadow-lift-lg transition-shadow duration-300">
-              
-              {/* Hourly rate display */}
-              <div className="pb-4 mb-4 border-b border-gray-100 dark:border-[#1E293B] flex items-baseline justify-between">
-                <div>
-                  <span className="text-3xl font-extrabold text-navy-800 dark:text-white">${tutor.hourly_rate}</span>
-                  <span className="text-xs text-charcoal-500 dark:text-slate-400 ml-1">/ hour</span>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs font-semibold text-accent-700 dark:text-emerald-300 bg-accent-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-accent-200 dark:border-emerald-800/60">
-                    100% money-back guarantee
-                  </span>
-                </div>
-              </div>
-
-              {/* Booking Mode Selector: 1-on-1 */}
-              <div className="mb-5">
-                <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                  Select Format
-                </label>
-                <div className="p-1 bg-gray-100 dark:bg-[#162032] rounded-lg text-xs font-semibold">
-                  <div className="py-2 text-center bg-white dark:bg-[#1C283F] text-navy-800 dark:text-white rounded-md shadow-subtle">
-                    1-on-1 Private Lesson
-                  </div>
-                </div>
-              </div>
-
-              {/* Availability Day Picker */}
-              <div className="mb-4">
-                <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                  Available Days (US Eastern Time)
-                </label>
-                <div className="flex flex-wrap gap-1.5">
-                  {tutor.availability?.map((a) => (
-                    <button
-                      key={a.day}
-                      type="button"
-                      onClick={() => setSelectedDay(a.day)}
-                      className={`px-3 py-1.5 rounded text-xs font-medium border transition ${
-                        selectedDay === a.day
-                          ? 'bg-navy-800 dark:bg-emerald-600 text-white border-navy-800 dark:border-emerald-600'
-                          : 'bg-gray-50 dark:bg-[#162032] text-charcoal-700 dark:text-slate-300 border-gray-200 dark:border-[#2D3B4F] hover:bg-gray-100 dark:hover:bg-[#1E293B]'
-                      }`}
-                    >
-                      {a.day.slice(0, 3)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Available Time Slots */}
-              <div className="mb-6">
-                <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                  Available Time Slots
-                </label>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  {activeAvailability?.slots.map((slot) => (
-                    <div
-                      key={slot}
-                      className="p-2 text-center rounded bg-softblue-50 dark:bg-[#162032] border border-softblue-200 dark:border-[#2D3B4F] text-navy-800 dark:text-emerald-400 font-medium"
-                    >
-                      {slot}
+              {(() => {
+                const packagePricing = calculatePackagePricing(tutor.hourly_rate, selectedPackage);
+                return (
+                  <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-lift hover:shadow-lift-lg transition-shadow duration-300">
+                    
+                    {/* Hourly rate display */}
+                    <div className="pb-4 mb-4 border-b border-gray-100 dark:border-[#1E293B] flex items-baseline justify-between">
+                      <div>
+                        {selectedPackage === 1 ? (
+                          <>
+                            <span className="text-3xl font-extrabold text-navy-800 dark:text-white">${tutor.hourly_rate}</span>
+                            <span className="text-xs text-charcoal-500 dark:text-slate-400 ml-1">/ hour</span>
+                          </>
+                        ) : (
+                          <div>
+                            <div className="flex items-baseline gap-2">
+                              <span className="text-3xl font-extrabold text-navy-800 dark:text-white">${packagePricing.effectiveHourlyRate}</span>
+                              <span className="text-xs text-charcoal-500 dark:text-slate-400">/ lesson</span>
+                              <span className="text-sm line-through text-charcoal-400 dark:text-slate-500">${tutor.hourly_rate}</span>
+                            </div>
+                            <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                              Save ${packagePricing.totalSaved} on {selectedPackage} lessons
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        <span className="text-xs font-semibold text-accent-700 dark:text-emerald-300 bg-accent-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-accent-200 dark:border-emerald-800/60">
+                          100% money-back guarantee
+                        </span>
+                      </div>
                     </div>
-                  ))}
-                </div>
-                <p className="mt-2 text-[11px] text-charcoal-400 dark:text-slate-400">
-                  Times auto-adjust to your local timezone during checkout.
-                </p>
-              </div>
 
-              {/* Primary CTA */}
-              <Link
-                href={`/booking/${tutor.id}?format=one_on_one&day=${encodeURIComponent(selectedDay)}`}
-                className="w-full block text-center py-3 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-sm font-bold shadow-subtle transition"
-              >
-                Book 1-on-1 Lesson
-              </Link>
+                    {/* Lesson Package Tier Selector */}
+                    <div className="mb-5">
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider">
+                          Package Bundles
+                        </label>
+                        <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800/40">
+                          Up to 15% off
+                        </span>
+                      </div>
 
-              {/* Safety & Guarantee Points */}
-              <div className="mt-6 pt-4 border-t border-gray-100 dark:border-[#1E293B] space-y-2 text-[11px] text-charcoal-500 dark:text-slate-400">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400 flex-shrink-0" />
-                  <span>Free cancellation up to 24 hours in advance</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400 flex-shrink-0" />
-                  <span>Secure browser-based classroom</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400 flex-shrink-0" />
-                  <span>Direct parent monitoring & attendance records</span>
-                </div>
-              </div>
+                      <div className="grid grid-cols-2 gap-1.5 p-1 bg-gray-100 dark:bg-[#162032] rounded-lg">
+                        {LESSON_PACKAGES.map((pkg) => {
+                          const isSelected = selectedPackage === pkg.tier;
+                          return (
+                            <button
+                              key={pkg.tier}
+                              type="button"
+                              onClick={() => setSelectedPackage(pkg.tier)}
+                              className={`p-2 rounded-md text-left transition flex flex-col justify-between ${
+                                isSelected
+                                  ? 'bg-white dark:bg-[#1C283F] text-navy-900 dark:text-white shadow-subtle border border-navy-800/20 dark:border-emerald-500/50'
+                                  : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between gap-1">
+                                <span className="font-bold text-xs">{pkg.tier === 1 ? '1 Lesson' : `${pkg.tier} Lessons`}</span>
+                                {pkg.discountPercent > 0 && (
+                                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300">
+                                    -{pkg.discountPercent}%
+                                  </span>
+                                )}
+                              </div>
+                              <span className="text-[10px] text-charcoal-400 dark:text-slate-400 mt-0.5">
+                                {pkg.tier === 1 ? 'Single session' : `$${calculatePackagePricing(tutor.hourly_rate, pkg.tier).effectiveHourlyRate}/hr`}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
 
-            </div>
+                    {/* Booking Mode Selector: 1-on-1 */}
+                    <div className="mb-4">
+                      <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                        Format
+                      </label>
+                      <div className="p-1 bg-gray-100 dark:bg-[#162032] rounded-lg text-xs font-semibold">
+                        <div className="py-1.5 text-center bg-white dark:bg-[#1C283F] text-navy-800 dark:text-white rounded-md shadow-subtle">
+                          1-on-1 Private Live Instruction
+                        </div>
+                      </div>
+                    </div>
 
+                    {/* Availability Day Picker */}
+                    <div className="mb-4">
+                      <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                        Select First Lesson Day (US Eastern)
+                      </label>
+                      <div className="flex flex-wrap gap-1.5">
+                        {tutor.availability?.map((a) => (
+                          <button
+                            key={a.day}
+                            type="button"
+                            onClick={() => setSelectedDay(a.day)}
+                            className={`px-3 py-1.5 rounded text-xs font-medium border transition ${
+                              selectedDay === a.day
+                                ? 'bg-navy-800 dark:bg-emerald-600 text-white border-navy-800 dark:border-emerald-600'
+                                : 'bg-gray-50 dark:bg-[#162032] text-charcoal-700 dark:text-slate-300 border-gray-200 dark:border-[#2D3B4F] hover:bg-gray-100 dark:hover:bg-[#1E293B]'
+                            }`}
+                          >
+                            {a.day.slice(0, 3)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Available Time Slots */}
+                    <div className="mb-5">
+                      <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                        Available Time Slots
+                      </label>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        {activeAvailability?.slots.map((slot) => (
+                          <div
+                            key={slot}
+                            className="p-2 text-center rounded bg-softblue-50 dark:bg-[#162032] border border-softblue-200 dark:border-[#2D3B4F] text-navy-800 dark:text-emerald-400 font-medium"
+                          >
+                            {slot}
+                          </div>
+                        ))}
+                      </div>
+                      <p className="mt-2 text-[11px] text-charcoal-400 dark:text-slate-400">
+                        Times auto-adjust to your local timezone during checkout.
+                      </p>
+                    </div>
+
+                    {/* Primary CTA */}
+                    <Link
+                      href={`/booking/${tutor.id}?format=one_on_one&day=${encodeURIComponent(selectedDay)}${selectedPackage > 1 ? `&package=${selectedPackage}` : ''}`}
+                      className="w-full block text-center py-3 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-sm font-bold shadow-subtle transition"
+                    >
+                      {selectedPackage === 1 
+                        ? 'Book 1-on-1 Lesson' 
+                        : `Book ${selectedPackage}-Lesson Bundle • $${packagePricing.discountedLessonTotal}`}
+                    </Link>
+
+                    {/* Referral Promo Teaser */}
+                    <div className="mt-3 p-2.5 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/40 text-center">
+                      <p className="text-[11px] text-emerald-800 dark:text-emerald-300 flex items-center justify-center gap-1.5 font-medium">
+                        <Gift className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                        <span>Have a friend referral? Enter it at checkout to get <strong>$20 off</strong></span>
+                      </p>
+                    </div>
+
+                    {/* Safety & Guarantee Points */}
+                    <div className="mt-5 pt-4 border-t border-gray-100 dark:border-[#1E293B] space-y-2 text-[11px] text-charcoal-500 dark:text-slate-400">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400 flex-shrink-0" />
+                        <span>Free cancellation up to 24 hours in advance</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400 flex-shrink-0" />
+                        <span>Secure browser-based classroom</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400 flex-shrink-0" />
+                        <span>Direct parent monitoring & attendance records</span>
+                      </div>
+                    </div>
+
+                  </div>
+                );
+              })()}
             </FadeIn>
           </div>
 

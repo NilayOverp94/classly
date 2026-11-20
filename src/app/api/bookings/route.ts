@@ -29,6 +29,11 @@ export async function POST(request: Request) {
       studentName = 'Student',
       studentEmail = '',
       studentId = '',
+      packageTier = 1,
+      appliedReferralCode = '',
+      referralDiscountUSD = 0,
+      usingPrepaidCredit = false,
+      packageIdToDeduct = '',
     } = body;
 
     if (!tutorId) {
@@ -61,8 +66,24 @@ export async function POST(request: Request) {
     const teacherName = teacherMeta.full_name || teacherMeta.name || 'Verified Educator';
     const teacherEmail = teacherUser.email;
     const hourlyRate = Number(teacherMeta.hourly_rate) || 25;
-    const platformFee = 4.50;
-    const totalAmount = hourlyRate + platformFee;
+    const platformFee = usingPrepaidCredit ? 0 : 4.50;
+
+    // Package calculation
+    const tierNum = Number(packageTier) || 1;
+    let discountPercent = 0;
+    if (tierNum === 5) discountPercent = 5;
+    else if (tierNum === 10) discountPercent = 10;
+    else if (tierNum === 20) discountPercent = 15;
+
+    const baseLessonSum = hourlyRate * tierNum;
+    const discountMultiplier = 1 - discountPercent / 100;
+    const discountedLessonTotal = Math.round(baseLessonSum * discountMultiplier * 100) / 100;
+    const cleanReferralDiscount = Math.min(Number(referralDiscountUSD) || 0, discountedLessonTotal);
+
+    let totalAmount = usingPrepaidCredit 
+      ? 0 
+      : Math.max(0, Math.round((discountedLessonTotal + platformFee - cleanReferralDiscount) * 100) / 100);
+
     const subject = teacherMeta.teaching_subjects?.[0] || 'Mathematics';
 
     const bookingId = `book-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -88,6 +109,11 @@ export async function POST(request: Request) {
       hourly_rate: hourlyRate,
       platform_fee: platformFee,
       total_amount: totalAmount,
+      package_tier: tierNum,
+      package_lessons_count: tierNum,
+      referral_discount_usd: cleanReferralDiscount,
+      applied_referral_code: appliedReferralCode || undefined,
+      used_prepaid_credit: usingPrepaidCredit,
       notes: studentNotes,
       status: 'confirmed',
       meeting_url: meetingUrl,
@@ -123,6 +149,47 @@ export async function POST(request: Request) {
         const existingStudentBookings: any[] = Array.isArray(studentMeta.bookings) ? studentMeta.bookings : [];
         const updatedStudentBookings = [newBooking, ...existingStudentBookings];
 
+        // Manage Prepaid Packages
+        let updatedPrepaidPackages = Array.isArray(studentMeta.prepaid_packages) ? [...studentMeta.prepaid_packages] : [];
+
+        if (usingPrepaidCredit && packageIdToDeduct) {
+          // Deduct 1 credit from matching prepaid package
+          updatedPrepaidPackages = updatedPrepaidPackages.map((pkg: any) => {
+            if (pkg.id === packageIdToDeduct || pkg.teacherId === teacherUser.id) {
+              const remaining = Math.max(0, (pkg.remainingLessons || 1) - 1);
+              return {
+                ...pkg,
+                usedLessons: (pkg.usedLessons || 0) + 1,
+                remainingLessons: remaining,
+              };
+            }
+            return pkg;
+          }).filter((pkg: any) => pkg.remainingLessons > 0);
+        } else if (tierNum > 1) {
+          // Add newly purchased bundle (1 used for this initial booking, tierNum - 1 remaining)
+          const newPackage = {
+            id: `pkg-${Date.now().toString(36)}`,
+            teacherId: teacherUser.id,
+            teacherName: teacherName,
+            teacherAvatar: teacherMeta.avatar_url || '',
+            subject: subject,
+            packageTier: tierNum,
+            totalLessons: tierNum,
+            usedLessons: 1,
+            remainingLessons: tierNum - 1,
+            totalPaid: totalAmount,
+            hourlyRateEquivalent: Math.round((discountedLessonTotal / tierNum) * 100) / 100,
+            purchasedAt: new Date().toISOString(),
+          };
+          updatedPrepaidPackages = [newPackage, ...updatedPrepaidPackages];
+        }
+
+        // Deduct referral credits if used
+        let currentCredits = Number(studentMeta.available_credits_usd) || 0;
+        if (cleanReferralDiscount > 0) {
+          currentCredits = Math.max(0, currentCredits - cleanReferralDiscount);
+        }
+
         await fetch(`${supabaseUrl}/auth/v1/admin/users/${studentId}`, {
           method: 'PUT',
           headers: {
@@ -134,6 +201,8 @@ export async function POST(request: Request) {
             user_metadata: {
               ...studentMeta,
               bookings: updatedStudentBookings,
+              prepaid_packages: updatedPrepaidPackages,
+              available_credits_usd: currentCredits,
             },
           }),
         });

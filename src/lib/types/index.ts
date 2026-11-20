@@ -132,4 +132,48 @@ export interface SessionRecording {
   chapters?: { time: string; title: string }[];
 }
 
+export type PackageTier = 1 | 5 | 10 | 20;
+
+export interface LessonPackage {
+  tier: PackageTier;
+  lessonsCount: number;
+  discountPercent: number;
+  label: string;
+  tagline: string;
+  popular?: boolean;
+  bestValue?: boolean;
+}
+
+export interface StudentPrepaidPackage {
+  id: string;
+  teacherId: string;
+  teacherName: string;
+  teacherAvatar?: string;
+  subject: string;
+  packageTier: PackageTier;
+  tier?: PackageTier;
+  totalLessons: number;
+  usedLessons: number;
+  remainingLessons: number;
+  totalPaid: number;
+  hourlyRateEquivalent: number;
+  purchasedAt: string;
+}
+
+export interface ReferralProfile {
+  referralCode: string;
+  referralLink: string;
+  totalInvited: number;
+  successfulReferrals: number;
+  earnedCreditsUSD: number;
+  availableCreditsUSD: number;
+  history: {
+    referredUserName: string;
+    referredUserEmail?: string;
+    date: string;
+    creditAmount: number;
+    status: 'rewarded' | 'pending';
+  }[];
+}
+
 

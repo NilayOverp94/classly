@@ -36,7 +36,9 @@ import {
   Circle,
   Square,
   Radio,
-  Film
+  Film,
+  Calculator,
+  TrendingUp
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
@@ -48,6 +50,7 @@ import {
   SupportedLanguage 
 } from '@/components/classroom/LiveCodeEditor';
 import { RecordingCompleteModal } from '@/components/classroom/RecordingCompleteModal';
+import { DesmosMathGrapher } from '@/components/classroom/DesmosMathGrapher';
 
 export default function ClassroomPage() {
   const params = useParams();
@@ -171,6 +174,77 @@ export default function ClassroomPage() {
         payload: { output },
       });
     }
+  };
+
+  // Math & Interactive Desmos Grapher State
+  const [mathWorkspaceTab, setMathWorkspaceTab] = useState<'whiteboard' | 'split' | 'grapher'>('whiteboard');
+  const [desmosRemoteState, setDesmosRemoteState] = useState<any>(null);
+  const desmosFlushTimeoutRef = useRef<any>(null);
+
+  const handleDesmosStateChange = (newState: any) => {
+    if (!desmosFlushTimeoutRef.current && channelRef.current && canDraw) {
+      desmosFlushTimeoutRef.current = setTimeout(() => {
+        if (channelRef.current) {
+          channelRef.current.send({
+            type: 'broadcast',
+            event: 'desmos_sync',
+            payload: { state: newState },
+          });
+        }
+        desmosFlushTimeoutRef.current = null;
+      }, 120);
+    }
+  };
+
+  const handleMathWorkspaceTabChange = (newTab: 'whiteboard' | 'split' | 'grapher') => {
+    setMathWorkspaceTab(newTab);
+    if (channelRef.current && userRole === 'teacher') {
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'math_tab_change',
+        payload: { tab: newTab },
+      });
+    }
+  };
+
+  const handleStampGraphToCanvas = (dataUri: string) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    saveSnapshot();
+
+    const img = new Image();
+    img.onload = () => {
+      const maxW = canvas.width * 0.88;
+      const maxH = canvas.height * 0.88;
+      const scale = Math.min(maxW / img.width, maxH / img.height, 1);
+      const drawWidth = img.width * scale;
+      const drawHeight = img.height * scale;
+      const dx = (canvas.width - drawWidth) / 2;
+      const dy = (canvas.height - drawHeight) / 2;
+
+      ctx.drawImage(img, dx, dy, drawWidth, drawHeight);
+      saveCurrentPageToStore();
+
+      // Automatically switch to split or whiteboard so participants see the stamped graph immediately!
+      if (mathWorkspaceTab === 'grapher') {
+        setMathWorkspaceTab('split');
+      }
+
+      if (channelRef.current && canDraw) {
+        channelRef.current.send({
+          type: 'broadcast',
+          event: 'stamp_graph',
+          payload: {
+            dataUri,
+            page: currentPageRef.current,
+          },
+        });
+      }
+    };
+    img.src = dataUri;
   };
 
   // Elapsed timer
@@ -538,6 +612,37 @@ export default function ClassroomPage() {
           if (payload.recorderName) {
             setRemoteRecorderName(payload.recorderName);
           }
+        }
+      })
+      .on('broadcast', { event: 'desmos_sync' }, ({ payload }) => {
+        if (payload?.state) {
+          setDesmosRemoteState(payload.state);
+        }
+      })
+      .on('broadcast', { event: 'math_tab_change' }, ({ payload }) => {
+        if (payload?.tab) {
+          setMathWorkspaceTab(payload.tab);
+        }
+      })
+      .on('broadcast', { event: 'stamp_graph' }, ({ payload }) => {
+        if (payload?.dataUri) {
+          const canvas = canvasRef.current;
+          if (!canvas) return;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return;
+          const img = new Image();
+          img.onload = () => {
+            const maxW = canvas.width * 0.88;
+            const maxH = canvas.height * 0.88;
+            const scale = Math.min(maxW / img.width, maxH / img.height, 1);
+            const drawWidth = img.width * scale;
+            const drawHeight = img.height * scale;
+            const dx = (canvas.width - drawWidth) / 2;
+            const dy = (canvas.height - drawHeight) / 2;
+            ctx.drawImage(img, dx, dy, drawWidth, drawHeight);
+            saveCurrentPageToStore();
+          };
+          img.src = payload.dataUri;
         }
       })
       .subscribe();
@@ -1200,6 +1305,20 @@ export default function ClassroomPage() {
             <FileText className="w-3.5 h-3.5" />
             <span>{isExportingPdf ? 'Exporting...' : 'Export PDF'}</span>
           </button>
+
+          {/* Quick Desmos Math Grapher Launcher */}
+          <button
+            onClick={() => handleMathWorkspaceTabChange(mathWorkspaceTab === 'whiteboard' ? 'split' : 'whiteboard')}
+            className={`px-2.5 py-1 rounded font-medium flex items-center gap-1.5 transition ${
+              mathWorkspaceTab === 'split' || mathWorkspaceTab === 'grapher'
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] text-charcoal-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1E293B]'
+            }`}
+            title="Toggle Split-Screen Desmos Graphing Calculator"
+          >
+            <Calculator className="w-3.5 h-3.5 text-blue-500" />
+            <span className="hidden sm:inline">Desmos Grapher</span>
+          </button>
         </div>
       </div>
 
@@ -1543,7 +1662,7 @@ export default function ClassroomPage() {
           } bg-white dark:bg-[#0E1526] flex flex-col text-charcoal-800 dark:text-slate-200 relative shadow-2xl overflow-hidden`}>
             
             {/* Exclusive CS Workspace Tab Bar (Only displayed for Computer Science / Coding lessons) */}
-            {isComputerScienceClass && (
+            {isComputerScienceClass ? (
               <div className="h-10 bg-[#161B22] border-b border-[#30363D] px-3 sm:px-4 flex items-center justify-between text-xs flex-shrink-0 select-none">
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-emerald-400 flex items-center gap-1.5 text-xs">
@@ -1582,9 +1701,55 @@ export default function ClassroomPage() {
                   <span>Python & Java Studio</span>
                 </div>
               </div>
+            ) : (
+              /* Mathematics & Science Workspace Tab Bar */
+              <div className="h-10 bg-gray-100 dark:bg-[#161B22] border-b border-gray-200 dark:border-[#30363D] px-3 sm:px-4 flex items-center justify-between text-xs flex-shrink-0 select-none">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-navy-900 dark:text-emerald-400 flex items-center gap-1.5 text-xs">
+                    <Calculator className="w-4 h-4 text-accent-600 dark:text-emerald-400" />
+                    <span>Math Workspace:</span>
+                  </span>
+                  <div className="bg-white dark:bg-[#0D1117] p-0.5 rounded-lg border border-gray-200 dark:border-[#30363D] flex items-center shadow-xs">
+                    <button
+                      onClick={() => handleMathWorkspaceTabChange('whiteboard')}
+                      className={`px-2.5 py-1 rounded text-xs font-semibold transition ${
+                        mathWorkspaceTab === 'whiteboard'
+                          ? 'bg-navy-800 dark:bg-emerald-600 text-white shadow-xs'
+                          : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white'
+                      }`}
+                    >
+                      Whiteboard
+                    </button>
+                    <button
+                      onClick={() => handleMathWorkspaceTabChange('split')}
+                      className={`px-2.5 py-1 rounded text-xs font-semibold transition ${
+                        mathWorkspaceTab === 'split'
+                          ? 'bg-navy-800 dark:bg-emerald-600 text-white shadow-xs'
+                          : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white'
+                      }`}
+                    >
+                      Split (Board + Grapher)
+                    </button>
+                    <button
+                      onClick={() => handleMathWorkspaceTabChange('grapher')}
+                      className={`px-2.5 py-1 rounded text-xs font-semibold transition ${
+                        mathWorkspaceTab === 'grapher'
+                          ? 'bg-navy-800 dark:bg-emerald-600 text-white shadow-xs'
+                          : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white'
+                      }`}
+                    >
+                      Desmos Grapher
+                    </button>
+                  </div>
+                </div>
+                <div className="hidden sm:flex items-center gap-1.5 text-[11px] text-charcoal-500 dark:text-slate-400 font-mono">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>Desmos Interactive Calculator</span>
+                </div>
+              </div>
             )}
 
-            {/* Main Interactive Content: Exclusively Code / Split / Board in CS; Pure Whiteboard in Math */}
+            {/* Main Interactive Content: Exclusively Code / Split / Board in CS; Whiteboard / Split / Desmos in Math */}
             {isComputerScienceClass ? (
               csWorkspaceTab === 'code' ? (
                 <div className="flex-1 flex flex-col h-full overflow-hidden">
@@ -1619,7 +1784,36 @@ export default function ClassroomPage() {
                 renderWhiteboard()
               )
             ) : (
-              renderWhiteboard()
+              mathWorkspaceTab === 'grapher' ? (
+                <div className="flex-1 flex flex-col h-full overflow-hidden">
+                  <DesmosMathGrapher
+                    canEdit={canDraw}
+                    userRole={userRole}
+                    onStateChange={handleDesmosStateChange}
+                    remoteState={desmosRemoteState}
+                    onSnapshotToCanvas={handleStampGraphToCanvas}
+                    theme="dark"
+                  />
+                </div>
+              ) : mathWorkspaceTab === 'split' ? (
+                <div className="flex-1 flex flex-col xl:flex-row h-full overflow-hidden">
+                  <div className="flex-1 h-1/2 xl:h-full overflow-hidden border-b xl:border-b-0 xl:border-r border-gray-200 dark:border-[#1E293B]">
+                    {renderWhiteboard()}
+                  </div>
+                  <div className="flex-1 h-1/2 xl:h-full flex flex-col overflow-hidden relative">
+                    <DesmosMathGrapher
+                      canEdit={canDraw}
+                      userRole={userRole}
+                      onStateChange={handleDesmosStateChange}
+                      remoteState={desmosRemoteState}
+                      onSnapshotToCanvas={handleStampGraphToCanvas}
+                      theme="dark"
+                    />
+                  </div>
+                </div>
+              ) : (
+                renderWhiteboard()
+              )
             )}
 
           </div>
