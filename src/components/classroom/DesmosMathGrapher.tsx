@@ -337,16 +337,16 @@ export function DesmosMathGrapher({
   };
 
   return (
-    <div className={`flex flex-col h-full bg-[#0E1526] text-white border-l border-gray-200 dark:border-[#1E293B] ${className}`}>
+    <div className={`flex flex-col h-full bg-[#0A0F1D] text-white border-l border-[#1E293B] ${className}`}>
       
       {/* Top Controls Toolbar */}
-      <div className="h-12 bg-gray-100 dark:bg-[#111827] border-b border-gray-200 dark:border-[#1E293B] px-3 sm:px-4 flex items-center justify-between gap-2 flex-shrink-0">
+      <div className="h-11 bg-[#0D1424] border-b border-[#1E293B] px-3 sm:px-4 flex items-center justify-between gap-2 flex-shrink-0 select-none">
         
         {/* Left: Branding & Presets Dropdown */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 font-bold text-xs text-navy-900 dark:text-emerald-400">
-            <Calculator className="w-4 h-4 text-accent-600 dark:text-emerald-400" />
-            <span className="hidden sm:inline">Desmos Grapher</span>
+          <div className="flex items-center gap-1.5 font-medium text-xs text-white">
+            <Calculator className="w-3.5 h-3.5 text-blue-400" />
+            <span className="hidden sm:inline">Desmos Engine</span>
           </div>
 
           {/* Quick Math Curves Presets */}
@@ -355,29 +355,29 @@ export function DesmosMathGrapher({
               type="button"
               onClick={() => setShowPresetsMenu(!showPresetsMenu)}
               disabled={!canEdit}
-              className="px-2.5 py-1 bg-white dark:bg-[#162032] border border-gray-300 dark:border-[#2D3B4F] hover:bg-gray-50 dark:hover:bg-[#1E293B] disabled:opacity-50 text-charcoal-700 dark:text-slate-200 rounded-md text-xs font-semibold flex items-center gap-1.5 transition"
+              className="px-2.5 py-1 bg-[#080D1A] border border-[#1E293B] hover:border-[#2D3B4F] disabled:opacity-50 text-slate-300 rounded-xl text-xs font-medium flex items-center gap-1.5 transition shadow-xs"
             >
-              <TrendingUp className="w-3.5 h-3.5 text-blue-500" />
+              <TrendingUp className="w-3.5 h-3.5 text-blue-400" />
               <span>Math Presets</span>
               <ChevronDown className="w-3 h-3 text-slate-400" />
             </button>
 
             {showPresetsMenu && (
-              <div className="absolute left-0 top-full mt-1.5 w-64 bg-white dark:bg-[#111827] border border-gray-200 dark:border-[#1E293B] rounded-xl shadow-2xl py-2 z-50 text-xs">
-                <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-charcoal-400 dark:text-slate-400">
+              <div className="absolute left-0 top-full mt-1.5 w-64 bg-[#0D1424] border border-[#1E293B] rounded-xl shadow-2xl py-1.5 z-50 text-xs">
+                <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                   Select Interactive Curve:
                 </div>
                 {MATH_PRESETS.map((preset) => (
                   <button
                     key={preset.id}
                     onClick={() => handleLoadPreset(preset)}
-                    className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-[#1E293B] text-charcoal-800 dark:text-slate-200 flex items-center justify-between transition"
+                    className="w-full text-left px-3 py-2 hover:bg-[#1E293B] text-slate-200 flex items-center justify-between transition"
                   >
                     <div>
-                      <div className="font-semibold">{preset.title}</div>
-                      <div className="text-[10px] text-charcoal-400 dark:text-slate-400">{preset.category}</div>
+                      <div className="font-medium text-xs">{preset.title}</div>
+                      <div className="text-[10px] text-slate-400">{preset.category}</div>
                     </div>
-                    <Sparkles className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400 opacity-60" />
+                    <Sparkles className="w-3.5 h-3.5 text-blue-400 opacity-70" />
                   </button>
                 ))}
               </div>
@@ -393,12 +393,12 @@ export function DesmosMathGrapher({
               value={latexInput}
               onChange={(e) => setLatexInput(e.target.value)}
               placeholder="e.g. y = x^2 - 4 or y = sin(x)"
-              className="w-full px-2.5 py-1 bg-white dark:bg-[#162032] border border-gray-300 dark:border-[#2D3B4F] rounded text-xs text-navy-900 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              className="w-full px-3 py-1 bg-[#080D1A] border border-[#1E293B] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition shadow-inner"
             />
             <button
               type="submit"
               disabled={!latexInput.trim()}
-              className="px-2.5 py-1 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 disabled:opacity-40 text-white rounded text-xs font-semibold flex items-center gap-1 transition"
+              className="px-3 py-1 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white rounded-xl text-xs font-medium flex items-center gap-1 transition shadow-xs"
             >
               <Plus className="w-3 h-3" />
               <span>Plot</span>
@@ -412,10 +412,10 @@ export function DesmosMathGrapher({
             <button
               onClick={handleSnapshotToWhiteboard}
               disabled={isExportingSnapshot}
-              className={`px-2.5 py-1 rounded text-xs font-bold flex items-center gap-1.5 transition ${
+              className={`px-3 py-1 rounded-xl text-xs font-medium flex items-center gap-1.5 transition shadow-xs ${
                 snapshotSuccess
                   ? 'bg-emerald-600 text-white'
-                  : 'bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white shadow-subtle'
+                  : 'bg-emerald-600 hover:bg-emerald-500 text-white'
               }`}
               title="Take a snapshot of this graph and paste directly into the whiteboard canvas"
             >
@@ -436,7 +436,7 @@ export function DesmosMathGrapher({
           {canEdit && (
             <button
               onClick={handleClearGraph}
-              className="px-2 py-1 bg-white dark:bg-[#162032] border border-gray-300 dark:border-[#2D3B4F] text-charcoal-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 rounded text-xs transition"
+              className="px-2.5 py-1 bg-[#111827] border border-[#1E293B] hover:border-rose-500/30 text-slate-300 hover:text-rose-400 rounded-xl text-xs font-medium transition shadow-xs"
               title="Clear all expressions"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -444,7 +444,7 @@ export function DesmosMathGrapher({
           )}
 
           {!canEdit && (
-            <div className="flex items-center gap-1 text-[11px] text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800">
+            <div className="flex items-center gap-1.5 text-[11px] text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-xl border border-amber-500/30 font-medium">
               <Lock className="w-3 h-3" />
               <span className="hidden sm:inline">View Only</span>
             </div>
@@ -456,8 +456,8 @@ export function DesmosMathGrapher({
       {/* Main Desmos Graph Container */}
       <div className="flex-1 relative w-full h-full min-h-[300px] overflow-hidden bg-white">
         {loadError && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-gray-50 dark:bg-[#0A0F1D] text-charcoal-700 dark:text-slate-300">
-            <Calculator className="w-10 h-10 text-red-500 mb-2 opacity-80" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-[#0A0F1D] text-slate-300">
+            <Calculator className="w-10 h-10 text-rose-500 mb-2 opacity-80" />
             <h4 className="text-sm font-bold text-navy-900 dark:text-white mb-1">Grapher Connection Error</h4>
             <p className="text-xs max-w-sm mb-4">{loadError}</p>
             <button

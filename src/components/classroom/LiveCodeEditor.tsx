@@ -524,12 +524,12 @@ Please ensure your internet connection is active and retry.`;
     <div className="flex-1 flex flex-col h-full bg-[#0D1117] text-slate-100 overflow-hidden select-text border-l border-navy-800 dark:border-[#1E293B]">
       
       {/* Editor Header Toolbar */}
-      <div className="h-11 bg-[#161B22] border-b border-[#30363D] px-3 sm:px-4 flex items-center justify-between text-xs flex-shrink-0 gap-2">
+      <div className="h-11 bg-[#0D1424] border-b border-[#1E293B] px-3 sm:px-4 flex items-center justify-between text-xs flex-shrink-0 gap-2 select-none">
         
         {/* Left: Language Selector & Badge */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 font-bold text-white">
-            <Code2 className="w-4 h-4 text-emerald-400" />
+          <div className="flex items-center gap-1.5 font-medium text-white">
+            <Code2 className="w-3.5 h-3.5 text-indigo-400" />
             <span className="hidden sm:inline">CS Studio</span>
           </div>
 
@@ -543,7 +543,7 @@ Please ensure your internet connection is active and retry.`;
               }
             }}
             disabled={!canEdit}
-            className="bg-[#21262D] text-slate-200 border border-[#30363D] rounded px-2.5 py-1 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
+            className="bg-[#080D1A] text-slate-200 border border-[#1E293B] rounded-xl px-2.5 py-1 text-xs font-medium focus:outline-none focus:border-indigo-500 cursor-pointer shadow-inner"
           >
             <option value="python">Python 3 (OneCompiler)</option>
             <option value="java">Java 17 (OneCompiler)</option>
@@ -557,7 +557,7 @@ Please ensure your internet connection is active and retry.`;
               <button
                 type="button"
                 onClick={() => setShowSnippetsMenu(!showSnippetsMenu)}
-                className="px-2 py-1 bg-[#21262D] hover:bg-[#30363D] text-slate-300 border border-[#30363D] rounded text-[11px] font-medium flex items-center gap-1 transition"
+                className="px-2.5 py-1 bg-[#111827] hover:border-[#2D3B4F] text-slate-300 border border-[#1E293B] rounded-xl text-[11px] font-medium flex items-center gap-1 transition shadow-xs"
                 title="Curated Algorithm Snippets"
               >
                 <Sparkles className="w-3 h-3 text-amber-400" />
@@ -566,7 +566,7 @@ Please ensure your internet connection is active and retry.`;
               </button>
 
               {showSnippetsMenu && (
-                <div className="absolute left-0 top-full mt-1.5 w-64 bg-[#161B22] border border-[#30363D] rounded-xl shadow-2xl py-1.5 z-50 text-xs">
+                <div className="absolute left-0 top-full mt-1.5 w-64 bg-[#0D1424] border border-[#1E293B] rounded-xl shadow-2xl py-1.5 z-50 text-xs">
                   <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                     Load {language.toUpperCase()} Snippet:
                   </div>
@@ -577,10 +577,10 @@ Please ensure your internet connection is active and retry.`;
                         onChange(s.code);
                         setShowSnippetsMenu(false);
                       }}
-                      className="w-full text-left px-3 py-2 hover:bg-[#21262D] text-slate-200 flex items-center justify-between transition"
+                      className="w-full text-left px-3 py-2 hover:bg-[#1E293B] text-slate-200 flex items-center justify-between transition"
                     >
                       <div>
-                        <div className="font-semibold text-xs">{s.title}</div>
+                        <div className="font-medium text-xs">{s.title}</div>
                         <div className="text-[10px] text-slate-400">{s.category}</div>
                       </div>
                       <FileCode className="w-3.5 h-3.5 text-emerald-400 opacity-60" />
@@ -592,7 +592,7 @@ Please ensure your internet connection is active and retry.`;
           )}
 
           {!canEdit && (
-            <span className="hidden md:inline-flex items-center gap-1 text-[11px] font-semibold text-amber-400 bg-amber-950/40 border border-amber-800/60 px-2 py-0.5 rounded">
+            <span className="hidden md:inline-flex items-center gap-1 text-[11px] font-medium text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2.5 py-0.5 rounded-xl">
               <Lock className="w-3 h-3" />
               <span>Read Only</span>
             </span>
@@ -602,7 +602,7 @@ Please ensure your internet connection is active and retry.`;
         {/* Right: Controls & Run Button */}
         <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Powered by OneCompiler pill */}
-          <div className="hidden lg:flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-950/50 border border-emerald-800/60 text-emerald-300 text-[10px] font-mono">
+          <div className="hidden lg:flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-mono">
             <Zap className="w-3 h-3 text-emerald-400" />
             <span>OneCompiler Live</span>
           </div>
@@ -610,7 +610,7 @@ Please ensure your internet connection is active and retry.`;
           {canEdit && (
             <button
               onClick={handleResetStarter}
-              className="p-1.5 sm:px-2.5 sm:py-1 rounded bg-[#21262D] hover:bg-[#30363D] text-slate-300 border border-[#30363D] font-medium flex items-center gap-1 text-[11px] transition"
+              className="p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-[#111827] hover:border-[#2D3B4F] text-slate-300 border border-[#1E293B] font-medium flex items-center gap-1 text-[11px] transition shadow-xs"
               title="Reset to Curriculum Starter Code"
             >
               <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
@@ -620,7 +620,7 @@ Please ensure your internet connection is active and retry.`;
 
           <button
             onClick={handleCopyCode}
-            className="p-1.5 sm:px-2.5 sm:py-1 rounded bg-[#21262D] hover:bg-[#30363D] text-slate-300 border border-[#30363D] font-medium flex items-center gap-1 text-[11px] transition"
+            className="p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-[#111827] hover:border-[#2D3B4F] text-slate-300 border border-[#1E293B] font-medium flex items-center gap-1 text-[11px] transition shadow-xs"
             title="Copy Code to Clipboard"
           >
             {copied ? (
@@ -638,10 +638,10 @@ Please ensure your internet connection is active and retry.`;
 
           <button
             onClick={() => setShowConsole(!showConsole)}
-            className={`p-1.5 sm:px-2.5 sm:py-1 rounded font-medium flex items-center gap-1 text-[11px] border transition ${
+            className={`p-1.5 sm:px-2.5 sm:py-1 rounded-xl font-medium flex items-center gap-1 text-[11px] border transition shadow-xs ${
               showConsole 
-                ? 'bg-emerald-950/60 text-emerald-300 border-emerald-700' 
-                : 'bg-[#21262D] text-slate-300 border-[#30363D] hover:bg-[#30363D]'
+                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' 
+                : 'bg-[#111827] text-slate-300 border-[#1E293B] hover:border-[#2D3B4F]'
             }`}
             title="Toggle Output Terminal"
           >
@@ -653,7 +653,7 @@ Please ensure your internet connection is active and retry.`;
           <button
             onClick={handleRunCode}
             disabled={isRunning}
-            className="px-3 sm:px-4 py-1 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded font-bold text-xs flex items-center gap-1.5 shadow-sm transition"
+            className="px-3.5 sm:px-4 py-1 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl font-medium text-xs flex items-center gap-1.5 shadow-xs transition"
             title="Compile & Run Code with OneCompiler"
           >
             {isRunning ? (
