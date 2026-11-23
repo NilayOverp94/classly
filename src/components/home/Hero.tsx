@@ -16,7 +16,7 @@ import {
   Users,
   ChevronDown
 } from 'lucide-react';
-import { FadeIn, Float } from '@/components/ui/MotionComponents';
+import { FadeIn } from '@/components/ui/MotionComponents';
 
 export function Hero() {
   const router = useRouter();
@@ -245,72 +245,72 @@ export function Hero() {
                     className="object-cover object-top"
                     priority
                   />
-                </div>
+                  {/* Bottom gradient scrim for text contrast */}
+                  <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/50 via-black/20 to-transparent pointer-events-none" />
 
-                {/* Floating Badge Pill 1 */}
-                <div className="absolute top-[162px] sm:top-[178px] left-1 sm:left-6 z-30">
-                  <Float amplitude={4} duration={3.8} delay={0.2}>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-navy-950 font-bold text-[11px] sm:text-xs shadow-md border border-amber-300">
+                  {/* Badge Pill 1: Aligned neatly inside Card 1 */}
+                  <div className="absolute bottom-3 left-3 z-20">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-400 text-navy-950 font-bold text-[11px] sm:text-xs shadow-md border border-amber-300">
                       <Calculator className="w-3.5 h-3.5 text-navy-900" />
                       <span>Academic Curriculum</span>
                     </span>
-                  </Float>
+                  </div>
                 </div>
 
                 {/* Capsule 2 (Center-Right): Enthusiastic Young Student Breakthrough */}
-                <div className="absolute top-[135px] sm:top-[145px] right-0 sm:right-2 w-[220px] sm:w-[250px] h-[170px] sm:h-[190px] rounded-[32px] overflow-hidden border-2 border-white dark:border-[#1E293B] shadow-lift bg-accent-50 z-20 transition-transform duration-300 hover:scale-[1.02]">
+                <div className="absolute top-[125px] sm:top-[135px] right-0 sm:right-2 w-[220px] sm:w-[250px] h-[170px] sm:h-[190px] rounded-[32px] overflow-hidden border-2 border-white dark:border-[#1E293B] shadow-lift bg-accent-50 z-20 transition-transform duration-300 hover:scale-[1.02]">
                   <Image
                     src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80"
                     alt="Happy student celebrating learning breakthrough"
                     fill
                     className="object-cover"
                   />
-                  {/* Floating Badge Pill 2 */}
-                  <div className="absolute -bottom-2 -left-2 sm:bottom-3 sm:-left-3">
-                    <Float amplitude={4.5} duration={4.2} delay={0.5}>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-500 text-white font-bold text-[11px] sm:text-xs shadow-md border border-accent-400">
-                        <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                        <span>1-on-1 Tutoring</span>
-                      </span>
-                    </Float>
+                  {/* Bottom gradient scrim for text contrast */}
+                  <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/50 via-black/20 to-transparent pointer-events-none" />
+
+                  {/* Badge Pill 2: Aligned neatly inside Card 2 */}
+                  <div className="absolute bottom-3 left-3 z-20">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-600 text-white font-bold text-[11px] sm:text-xs shadow-md border border-emerald-500">
+                      <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                      <span>1-on-1 Tutoring</span>
+                    </span>
                   </div>
                 </div>
 
                 {/* Capsule 3 (Bottom-Left): Student in Live Online Video Lesson with Teacher */}
-                <div className="absolute bottom-0 left-2 sm:left-6 w-[270px] sm:w-[310px] h-[180px] sm:h-[205px] rounded-[32px] overflow-hidden border-2 border-white dark:border-[#1E293B] shadow-lift bg-softblue-100 z-10 transition-transform duration-300 hover:scale-[1.02]">
+                <div className="absolute bottom-0 left-0 sm:left-4 w-[280px] sm:w-[320px] h-[190px] sm:h-[210px] rounded-[32px] overflow-hidden border-2 border-white dark:border-[#1E293B] shadow-lift bg-softblue-100 z-20 transition-transform duration-300 hover:scale-[1.02]">
                   <Image
                     src="https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&w=800&q=80"
                     alt="Student engaged in live interactive video class with educator"
                     fill
                     className="object-cover"
                   />
-                  {/* Floating Badge Pill 3 (Coding track) */}
-                  <div className="absolute top-2.5 left-2.5">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-navy-900 text-white font-bold text-[11px] sm:text-xs shadow-md border border-navy-700">
+                  {/* Top-Left Badge Pill: Python & Coding */}
+                  <div className="absolute top-3 left-3 z-20">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-navy-900/90 backdrop-blur-xs text-white font-bold text-[11px] sm:text-xs shadow-md border border-navy-700">
                       <Code2 className="w-3.5 h-3.5 text-accent-400" />
                       <span>Python & Coding</span>
                     </span>
                   </div>
+
+                  {/* Top-Right Badge Pill: COPPA Compliant */}
+                  <div className="absolute top-3 right-3 z-20">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/95 dark:bg-[#111827]/95 backdrop-blur-xs text-navy-900 dark:text-white font-bold text-[10px] sm:text-[11px] shadow-sm border border-gray-200/90 dark:border-[#1E293B]">
+                      <ShieldCheck className="w-3 h-3 text-emerald-500" />
+                      <span>COPPA Compliant</span>
+                    </span>
+                  </div>
+
                   {/* Live Video Classroom Callout Bar */}
-                  <div className="absolute bottom-2 left-2 right-2 bg-white/95 dark:bg-[#111827]/95 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-gray-200/90 dark:border-[#1E293B] shadow-sm flex items-center justify-between">
+                  <div className="absolute bottom-3 left-3 right-3 bg-white/95 dark:bg-[#111827]/95 backdrop-blur-sm px-3.5 py-2 rounded-xl border border-gray-200/90 dark:border-[#1E293B] shadow-sm flex items-center justify-between z-20">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                      <span className="text-[11px] font-bold text-navy-900 dark:text-white">Live Video Classroom</span>
+                      <span className="text-[11px] sm:text-xs font-bold text-navy-900 dark:text-white">Live Video Classroom</span>
                     </div>
                     <span className="text-[10px] font-semibold text-accent-700 dark:text-emerald-300 bg-accent-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-accent-200 dark:border-emerald-800/60">
                       HD Video
                     </span>
                   </div>
-                </div>
-
-                {/* Floating Reassurance Badge 4: Parent Supervised */}
-                <div className="absolute -bottom-2 right-2 sm:right-6 z-30">
-                  <Float amplitude={4} duration={3.6} delay={0.8}>
-                    <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white dark:bg-[#111827] text-navy-900 dark:text-white font-bold text-xs shadow-card dark:shadow-[0_4px_16px_rgba(0,0,0,0.4)] border border-gray-200 dark:border-[#1E293B]">
-                      <ShieldCheck className="w-3.5 h-3.5 text-accent-500" />
-                      <span>COPPA Compliant</span>
-                    </span>
-                  </Float>
                 </div>
 
               </div>
