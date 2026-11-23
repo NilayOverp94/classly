@@ -94,16 +94,16 @@ export function TopInstructorsMarquee() {
                 Working in Top MAANG companies
               </p>
               <div className="flex items-center gap-5 sm:gap-6 flex-wrap text-navy-950 dark:text-white">
-                <div className="h-6 sm:h-7 flex items-center opacity-85 hover:opacity-100 transition-all hover:scale-105 duration-200" title="Amazon">
+                <div className="h-6 sm:h-7 flex items-center opacity-85 hover:opacity-100 transition-all hover:scale-105 duration-200" aria-label="Amazon">
                   <AmazonLogo className="h-5 sm:h-5.5 w-auto" />
                 </div>
-                <div className="h-6 sm:h-7 flex items-center opacity-85 hover:opacity-100 transition-all hover:scale-105 duration-200" title="Microsoft">
+                <div className="h-6 sm:h-7 flex items-center opacity-85 hover:opacity-100 transition-all hover:scale-105 duration-200" aria-label="Microsoft">
                   <MicrosoftLogo className="h-4.5 sm:h-5 w-auto" />
                 </div>
-                <div className="h-6 sm:h-7 flex items-center opacity-85 hover:opacity-100 transition-all hover:scale-105 duration-200" title="PayPal">
+                <div className="h-6 sm:h-7 flex items-center opacity-85 hover:opacity-100 transition-all hover:scale-105 duration-200" aria-label="PayPal">
                   <PayPalLogo className="h-4.5 sm:h-5 w-auto" />
                 </div>
-                <div className="h-6 sm:h-7 flex items-center opacity-85 hover:opacity-100 transition-all hover:scale-105 duration-200" title="Meta">
+                <div className="h-6 sm:h-7 flex items-center opacity-85 hover:opacity-100 transition-all hover:scale-105 duration-200" aria-label="Meta">
                   <MetaLogo className="h-4.5 sm:h-5 w-auto" />
                 </div>
               </div>

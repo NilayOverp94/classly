@@ -22,8 +22,8 @@ export function PopularSubjects() {
       icon: <Calculator className="w-6 h-6 text-navy-900 dark:text-white" />,
       grades: 'Grades 5 – 12',
       topics: ['Algebra I & II', 'Geometry', 'Trigonometry', 'Pre-Calculus', 'AP Calculus AB/BC', 'AP Statistics'],
-      accentColor: 'from-amber-50 to-orange-50/30 dark:from-[#121215] dark:to-[#18181c]',
-      badgeBg: 'bg-amber-100/80 text-amber-900 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/80',
+      accentColor: 'from-amber-50/70 to-orange-50/30 dark:from-[#121215] dark:to-[#18181c]',
+      badgeBg: 'bg-amber-100/80 text-amber-900 border-amber-200/90 dark:bg-[#1c1c20] dark:text-amber-300 dark:border-[#27272a]',
     },
     {
       id: 'subj-cs',
@@ -33,8 +33,8 @@ export function PopularSubjects() {
       icon: <Code2 className="w-6 h-6 text-navy-900 dark:text-white" />,
       grades: 'Grades 6 – 12',
       topics: ['Python Basics & OOP', 'AP Computer Science A', 'Java Programming', 'Algorithms & Logic', 'Web Development'],
-      accentColor: 'from-softblue-50 to-blue-50/30 dark:from-[#121215] dark:to-[#18181c]',
-      badgeBg: 'bg-softblue-100 text-navy-900 border-softblue-200 dark:bg-[#27272a] dark:text-amber-300 dark:border-zinc-800',
+      accentColor: 'from-amber-50/70 to-orange-50/30 dark:from-[#121215] dark:to-[#18181c]',
+      badgeBg: 'bg-amber-100/80 text-amber-900 border-amber-200/90 dark:bg-[#1c1c20] dark:text-amber-300 dark:border-[#27272a]',
     },
   ];
 
