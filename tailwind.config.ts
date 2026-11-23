@@ -11,14 +11,14 @@ const config: Config = {
     extend: {
       colors: {
         dark: {
-          bg: '#0A0F1D',
-          card: '#111827',
-          cardHover: '#162032',
-          border: '#1E293B',
-          borderLight: '#2D3B4F',
-          text: '#F8FAFC',
-          muted: '#94A3B8',
-          subtle: '#64748B',
+          bg: '#09090b',
+          card: '#121215',
+          cardHover: '#18181c',
+          border: '#27272a',
+          borderLight: '#323238',
+          text: '#F4F4F5',
+          muted: '#A1A1AA',
+          subtle: '#71717A',
         },
         navy: {
           50: '#F0F4F9',

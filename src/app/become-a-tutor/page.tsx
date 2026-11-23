@@ -125,42 +125,42 @@ export default function BecomeATutorPage() {
     {
       title: 'Reach Students Internationally',
       description: 'Teach US K-12 students seeking high-caliber educators for mathematics, science, AP curriculum, and test preparation.',
-      icon: <Globe className="w-5 h-5 text-accent-500 dark:text-emerald-400" />,
+      icon: <Globe className="w-5 h-5 text-accent-500 dark:text-amber-400" />,
     },
     {
       title: 'Set Your Own Hourly Rates',
       description: 'You maintain full control of your rates. Increase your pricing as your reputation, reviews, and demand grow.',
-      icon: <DollarSign className="w-5 h-5 text-navy-800 dark:text-emerald-400" />,
+      icon: <DollarSign className="w-5 h-5 text-navy-800 dark:text-amber-400" />,
     },
     {
       title: 'Choose Your Availability',
       description: 'Set your own weekly calendar. Open morning, evening, or weekend slots that harmonize with your schedule.',
-      icon: <Calendar className="w-5 h-5 text-accent-500 dark:text-emerald-400" />,
+      icon: <Calendar className="w-5 h-5 text-accent-500 dark:text-amber-400" />,
     },
     {
       title: 'Teach Remotely in HD Classrooms',
       description: 'Work from home using our browser-based live classroom equipped with collaborative whiteboards and screen sharing.',
-      icon: <Laptop className="w-5 h-5 text-navy-800 dark:text-emerald-400" />,
+      icon: <Laptop className="w-5 h-5 text-navy-800 dark:text-amber-400" />,
     },
     {
       title: 'Seamless Booking Management',
       description: 'No scheduling emails back and forth. Automated calendar bookings, reminders, and parent communications handled.',
-      icon: <Clock className="w-5 h-5 text-accent-500 dark:text-emerald-400" />,
+      icon: <Clock className="w-5 h-5 text-accent-500 dark:text-amber-400" />,
     },
     {
       title: 'Reliable Payouts & Tracking',
       description: 'Track your accrued earnings in real time with automated payouts directly to your local bank account.',
-      icon: <BarChart3 className="w-5 h-5 text-navy-800 dark:text-emerald-400" />,
+      icon: <BarChart3 className="w-5 h-5 text-navy-800 dark:text-amber-400" />,
     },
   ];
 
   return (
-    <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-screen transition-colors duration-200">
+    <div className="bg-offwhite dark:bg-[#09090b] min-h-screen transition-colors duration-200">
       
       {/* Hero Section */}
-      <section className="bg-navy-900 dark:bg-[#070C15] text-white py-16 lg:py-24 border-b border-navy-800 dark:border-[#1E293B]">
+      <section className="bg-navy-900 dark:bg-[#09090b] text-white py-16 lg:py-24 border-b border-navy-800 dark:border-[#27272a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy-800 dark:bg-[#111827] border border-navy-700 dark:border-[#1E293B] text-xs font-semibold text-accent-400 dark:text-emerald-400 mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy-800 dark:bg-[#121215] border border-navy-700 dark:border-[#27272a] text-xs font-semibold text-accent-400 dark:text-amber-400 mb-6">
             <UserCheck className="w-4 h-4" />
             <span>Now Onboarding Qualified Educators from India</span>
           </div>
@@ -169,27 +169,27 @@ export default function BecomeATutorPage() {
             Turn your knowledge into opportunity.
           </h1>
 
-          <p className="mt-6 text-lg text-gray-300 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-6 text-lg text-gray-300 dark:text-zinc-300 max-w-2xl mx-auto leading-relaxed">
             Join the Classly educator network. Connect with K-12 students in the United States, set your own schedule, and earn competitive global rates.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={() => setShowApplyModal(true)}
-              className="w-full sm:w-auto px-8 py-3.5 bg-accent-500 hover:bg-accent-600 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white font-bold rounded-lg shadow-lift transition text-sm flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-8 py-3.5 bg-accent-500 hover:bg-accent-600 dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-zinc-950 font-bold text-white font-bold rounded-lg shadow-lift transition text-sm flex items-center justify-center gap-2"
             >
               <span>Apply as a Tutor</span>
               <ArrowRight className="w-4 h-4" />
             </button>
             <a
               href="#earnings"
-              className="w-full sm:w-auto px-6 py-3.5 bg-navy-800 hover:bg-navy-750 dark:bg-[#162032] dark:hover:bg-[#1E293B] text-gray-200 font-semibold rounded-lg border border-navy-700 dark:border-[#2D3B4F] transition text-sm"
+              className="w-full sm:w-auto px-6 py-3.5 bg-navy-800 hover:bg-navy-750 dark:bg-[#18181c] dark:hover:bg-[#27272a] text-gray-200 font-semibold rounded-lg border border-navy-700 dark:border-[#323238] transition text-sm"
             >
               Estimate Your Earnings
             </a>
           </div>
 
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-8 text-xs text-gray-400 dark:text-slate-400">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-8 text-xs text-gray-400 dark:text-zinc-400">
             <span>Average active tutor earns <strong>$1,200 – $2,500/mo</strong></span>
             <span>•</span>
             <span>Zero listing fees</span>
@@ -200,11 +200,11 @@ export default function BecomeATutorPage() {
       </section>
 
       {/* Benefits Grid */}
-      <section className="py-16 lg:py-20 bg-white dark:bg-[#0A0F1D] border-b border-gray-200 dark:border-[#1E293B]">
+      <section className="py-16 lg:py-20 bg-white dark:bg-[#09090b] border-b border-gray-200 dark:border-[#27272a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn direction="up" delay={0.05} duration={0.5}>
             <div className="text-center max-w-2xl mx-auto mb-14">
-              <h2 className="text-xs font-semibold text-accent-600 dark:text-emerald-400 uppercase tracking-wider mb-2">
+              <h2 className="text-xs font-semibold text-accent-600 dark:text-amber-400 uppercase tracking-wider mb-2">
                 Why Teach on Classly
               </h2>
               <p className="text-3xl font-bold text-navy-800 dark:text-white tracking-tight">
@@ -216,12 +216,12 @@ export default function BecomeATutorPage() {
           <StaggerContainer staggerDelay={0.08} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {benefits.map((b) => (
               <StaggerItem key={b.title} distance={16} duration={0.45}>
-                <div className="p-6 bg-offwhite/50 dark:bg-[#111827] rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle hover:shadow-card dark:hover:border-slate-600 hover:-translate-y-1 transition-all duration-300 h-full group">
-                  <div className="w-10 h-10 rounded-lg bg-white dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] flex items-center justify-center mb-4 shadow-subtle transition-transform duration-300 group-hover:scale-105">
+                <div className="p-6 bg-offwhite/50 dark:bg-[#121215] rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle hover:shadow-card dark:hover:border-zinc-700 hover:-translate-y-1 transition-all duration-300 h-full group">
+                  <div className="w-10 h-10 rounded-lg bg-white dark:bg-[#18181c] border border-gray-200 dark:border-[#323238] flex items-center justify-center mb-4 shadow-subtle transition-transform duration-300 group-hover:scale-105">
                     {b.icon}
                   </div>
                   <h3 className="text-base font-bold text-navy-800 dark:text-white mb-2">{b.title}</h3>
-                  <p className="text-xs text-charcoal-600 dark:text-slate-300 leading-relaxed">{b.description}</p>
+                  <p className="text-xs text-charcoal-600 dark:text-zinc-300 leading-relaxed">{b.description}</p>
                 </div>
               </StaggerItem>
             ))}
@@ -230,29 +230,29 @@ export default function BecomeATutorPage() {
       </section>
 
       {/* Interactive Earnings Calculator */}
-      <section id="earnings" className="py-16 lg:py-20 bg-softblue-50/50 dark:bg-[#070C15] border-b border-gray-200 dark:border-[#1E293B]">
+      <section id="earnings" className="py-16 lg:py-20 bg-softblue-50/50 dark:bg-[#09090b] border-b border-gray-200 dark:border-[#27272a]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-xs font-semibold text-accent-600 dark:text-emerald-400 uppercase tracking-wider mb-2">
+            <h2 className="text-xs font-semibold text-accent-600 dark:text-amber-400 uppercase tracking-wider mb-2">
               Earnings Calculator
             </h2>
             <p className="text-3xl font-bold text-navy-800 dark:text-white tracking-tight">
               See How Much You Could Earn
             </p>
-            <p className="mt-2 text-xs text-charcoal-500 dark:text-slate-400">
+            <p className="mt-2 text-xs text-charcoal-500 dark:text-zinc-400">
               Calculate your estimated monthly take-home earnings based on your rate and weekly hours.
             </p>
           </div>
 
-          <div className="bg-white dark:bg-[#111827] p-8 rounded-2xl border border-gray-200 dark:border-[#1E293B] shadow-card">
+          <div className="bg-white dark:bg-[#121215] p-8 rounded-2xl border border-gray-200 dark:border-[#27272a] shadow-card">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               
               {/* Sliders */}
               <div className="space-y-6">
                 <div>
                   <div className="flex justify-between text-xs font-semibold mb-2">
-                    <span className="text-charcoal-700 dark:text-slate-300">Hourly Rate</span>
-                    <span className="text-navy-800 dark:text-emerald-400 font-bold">${calcHourlyRate} / hour</span>
+                    <span className="text-charcoal-700 dark:text-zinc-300">Hourly Rate</span>
+                    <span className="text-navy-800 dark:text-amber-400 font-bold">${calcHourlyRate} / hour</span>
                   </div>
                   <input
                     type="range"
@@ -261,9 +261,9 @@ export default function BecomeATutorPage() {
                     step="1"
                     value={calcHourlyRate}
                     onChange={(e) => setCalcHourlyRate(Number(e.target.value))}
-                    className="w-full accent-navy-800 dark:accent-emerald-500"
+                    className="w-full accent-navy-800 dark:accent-amber-400"
                   />
-                  <div className="flex justify-between text-[11px] text-gray-400 dark:text-slate-400 mt-1">
+                  <div className="flex justify-between text-[11px] text-gray-400 dark:text-zinc-400 mt-1">
                     <span>$15/hr</span>
                     <span>$35/hr</span>
                     <span>$60/hr</span>
@@ -272,8 +272,8 @@ export default function BecomeATutorPage() {
 
                 <div>
                   <div className="flex justify-between text-xs font-semibold mb-2">
-                    <span className="text-charcoal-700 dark:text-slate-300">Teaching Hours per Week</span>
-                    <span className="text-navy-800 dark:text-emerald-400 font-bold">{calcHoursPerWeek} hours/wk</span>
+                    <span className="text-charcoal-700 dark:text-zinc-300">Teaching Hours per Week</span>
+                    <span className="text-navy-800 dark:text-amber-400 font-bold">{calcHoursPerWeek} hours/wk</span>
                   </div>
                   <input
                     type="range"
@@ -282,9 +282,9 @@ export default function BecomeATutorPage() {
                     step="1"
                     value={calcHoursPerWeek}
                     onChange={(e) => setCalcHoursPerWeek(Number(e.target.value))}
-                    className="w-full accent-navy-800 dark:accent-emerald-500"
+                    className="w-full accent-navy-800 dark:accent-amber-400"
                   />
-                  <div className="flex justify-between text-[11px] text-gray-400 dark:text-slate-400 mt-1">
+                  <div className="flex justify-between text-[11px] text-gray-400 dark:text-zinc-400 mt-1">
                     <span>5 hrs</span>
                     <span>20 hrs</span>
                     <span>40 hrs</span>
@@ -293,18 +293,18 @@ export default function BecomeATutorPage() {
               </div>
 
               {/* Result Card */}
-              <div className="p-6 bg-navy-800 dark:bg-[#162032] border border-transparent dark:border-[#2D3B4F] text-white rounded-xl text-center flex flex-col justify-center">
-                <span className="text-xs uppercase tracking-wider text-gray-300 dark:text-slate-300 font-semibold">
+              <div className="p-6 bg-navy-800 dark:bg-[#18181c] border border-transparent dark:border-[#323238] text-white rounded-xl text-center flex flex-col justify-center">
+                <span className="text-xs uppercase tracking-wider text-gray-300 dark:text-zinc-300 font-semibold">
                   Estimated Monthly Take-Home
                 </span>
                 <div className="my-3 text-4xl sm:text-5xl font-extrabold text-white">
                   ${monthlyEarnings.toLocaleString()}
-                  <span className="text-sm font-normal text-gray-300 dark:text-slate-300 ml-1">/ month</span>
+                  <span className="text-sm font-normal text-gray-300 dark:text-zinc-300 ml-1">/ month</span>
                 </div>
-                <div className="text-[11px] text-gray-300 dark:text-slate-300">
+                <div className="text-[11px] text-gray-300 dark:text-zinc-300">
                   Approx. ₹{(monthlyEarnings * 83).toLocaleString()} INR per month
                 </div>
-                <div className="mt-4 pt-4 border-t border-navy-700 dark:border-[#2D3B4F] text-[10px] text-gray-400 dark:text-slate-400">
+                <div className="mt-4 pt-4 border-t border-navy-700 dark:border-[#323238] text-[10px] text-gray-400 dark:text-zinc-400">
                   After 15% platform infrastructure & payment processing commission.
                 </div>
               </div>
@@ -314,7 +314,7 @@ export default function BecomeATutorPage() {
             <div className="mt-8 text-center">
               <button
                 onClick={() => setShowApplyModal(true)}
-                className="px-8 py-3 bg-accent-500 hover:bg-accent-600 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white font-bold rounded-lg text-sm transition shadow-subtle"
+                className="px-8 py-3 bg-accent-500 hover:bg-accent-600 dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-zinc-950 font-bold text-white font-bold rounded-lg text-sm transition shadow-subtle"
               >
                 Apply with These Preferences
               </button>
@@ -324,40 +324,40 @@ export default function BecomeATutorPage() {
       </section>
 
       {/* 4-Step Verification Standards Section */}
-      <section id="requirements" className="py-16 lg:py-20 bg-white dark:bg-[#0A0F1D] border-b border-gray-200 dark:border-[#1E293B]">
+      <section id="requirements" className="py-16 lg:py-20 bg-white dark:bg-[#09090b] border-b border-gray-200 dark:border-[#27272a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-xs font-semibold text-accent-600 dark:text-emerald-400 uppercase tracking-wider mb-2">
+            <h2 className="text-xs font-semibold text-accent-600 dark:text-amber-400 uppercase tracking-wider mb-2">
               Our Vetting Standards
             </h2>
             <p className="text-3xl font-bold text-navy-800 dark:text-white tracking-tight">
               The 4-Step Application & Approval Process
             </p>
-            <p className="mt-2 text-xs text-charcoal-500 dark:text-slate-400">
+            <p className="mt-2 text-xs text-charcoal-500 dark:text-zinc-400">
               To safeguard students, all teacher accounts must be verified and approved by an administrator before publishing classes.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-xs">
-            <div className="p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] bg-gray-50/50 dark:bg-[#111827]">
-              <div className="w-8 h-8 rounded-full bg-navy-800 dark:bg-emerald-600 text-white font-bold flex items-center justify-center mb-3">1</div>
+            <div className="p-5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#121215]">
+              <div className="w-8 h-8 rounded-full bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold text-white font-bold flex items-center justify-center mb-3">1</div>
               <h4 className="font-bold text-navy-800 dark:text-white text-sm mb-1">Personal Details</h4>
-              <p className="text-charcoal-600 dark:text-slate-300">Identity verification, contact details, and professional headshot photograph.</p>
+              <p className="text-charcoal-600 dark:text-zinc-300">Identity verification, contact details, and professional headshot photograph.</p>
             </div>
-            <div className="p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] bg-gray-50/50 dark:bg-[#111827]">
-              <div className="w-8 h-8 rounded-full bg-navy-800 dark:bg-emerald-600 text-white font-bold flex items-center justify-center mb-3">2</div>
+            <div className="p-5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#121215]">
+              <div className="w-8 h-8 rounded-full bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold text-white font-bold flex items-center justify-center mb-3">2</div>
               <h4 className="font-bold text-navy-800 dark:text-white text-sm mb-1">Subject Expertise</h4>
-              <p className="text-charcoal-600 dark:text-slate-300">Verification of curriculum mastery (US Common Core, AP Calculus, AP Physics, etc.).</p>
+              <p className="text-charcoal-600 dark:text-zinc-300">Verification of curriculum mastery (US Common Core, AP Calculus, AP Physics, etc.).</p>
             </div>
-            <div className="p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] bg-gray-50/50 dark:bg-[#111827]">
-              <div className="w-8 h-8 rounded-full bg-navy-800 dark:bg-emerald-600 text-white font-bold flex items-center justify-center mb-3">3</div>
+            <div className="p-5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#121215]">
+              <div className="w-8 h-8 rounded-full bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold text-white font-bold flex items-center justify-center mb-3">3</div>
               <h4 className="font-bold text-navy-800 dark:text-white text-sm mb-1">Schedule & Rates</h4>
-              <p className="text-charcoal-600 dark:text-slate-300">Define your timezone availability slots for US students and hourly pricing.</p>
+              <p className="text-charcoal-600 dark:text-zinc-300">Define your timezone availability slots for US students and hourly pricing.</p>
             </div>
-            <div className="p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] bg-gray-50/50 dark:bg-[#111827]">
-              <div className="w-8 h-8 rounded-full bg-navy-800 dark:bg-emerald-600 text-white font-bold flex items-center justify-center mb-3">4</div>
+            <div className="p-5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#121215]">
+              <div className="w-8 h-8 rounded-full bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold text-white font-bold flex items-center justify-center mb-3">4</div>
               <h4 className="font-bold text-navy-800 dark:text-white text-sm mb-1">Admin Verification</h4>
-              <p className="text-charcoal-600 dark:text-slate-300">Compliance review of university degrees and background credentials within 48 hours.</p>
+              <p className="text-charcoal-600 dark:text-zinc-300">Compliance review of university degrees and background credentials within 48 hours.</p>
             </div>
           </div>
         </div>
@@ -383,14 +383,14 @@ export default function BecomeATutorPage() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 8 }}
               transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-              className="relative bg-white dark:bg-[#111827] w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200 dark:border-[#1E293B] my-8 overflow-hidden z-10"
+              className="relative bg-white dark:bg-[#121215] w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200 dark:border-[#27272a] my-8 overflow-hidden z-10"
             >
             
             {/* Modal Header */}
-            <div className="bg-navy-800 dark:bg-[#162032] text-white p-6 flex items-center justify-between border-b dark:border-[#2D3B4F]">
+            <div className="bg-navy-800 dark:bg-[#18181c] text-white p-6 flex items-center justify-between border-b dark:border-[#323238]">
               <div>
                 <h3 className="text-lg font-bold">Classly Educator Application</h3>
-                <p className="text-xs text-gray-300 dark:text-slate-300">Step {currentStep} of 4: {
+                <p className="text-xs text-gray-300 dark:text-zinc-300">Step {currentStep} of 4: {
                   currentStep === 1 ? 'Personal Information' :
                   currentStep === 2 ? 'Teaching Credentials & Subjects' :
                   currentStep === 3 ? 'Pricing & Time Slots' : 'Verification Documents'
@@ -405,12 +405,12 @@ export default function BecomeATutorPage() {
             </div>
 
             {/* Stepper bar */}
-            <div className="flex h-1.5 bg-gray-100 dark:bg-[#162032]">
+            <div className="flex h-1.5 bg-gray-100 dark:bg-[#18181c]">
               {[1, 2, 3, 4].map((step) => (
                 <div
                   key={step}
                   className={`flex-1 transition-all ${
-                    currentStep >= step ? 'bg-accent-500 dark:bg-emerald-500' : 'bg-gray-200 dark:bg-[#2D3B4F]'
+                    currentStep >= step ? 'bg-accent-500 dark:bg-amber-400' : 'bg-gray-200 dark:bg-[#323238]'
                   }`}
                 />
               ))}
@@ -421,22 +421,22 @@ export default function BecomeATutorPage() {
               {isSubmitted ? (
                 /* Success / Application Pending Screen */
                 <div className="text-center py-6">
-                  <div className="w-16 h-16 bg-accent-50 dark:bg-emerald-950/40 text-accent-500 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-accent-200 dark:border-emerald-800/60">
+                  <div className="w-16 h-16 bg-accent-50 dark:bg-amber-950/30 text-accent-500 dark:text-amber-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-accent-200 dark:border-amber-800/40">
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
                   <h4 className="text-xl font-bold text-navy-800 dark:text-white mb-2">
                     Application Successfully Submitted!
                   </h4>
-                  <p className="text-xs text-charcoal-600 dark:text-slate-300 max-w-md mx-auto mb-6 leading-relaxed">
+                  <p className="text-xs text-charcoal-600 dark:text-zinc-300 max-w-md mx-auto mb-6 leading-relaxed">
                     Thank you, <strong>{formData.fullName}</strong>. Your teacher application has been safely registered with ID <strong>#{applicationId}</strong>.
                   </p>
                   
-                  <div className="p-4 bg-softblue-50 dark:bg-[#162032] border border-softblue-200 dark:border-[#2D3B4F] rounded-lg text-left text-xs text-charcoal-700 dark:text-slate-300 max-w-md mx-auto mb-6 space-y-2">
+                  <div className="p-4 bg-softblue-50 dark:bg-[#18181c] border border-softblue-200 dark:border-[#323238] rounded-lg text-left text-xs text-charcoal-700 dark:text-zinc-300 max-w-md mx-auto mb-6 space-y-2">
                     <div className="flex items-center gap-2 font-bold text-navy-800 dark:text-white">
-                      <ShieldCheck className="w-4 h-4 text-accent-500 dark:text-emerald-400" />
+                      <ShieldCheck className="w-4 h-4 text-accent-500 dark:text-amber-400" />
                       <span>Application Status: Pending Review</span>
                     </div>
-                    <p className="text-[11px] text-charcoal-600 dark:text-slate-300">
+                    <p className="text-[11px] text-charcoal-600 dark:text-zinc-300">
                       As part of our K-12 safety policy, our academic compliance team will review your submitted credentials within 24 to 48 hours. Teachers cannot publish public classes until approved by an administrator.
                     </p>
                   </div>
@@ -444,13 +444,13 @@ export default function BecomeATutorPage() {
                   <div className="flex flex-col sm:flex-row justify-center gap-3">
                     <Link
                       href="/dashboard/teacher"
-                      className="px-6 py-2.5 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold"
+                      className="px-6 py-2.5 bg-navy-800 hover:bg-navy-900 dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-zinc-950 font-bold text-white rounded-lg text-xs font-bold"
                     >
                       Preview Teacher Dashboard
                     </Link>
                     <button
                       onClick={() => setShowApplyModal(false)}
-                      className="px-6 py-2.5 bg-gray-100 dark:bg-[#162032] text-charcoal-700 dark:text-slate-200 rounded-lg text-xs font-medium hover:bg-gray-200 dark:hover:bg-[#1E293B]"
+                      className="px-6 py-2.5 bg-gray-100 dark:bg-[#18181c] text-charcoal-700 dark:text-zinc-200 rounded-lg text-xs font-medium hover:bg-gray-200 dark:hover:bg-[#27272a]"
                     >
                       Close Window
                     </button>
@@ -469,7 +469,7 @@ export default function BecomeATutorPage() {
                   {currentStep === 1 && (
                     <div className="space-y-4 text-xs">
                       <div>
-                        <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Full Legal Name *</label>
+                        <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Full Legal Name *</label>
                         <input
                           type="text"
                           name="fullName"
@@ -477,12 +477,12 @@ export default function BecomeATutorPage() {
                           value={formData.fullName}
                           onChange={handleInputChange}
                           placeholder="e.g. Dr. Ramesh Gupta"
-                          className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
+                          className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#323238] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-amber-400 focus:bg-white dark:focus:bg-[#202025] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
                         />
                       </div>
 
                       <div>
-                        <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Create Account Password *</label>
+                        <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Create Account Password *</label>
                         <input
                           type="password"
                           name="password"
@@ -491,13 +491,13 @@ export default function BecomeATutorPage() {
                           value={formData.password}
                           onChange={handleInputChange}
                           placeholder="At least 6 characters (for signing into your Teacher Studio)"
-                          className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
+                          className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#323238] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-amber-400 focus:bg-white dark:focus:bg-[#202025] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
                         />
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Email Address *</label>
+                          <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Email Address *</label>
                           <input
                             type="email"
                             name="email"
@@ -505,11 +505,11 @@ export default function BecomeATutorPage() {
                             value={formData.email}
                             onChange={handleInputChange}
                             placeholder="your.email@example.com"
-                            className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
+                            className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#323238] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-amber-400 focus:bg-white dark:focus:bg-[#202025] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
                           />
                         </div>
                         <div>
-                          <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Phone Number (with Country Code) *</label>
+                          <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Phone Number (with Country Code) *</label>
                           <input
                             type="tel"
                             name="phone"
@@ -517,30 +517,30 @@ export default function BecomeATutorPage() {
                             value={formData.phone}
                             onChange={handleInputChange}
                             placeholder="+91 98765 43210"
-                            className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
+                            className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#323238] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-amber-400 focus:bg-white dark:focus:bg-[#202025] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
                           />
                         </div>
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">City *</label>
+                          <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">City *</label>
                           <input
                             type="text"
                             name="city"
                             value={formData.city}
                             onChange={handleInputChange}
                             placeholder="e.g. New Delhi, Bengaluru"
-                            className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
+                            className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#323238] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-amber-400 focus:bg-white dark:focus:bg-[#202025] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
                           />
                         </div>
                         <div>
-                          <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Country *</label>
+                          <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Country *</label>
                           <select
                             name="country"
                             value={formData.country}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md text-navy-800 dark:text-slate-200"
+                            className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#323238] rounded-md text-navy-800 dark:text-zinc-200"
                           >
                             <option value="India">India</option>
                             <option value="United States">United States</option>
@@ -557,7 +557,7 @@ export default function BecomeATutorPage() {
                   {currentStep === 2 && (
                     <div className="space-y-4 text-xs">
                       <div>
-                        <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Highest Degree / University Qualification *</label>
+                        <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Highest Degree / University Qualification *</label>
                         <input
                           type="text"
                           name="education"
@@ -565,17 +565,17 @@ export default function BecomeATutorPage() {
                           value={formData.education}
                           onChange={handleInputChange}
                           placeholder="e.g. M.Sc. in Physics from IIT Bombay"
-                          className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
+                          className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#323238] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-amber-400 focus:bg-white dark:focus:bg-[#202025] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
                         />
                       </div>
 
                       <div>
-                        <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Primary Subjects Taught *</label>
+                        <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Primary Subjects Taught *</label>
                         <select
                           name="subjects"
                           value={formData.subjects[0]}
                           onChange={(e) => setFormData({ ...formData, subjects: [e.target.value] })}
-                          className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md text-navy-800 dark:text-slate-200"
+                          className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#323238] rounded-md text-navy-800 dark:text-zinc-200"
                         >
                           <option value="Mathematics">Mathematics (Pre-Algebra to AP Calculus)</option>
                           <option value="Physics">Physics (High School & AP Physics)</option>
@@ -588,12 +588,12 @@ export default function BecomeATutorPage() {
                       </div>
 
                       <div>
-                        <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Years of Teaching Experience *</label>
+                        <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Years of Teaching Experience *</label>
                         <select
                           name="experienceYears"
                           value={formData.experienceYears}
                           onChange={handleInputChange}
-                          className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md text-navy-800 dark:text-slate-200"
+                          className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#323238] rounded-md text-navy-800 dark:text-zinc-200"
                         >
                           <option value="2">2 - 4 years</option>
                           <option value="5">5 - 7 years</option>
@@ -603,7 +603,7 @@ export default function BecomeATutorPage() {
                       </div>
 
                       <div>
-                        <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Short Biography & Teaching Approach *</label>
+                        <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Short Biography & Teaching Approach *</label>
                         <textarea
                           name="bio"
                           required
@@ -611,7 +611,7 @@ export default function BecomeATutorPage() {
                           value={formData.bio}
                           onChange={handleInputChange}
                           placeholder="Briefly describe your pedagogical methodology, experience with US curricula, and how you engage students..."
-                          className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
+                          className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#323238] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-amber-400 focus:bg-white dark:focus:bg-[#202025] text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400"
                         />
                       </div>
                     </div>
@@ -621,9 +621,9 @@ export default function BecomeATutorPage() {
                   {currentStep === 3 && (
                     <div className="space-y-4 text-xs">
                       <div>
-                        <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Requested Hourly Rate (USD) *</label>
+                        <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Requested Hourly Rate (USD) *</label>
                         <div className="relative">
-                          <span className="absolute left-3 top-2 text-charcoal-400 dark:text-slate-400 font-bold">$</span>
+                          <span className="absolute left-3 top-2 text-charcoal-400 dark:text-zinc-400 font-bold">$</span>
                           <input
                             type="number"
                             name="hourlyRate"
@@ -632,19 +632,19 @@ export default function BecomeATutorPage() {
                             required
                             value={formData.hourlyRate}
                             onChange={handleInputChange}
-                            className="w-full pl-7 pr-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] text-navy-800 dark:text-white font-bold"
+                            className="w-full pl-7 pr-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#323238] rounded-md focus:ring-2 focus:ring-navy-600 dark:focus:ring-amber-400 focus:bg-white dark:focus:bg-[#202025] text-navy-800 dark:text-white font-bold"
                           />
                         </div>
-                        <span className="text-[11px] text-charcoal-500 dark:text-slate-400">Most tutors start between $20 - $35/hr.</span>
+                        <span className="text-[11px] text-charcoal-500 dark:text-zinc-400">Most tutors start between $20 - $35/hr.</span>
                       </div>
 
                       <div>
-                        <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Teaching Formats Offered *</label>
+                        <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Teaching Formats Offered *</label>
                         <select
                           name="teachingFormat"
                           value={formData.teachingFormat}
                           onChange={handleInputChange}
-                          className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-md text-navy-800 dark:text-slate-200"
+                          className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#323238] rounded-md text-navy-800 dark:text-zinc-200"
                         >
                           <option value="both">Both 1-on-1 Lessons & Small Group Classes</option>
                           <option value="one_on_one">1-on-1 Private Lessons Only</option>
@@ -652,9 +652,9 @@ export default function BecomeATutorPage() {
                         </select>
                       </div>
 
-                      <div className="p-3 bg-gray-50 dark:bg-[#162032] rounded-lg border border-gray-200 dark:border-[#2D3B4F]">
+                      <div className="p-3 bg-gray-50 dark:bg-[#18181c] rounded-lg border border-gray-200 dark:border-[#323238]">
                         <span className="font-semibold text-navy-800 dark:text-white block mb-1">Preferred Time Slots (US Timezones)</span>
-                        <p className="text-[11px] text-charcoal-600 dark:text-slate-300">
+                        <p className="text-[11px] text-charcoal-600 dark:text-zinc-300">
                           Classly sessions typically occur between 4:00 PM – 9:00 PM US Eastern Time (which corresponds to morning or evening slots in India). You can customize your specific availability calendar in the dashboard after approval.
                         </p>
                       </div>
@@ -664,24 +664,24 @@ export default function BecomeATutorPage() {
                   {/* STEP 4: Verification & Document Upload */}
                   {currentStep === 4 && (
                     <div className="space-y-4 text-xs">
-                      <div className="p-4 border-2 border-dashed border-gray-300 dark:border-[#2D3B4F] rounded-xl text-center bg-gray-50/50 dark:bg-[#162032] hover:bg-white dark:hover:bg-[#1C283F] cursor-pointer">
-                        <Upload className="w-8 h-8 text-gray-400 dark:text-slate-400 mx-auto mb-2" />
+                      <div className="p-4 border-2 border-dashed border-gray-300 dark:border-[#323238] rounded-xl text-center bg-gray-50/50 dark:bg-[#18181c] hover:bg-white dark:hover:bg-[#202025] cursor-pointer">
+                        <Upload className="w-8 h-8 text-gray-400 dark:text-zinc-400 mx-auto mb-2" />
                         <span className="font-bold text-navy-800 dark:text-white block text-xs">Upload Government ID & University Degrees</span>
-                        <span className="text-[11px] text-charcoal-500 dark:text-slate-400 block mt-1">Aadhaar / Passport / Degree Certificate (PDF or JPG)</span>
-                        <span className="mt-2 inline-block px-3 py-1 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-[#2D3B4F] rounded text-[11px] text-navy-800 dark:text-white font-medium">
+                        <span className="text-[11px] text-charcoal-500 dark:text-zinc-400 block mt-1">Aadhaar / Passport / Degree Certificate (PDF or JPG)</span>
+                        <span className="mt-2 inline-block px-3 py-1 bg-white dark:bg-[#27272a] border border-gray-200 dark:border-[#323238] rounded text-[11px] text-navy-800 dark:text-white font-medium">
                           Select Files
                         </span>
                       </div>
 
                       <div className="space-y-2 pt-2">
-                        <label className="flex items-start gap-2 cursor-pointer text-charcoal-700 dark:text-slate-300">
+                        <label className="flex items-start gap-2 cursor-pointer text-charcoal-700 dark:text-zinc-300">
                           <input
                             type="checkbox"
                             name="agreeToTerms"
                             required
                             checked={formData.agreeToTerms}
                             onChange={handleInputChange}
-                            className="mt-0.5 accent-navy-800 dark:accent-emerald-500"
+                            className="mt-0.5 accent-navy-800 dark:accent-amber-400"
                           />
                           <span className="text-[11px]">
                             I certify that all educational credentials submitted are genuine. I agree to Classly's Educator Code of Conduct, child protection standards, and understand that account approval is subject to administrator review.
@@ -692,12 +692,12 @@ export default function BecomeATutorPage() {
                   )}
 
                   {/* Wizard Buttons */}
-                  <div className="pt-6 border-t border-gray-100 dark:border-[#1E293B] flex items-center justify-between">
+                  <div className="pt-6 border-t border-gray-100 dark:border-[#27272a] flex items-center justify-between">
                     {currentStep > 1 ? (
                       <button
                         type="button"
                         onClick={() => setCurrentStep((prev) => prev - 1)}
-                        className="px-4 py-2 border border-gray-300 dark:border-[#2D3B4F] text-charcoal-700 dark:text-slate-300 rounded-lg text-xs font-medium hover:bg-gray-50 dark:hover:bg-[#162032]"
+                        className="px-4 py-2 border border-gray-300 dark:border-[#323238] text-charcoal-700 dark:text-zinc-300 rounded-lg text-xs font-medium hover:bg-gray-50 dark:hover:bg-[#18181c]"
                       >
                         Back
                       </button>
@@ -706,7 +706,7 @@ export default function BecomeATutorPage() {
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="px-6 py-2 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition shadow-subtle disabled:opacity-75"
+                      className="px-6 py-2 bg-navy-800 hover:bg-navy-900 dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-zinc-950 font-bold text-white rounded-lg text-xs font-bold transition shadow-subtle disabled:opacity-75"
                     >
                       {submitting ? 'Creating Educator Account...' : currentStep === 4 ? 'Submit Application' : 'Next Step →'}
                     </button>

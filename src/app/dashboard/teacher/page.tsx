@@ -287,12 +287,12 @@ export default function TeacherDashboardPage() {
   };
 
   return (
-    <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-screen py-8 border-b border-gray-200 dark:border-[#1E293B] transition-colors duration-200">
+    <div className="bg-offwhite dark:bg-[#09090b] min-h-screen py-8 border-b border-gray-200 dark:border-[#27272a] transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Top Educator Profile Banner */}
         <FadeIn direction="up" delay={0.05} duration={0.45}>
-          <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle hover:shadow-card transition-all mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="bg-white dark:bg-[#121215] p-6 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle hover:shadow-card transition-all mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex-shrink-0">
                 <Image
@@ -305,11 +305,11 @@ export default function TeacherDashboardPage() {
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="text-xl font-bold text-navy-800 dark:text-white">{teacherDisplayName}</h1>
-                  <span className="text-[11px] font-semibold text-accent-700 dark:text-emerald-400 bg-accent-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-accent-200 dark:border-emerald-800">
+                  <span className="text-[11px] font-semibold text-accent-700 dark:text-amber-400 bg-accent-50 dark:bg-amber-950/30 px-2 py-0.5 rounded border border-accent-200 dark:border-amber-800/40">
                     Verified Educator • Active
                   </span>
                 </div>
-                <p className="text-xs text-charcoal-500 dark:text-slate-400 mt-0.5">
+                <p className="text-xs text-charcoal-500 dark:text-zinc-400 mt-0.5">
                   {teacherHeadline}
                 </p>
               </div>
@@ -318,14 +318,14 @@ export default function TeacherDashboardPage() {
             <div className="flex items-center gap-3">
               <Link
                 href="/profile"
-                className="px-3.5 py-2 bg-gray-50 dark:bg-[#162032] hover:bg-gray-100 dark:hover:bg-[#1E293B] text-navy-800 dark:text-white rounded-lg text-xs font-semibold border border-gray-200 dark:border-[#1E293B] shadow-subtle flex items-center gap-1.5 transition active:scale-95"
+                className="px-3.5 py-2 bg-gray-50 dark:bg-[#18181c] hover:bg-gray-100 dark:hover:bg-[#27272a] text-navy-800 dark:text-white rounded-lg text-xs font-semibold border border-gray-200 dark:border-[#27272a] shadow-subtle flex items-center gap-1.5 transition active:scale-95"
               >
-                <User className="w-4 h-4 text-accent-600 dark:text-emerald-400" />
+                <User className="w-4 h-4 text-accent-600 dark:text-amber-400" />
                 <span>Edit Profile</span>
               </Link>
               <button
                 onClick={() => setActiveTab('create_class')}
-                className="px-4 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-subtle flex items-center gap-1.5 transition active:scale-95"
+                className="px-4 py-2 bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold hover:bg-navy-900 dark:hover:bg-amber-300 text-white rounded-lg text-xs font-semibold shadow-subtle flex items-center gap-1.5 transition active:scale-95"
               >
                 <PlusCircle className="w-4 h-4" />
                 <span>Create New Class</span>
@@ -338,8 +338,8 @@ export default function TeacherDashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Sidebar */}
-          <aside className="lg:col-span-3 bg-white dark:bg-[#111827] rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle p-4 space-y-1">
-            <div className="text-[11px] font-semibold text-charcoal-400 dark:text-slate-500 uppercase tracking-wider px-3 py-2">
+          <aside className="lg:col-span-3 bg-white dark:bg-[#121215] rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle p-4 space-y-1">
+            <div className="text-[11px] font-semibold text-charcoal-400 dark:text-zinc-500 uppercase tracking-wider px-3 py-2">
               Teacher Navigation
             </div>
 
@@ -357,8 +357,8 @@ export default function TeacherDashboardPage() {
                 onClick={() => setActiveTab(item.id as any)}
                 className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition ${
                   activeTab === item.id
-                    ? 'bg-navy-800 dark:bg-emerald-600 text-white shadow-subtle'
-                    : 'text-charcoal-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#162032] hover:text-navy-800 dark:hover:text-white'
+                    ? 'bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold text-white shadow-subtle'
+                    : 'text-charcoal-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-[#18181c] hover:text-navy-800 dark:hover:text-white'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
@@ -368,8 +368,8 @@ export default function TeacherDashboardPage() {
                 {item.count !== undefined && item.count > 0 && (
                   <span className={`px-1.5 py-0.5 rounded text-[10px] ${
                     activeTab === item.id 
-                      ? 'bg-navy-900 dark:bg-emerald-700 text-white' 
-                      : 'bg-softblue-100 dark:bg-[#162032] text-navy-800 dark:text-emerald-400 font-bold border border-transparent dark:border-[#1E293B]'
+                      ? 'bg-navy-900 dark:bg-amber-500 text-white' 
+                      : 'bg-softblue-100 dark:bg-[#18181c] text-navy-800 dark:text-amber-400 font-bold border border-transparent dark:border-[#27272a]'
                   }`}>
                     {item.count}
                   </span>
@@ -409,17 +409,17 @@ export default function TeacherDashboardPage() {
                 
                 {/* Real Booking Alert Banner if Teacher has bookings */}
                 {bookings.length > 0 && (
-                  <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-subtle">
+                  <div className="bg-emerald-50 dark:bg-amber-950/25 border border-emerald-200 dark:border-amber-800/40 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-subtle">
                     <div className="flex items-start sm:items-center gap-3.5">
-                      <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/50 border border-emerald-300 dark:border-emerald-700 flex items-center justify-center flex-shrink-0 text-emerald-800 dark:text-emerald-300">
+                      <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-amber-950/35 border border-emerald-300 dark:border-amber-700/40 flex items-center justify-center flex-shrink-0 text-emerald-800 dark:text-amber-300">
                         <Bell className="w-5 h-5 animate-bounce" />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-emerald-900 dark:text-emerald-200 uppercase tracking-wider">New Lesson Booked!</span>
+                          <span className="text-xs font-bold text-emerald-900 dark:text-amber-200 uppercase tracking-wider">New Lesson Booked!</span>
                           <span className="px-2 py-0.5 bg-emerald-600 text-white text-[10px] font-bold rounded-full">Paid & Confirmed</span>
                         </div>
-                        <p className="text-xs text-charcoal-700 dark:text-slate-300 mt-0.5">
+                        <p className="text-xs text-charcoal-700 dark:text-zinc-300 mt-0.5">
                           <strong>{bookings[0].student_name}</strong> booked a 1-on-1 {bookings[0].subject} session for <strong>{bookings[0].formatted_time || `${bookings[0].date} at ${bookings[0].time_slot}`}</strong>.
                         </p>
                       </div>
@@ -442,14 +442,14 @@ export default function TeacherDashboardPage() {
                       />
                       <Link
                         href={user ? `/classroom/room-tutor-${user.id}?subject=${encodeURIComponent(bookings[0]?.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}` : (bookings[0]?.meeting_url || '/classroom/room-tutor')}
-                        className="flex-1 sm:flex-none px-4 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-subtle"
+                        className="flex-1 sm:flex-none px-4 py-2 bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold hover:bg-navy-900 dark:hover:bg-amber-300 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-subtle"
                       >
                         <Video className="w-4 h-4" />
                         <span>Launch Classroom</span>
                       </Link>
                       <button
                         onClick={() => setActiveTab('classes')}
-                        className="px-3 py-2 bg-white dark:bg-[#162032] hover:bg-gray-50 dark:hover:bg-[#1E293B] text-navy-800 dark:text-white rounded-lg text-xs font-semibold border border-gray-200 dark:border-[#1E293B] shadow-subtle"
+                        className="px-3 py-2 bg-white dark:bg-[#18181c] hover:bg-gray-50 dark:hover:bg-[#27272a] text-navy-800 dark:text-white rounded-lg text-xs font-semibold border border-gray-200 dark:border-[#27272a] shadow-subtle"
                       >
                         View All
                       </button>
@@ -459,62 +459,62 @@ export default function TeacherDashboardPage() {
 
                 {/* 4 Clean Metric Cards */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <div className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle">
-                    <span className="text-xs text-charcoal-500 dark:text-slate-400 font-medium block mb-1">Upcoming Lessons</span>
+                  <div className="bg-white dark:bg-[#121215] p-5 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle">
+                    <span className="text-xs text-charcoal-500 dark:text-zinc-400 font-medium block mb-1">Upcoming Lessons</span>
                     <span className="text-2xl font-bold text-navy-800 dark:text-white">{totalUpcoming}</span>
-                    <span className="text-[11px] text-accent-600 dark:text-emerald-400 block mt-1">Confirmed on calendar</span>
+                    <span className="text-[11px] text-accent-600 dark:text-amber-400 block mt-1">Confirmed on calendar</span>
                   </div>
-                  <div className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle">
-                    <span className="text-xs text-charcoal-500 dark:text-slate-400 font-medium block mb-1">Hourly Rate</span>
+                  <div className="bg-white dark:bg-[#121215] p-5 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle">
+                    <span className="text-xs text-charcoal-500 dark:text-zinc-400 font-medium block mb-1">Hourly Rate</span>
                     <span className="text-2xl font-bold text-navy-800 dark:text-white">${teacherHourlyRate}</span>
-                    <span className="text-[11px] text-charcoal-400 dark:text-slate-500 block mt-1">1-on-1 private rate</span>
+                    <span className="text-[11px] text-charcoal-400 dark:text-zinc-500 block mt-1">1-on-1 private rate</span>
                   </div>
-                  <div className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle">
-                    <span className="text-xs text-charcoal-500 dark:text-slate-400 font-medium block mb-1">Account Standing</span>
-                    <span className="text-2xl font-bold text-accent-600 dark:text-emerald-400">Active</span>
-                    <span className="text-[11px] text-charcoal-400 dark:text-slate-500 block mt-1">Verified educator</span>
+                  <div className="bg-white dark:bg-[#121215] p-5 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle">
+                    <span className="text-xs text-charcoal-500 dark:text-zinc-400 font-medium block mb-1">Account Standing</span>
+                    <span className="text-2xl font-bold text-accent-600 dark:text-amber-400">Active</span>
+                    <span className="text-[11px] text-charcoal-400 dark:text-zinc-500 block mt-1">Verified educator</span>
                   </div>
-                  <div className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle">
-                    <span className="text-xs text-charcoal-500 dark:text-slate-400 font-medium block mb-1">Accrued Payout</span>
+                  <div className="bg-white dark:bg-[#121215] p-5 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle">
+                    <span className="text-xs text-charcoal-500 dark:text-zinc-400 font-medium block mb-1">Accrued Payout</span>
                     <span className="text-2xl font-bold text-navy-800 dark:text-white">${netAccruedPayout.toFixed(2)}</span>
-                    <span className="text-[11px] text-accent-600 dark:text-emerald-400 block mt-1">Net earnings (85%)</span>
+                    <span className="text-[11px] text-accent-600 dark:text-amber-400 block mt-1">Net earnings (85%)</span>
                   </div>
                 </div>
 
                 {/* Next Class Launch Card or Empty State */}
                 {bookings.length > 0 ? (
-                  <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle">
+                  <div className="bg-white dark:bg-[#121215] p-6 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                       <div>
                         <div className="flex items-center gap-2">
                           <h2 className="text-base font-bold text-navy-800 dark:text-white">Next Scheduled Session</h2>
-                          <span className="px-2 py-0.5 bg-accent-50 dark:bg-emerald-950/40 text-accent-700 dark:text-emerald-400 font-semibold text-[11px] rounded border border-accent-200 dark:border-emerald-800">
+                          <span className="px-2 py-0.5 bg-accent-50 dark:bg-amber-950/30 text-accent-700 dark:text-amber-400 font-semibold text-[11px] rounded border border-accent-200 dark:border-amber-800/40">
                             1-on-1 Private Lesson
                           </span>
                         </div>
-                        <p className="text-xs text-charcoal-500 dark:text-slate-400 mt-1">
+                        <p className="text-xs text-charcoal-500 dark:text-zinc-400 mt-1">
                           Student: <strong className="text-navy-800 dark:text-white">{bookings[0].student_name}</strong> ({bookings[0].student_email || 'Verified Student'}) • 60 mins
                         </p>
                       </div>
-                      <span className="px-3 py-1.5 bg-navy-50 dark:bg-[#162032] text-navy-800 dark:text-slate-200 font-bold text-xs rounded-lg border border-navy-100 dark:border-[#1E293B] flex items-center gap-1.5 self-start sm:self-auto">
-                        <Clock className="w-3.5 h-3.5 text-navy-600 dark:text-emerald-400" />
+                      <span className="px-3 py-1.5 bg-navy-50 dark:bg-[#18181c] text-navy-800 dark:text-zinc-200 font-bold text-xs rounded-lg border border-navy-100 dark:border-[#27272a] flex items-center gap-1.5 self-start sm:self-auto">
+                        <Clock className="w-3.5 h-3.5 text-navy-600 dark:text-amber-400" />
                         {bookings[0].formatted_time || `${bookings[0].date} at ${bookings[0].time_slot}`}
                       </span>
                     </div>
 
                     {bookings[0].notes && (
-                      <div className="mb-4 p-3 bg-gray-50 dark:bg-[#162032] rounded-lg border border-gray-100 dark:border-[#1E293B] text-xs text-charcoal-600 dark:text-slate-300">
+                      <div className="mb-4 p-3 bg-gray-50 dark:bg-[#18181c] rounded-lg border border-gray-100 dark:border-[#27272a] text-xs text-charcoal-600 dark:text-zinc-300">
                         <span className="font-semibold text-navy-800 dark:text-white">Student Learning Focus:</span> "{bookings[0].notes}"
                       </div>
                     )}
 
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800 gap-3">
-                      <div className="text-xs text-charcoal-600 dark:text-slate-400">
-                        Subject: <strong className="text-navy-800 dark:text-slate-200">{bookings[0].subject}</strong> • Earnings: <strong className="text-accent-700 dark:text-emerald-400">${bookings[0].hourly_rate || teacherHourlyRate} USD</strong> (Ready for payout)
+                      <div className="text-xs text-charcoal-600 dark:text-zinc-400">
+                        Subject: <strong className="text-navy-800 dark:text-zinc-200">{bookings[0].subject}</strong> • Earnings: <strong className="text-accent-700 dark:text-amber-400">${bookings[0].hourly_rate || teacherHourlyRate} USD</strong> (Ready for payout)
                       </div>
                       <Link
                         href={user ? `/classroom/room-tutor-${user.id}?subject=${encodeURIComponent(bookings[0]?.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}` : (bookings[0]?.meeting_url || '/classroom/room-tutor')}
-                        className="px-5 py-2.5 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-subtle"
+                        className="px-5 py-2.5 bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold hover:bg-navy-900 dark:hover:bg-amber-300 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-subtle"
                       >
                         <Video className="w-4 h-4" />
                         <span>Enter Live Classroom</span>
@@ -522,23 +522,23 @@ export default function TeacherDashboardPage() {
                     </div>
                   </div>
                 ) : teacherClasses.length > 0 ? (
-                  <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle">
+                  <div className="bg-white dark:bg-[#121215] p-6 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle">
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <h2 className="text-base font-bold text-navy-800 dark:text-white">Next Scheduled Class</h2>
-                        <p className="text-xs text-charcoal-500 dark:text-slate-400">{teacherClasses[0]?.title} • {teacherClasses[0]?.durationMinutes} mins</p>
+                        <p className="text-xs text-charcoal-500 dark:text-zinc-400">{teacherClasses[0]?.title} • {teacherClasses[0]?.durationMinutes} mins</p>
                       </div>
-                      <span className="px-2.5 py-1 bg-accent-50 dark:bg-emerald-950/40 text-accent-700 dark:text-emerald-400 font-semibold text-xs rounded border border-accent-200 dark:border-emerald-800">
+                      <span className="px-2.5 py-1 bg-accent-50 dark:bg-amber-950/30 text-accent-700 dark:text-amber-400 font-semibold text-xs rounded border border-accent-200 dark:border-amber-800/40">
                         {teacherClasses[0]?.dateTime}
                       </span>
                     </div>
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
-                      <div className="text-xs text-charcoal-600 dark:text-slate-400">
-                        Class Type: <strong className="text-navy-800 dark:text-slate-200">Group Class</strong> • Rate: <strong className="text-navy-800 dark:text-slate-200">${teacherClasses[0]?.price}</strong>
+                      <div className="text-xs text-charcoal-600 dark:text-zinc-400">
+                        Class Type: <strong className="text-navy-800 dark:text-zinc-200">Group Class</strong> • Rate: <strong className="text-navy-800 dark:text-zinc-200">${teacherClasses[0]?.price}</strong>
                       </div>
                       <Link
                         href={`/classroom/room-${teacherClasses[0]?.id}?subject=${encodeURIComponent(teacherClasses[0]?.subject || 'Mathematics')}`}
-                        className="px-4 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-subtle"
+                        className="px-4 py-2 bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold hover:bg-navy-900 dark:hover:bg-amber-300 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-subtle"
                       >
                         <Video className="w-4 h-4" />
                         <span>Open Classroom</span>
@@ -546,17 +546,17 @@ export default function TeacherDashboardPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-white dark:bg-[#111827] p-8 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle text-center">
-                    <div className="w-12 h-12 rounded-full bg-softblue-50 dark:bg-[#162032] text-navy-800 dark:text-emerald-400 flex items-center justify-center mx-auto mb-3">
-                      <Calendar className="w-6 h-6 text-navy-700 dark:text-emerald-400" />
+                  <div className="bg-white dark:bg-[#121215] p-8 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle text-center">
+                    <div className="w-12 h-12 rounded-full bg-softblue-50 dark:bg-[#18181c] text-navy-800 dark:text-amber-400 flex items-center justify-center mx-auto mb-3">
+                      <Calendar className="w-6 h-6 text-navy-700 dark:text-amber-400" />
                     </div>
                     <h3 className="font-bold text-navy-800 dark:text-white text-sm">No Scheduled Classes Yet</h3>
-                    <p className="text-xs text-charcoal-500 dark:text-slate-400 max-w-sm mx-auto mt-1 mb-4">
+                    <p className="text-xs text-charcoal-500 dark:text-zinc-400 max-w-sm mx-auto mt-1 mb-4">
                       Publish a group masterclass or set your weekly availability slots to begin accepting students.
                     </p>
                     <button
                       onClick={() => setActiveTab('create_class')}
-                      className="px-4 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold"
+                      className="px-4 py-2 bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold hover:bg-navy-900 dark:hover:bg-amber-300 text-white rounded-lg text-xs font-semibold"
                     >
                       + Create Your First Class
                     </button>
@@ -572,11 +572,11 @@ export default function TeacherDashboardPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-base font-bold text-navy-800 dark:text-white">Your Scheduled Classes & Lessons ({totalUpcoming})</h2>
-                    <p className="text-xs text-charcoal-500 dark:text-slate-400">All confirmed 1-on-1 private lessons and group masterclasses.</p>
+                    <p className="text-xs text-charcoal-500 dark:text-zinc-400">All confirmed 1-on-1 private lessons and group masterclasses.</p>
                   </div>
                   <button
                     onClick={() => setActiveTab('create_class')}
-                    className="px-3 py-1.5 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold"
+                    className="px-3 py-1.5 bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold hover:bg-navy-900 dark:hover:bg-amber-300 text-white rounded-lg text-xs font-semibold"
                   >
                     + Add Group Class
                   </button>
@@ -586,7 +586,7 @@ export default function TeacherDashboardPage() {
                   <div className="space-y-3">
                     {/* Confirmed 1-on-1 Bookings */}
                     {bookings.map((b) => (
-                      <div key={b.id} className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div key={b.id} className="bg-white dark:bg-[#121215] p-5 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div>
                           <div className="flex items-center gap-2">
                             <h3 className="font-bold text-sm text-navy-800 dark:text-white">{b.subject} — 1-on-1 Private Lesson</h3>
@@ -595,15 +595,15 @@ export default function TeacherDashboardPage() {
                                 {b.package_tier}-Lesson Bundle
                               </span>
                             )}
-                            <span className="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded text-[10px] font-bold">
+                            <span className="px-2 py-0.5 bg-emerald-50 dark:bg-amber-950/30 text-emerald-800 dark:text-amber-300 border border-emerald-200 dark:border-amber-800/40 rounded text-[10px] font-bold">
                               Confirmed & Paid
                             </span>
                           </div>
-                          <p className="text-xs text-charcoal-500 dark:text-slate-400 mt-1">
-                            Student: <strong className="text-navy-800 dark:text-slate-200">{b.student_name}</strong> ({b.student_email || 'Classly Student'}) • {b.formatted_time || `${b.date} at ${b.time_slot}`} • 60 mins • Payout: <strong className="text-accent-700 dark:text-emerald-400">${b.hourly_rate || teacherHourlyRate} USD</strong>
+                          <p className="text-xs text-charcoal-500 dark:text-zinc-400 mt-1">
+                            Student: <strong className="text-navy-800 dark:text-zinc-200">{b.student_name}</strong> ({b.student_email || 'Classly Student'}) • {b.formatted_time || `${b.date} at ${b.time_slot}`} • 60 mins • Payout: <strong className="text-accent-700 dark:text-amber-400">${b.hourly_rate || teacherHourlyRate} USD</strong>
                           </p>
                           {b.notes && (
-                            <p className="text-[11px] text-charcoal-400 dark:text-slate-500 mt-1 italic">
+                            <p className="text-[11px] text-charcoal-400 dark:text-zinc-500 mt-1 italic">
                               Note: "{b.notes}"
                             </p>
                           )}
@@ -627,7 +627,7 @@ export default function TeacherDashboardPage() {
                           />
                           <Link
                             href={user ? `/classroom/room-tutor-${user.id}?subject=${encodeURIComponent(b.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}` : (b.meeting_url || `/classroom/room-${b.id}?subject=${encodeURIComponent(b.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}`)}
-                            className="px-4 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-subtle flex-shrink-0"
+                            className="px-4 py-2 bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold hover:bg-navy-900 dark:hover:bg-amber-300 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-subtle flex-shrink-0"
                           >
                             <Video className="w-3.5 h-3.5" />
                             <span>Open Classroom</span>
@@ -638,15 +638,15 @@ export default function TeacherDashboardPage() {
 
                     {/* Group Classes */}
                     {teacherClasses.map((cls) => (
-                      <div key={cls.id} className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div key={cls.id} className="bg-white dark:bg-[#121215] p-5 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div>
                           <div className="flex items-center gap-2">
                             <h3 className="font-bold text-sm text-navy-800 dark:text-white">{cls.title}</h3>
-                            <span className="px-2 py-0.5 bg-softblue-100 dark:bg-[#162032] text-navy-800 dark:text-emerald-400 border border-transparent dark:border-[#1E293B] rounded text-[10px] font-semibold">
+                            <span className="px-2 py-0.5 bg-softblue-100 dark:bg-[#18181c] text-navy-800 dark:text-amber-400 border border-transparent dark:border-[#27272a] rounded text-[10px] font-semibold">
                               {cls.subject}
                             </span>
                           </div>
-                          <p className="text-xs text-charcoal-500 dark:text-slate-400 mt-1">
+                          <p className="text-xs text-charcoal-500 dark:text-zinc-400 mt-1">
                             {cls.dateTime} • {cls.gradeLevel} • ${cls.price}/student • Enrolled: {cls.enrolledCount}/{cls.maxStudents}
                           </p>
                         </div>
@@ -654,14 +654,14 @@ export default function TeacherDashboardPage() {
                         <div className="flex items-center gap-2">
                           <Link
                             href={user ? `/classroom/room-tutor-${user.id}?subject=${encodeURIComponent(cls.subject || 'Mathematics')}` : `/classroom/room-${cls.id}?subject=${encodeURIComponent(cls.subject || 'Mathematics')}`}
-                            className="px-4 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5"
+                            className="px-4 py-2 bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold hover:bg-navy-900 dark:hover:bg-amber-300 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5"
                           >
                             <Video className="w-3.5 h-3.5" />
                             <span>Start Class</span>
                           </Link>
                           <button
                             onClick={() => setClassToDelete(cls)}
-                            className="p-2 text-charcoal-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition"
+                            className="p-2 text-charcoal-400 dark:text-zinc-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition"
                             title="Delete Class Listing"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -671,11 +671,11 @@ export default function TeacherDashboardPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="bg-white dark:bg-[#111827] p-10 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle text-center">
-                    <p className="text-xs text-charcoal-500 dark:text-slate-400 mb-3">No classes or lessons scheduled yet.</p>
+                  <div className="bg-white dark:bg-[#121215] p-10 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle text-center">
+                    <p className="text-xs text-charcoal-500 dark:text-zinc-400 mb-3">No classes or lessons scheduled yet.</p>
                     <button
                       onClick={() => setActiveTab('create_class')}
-                      className="px-4 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold"
+                      className="px-4 py-2 bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold hover:bg-navy-900 dark:hover:bg-amber-300 text-white rounded-lg text-xs font-semibold"
                     >
                       Create a Class
                     </button>
@@ -689,37 +689,37 @@ export default function TeacherDashboardPage() {
               <div className="space-y-6">
                 {/* Stats Banner */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle flex items-center justify-between">
+                  <div className="bg-white dark:bg-[#121215] p-5 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle flex items-center justify-between">
                     <div>
-                      <span className="text-[11px] font-bold uppercase text-charcoal-400 dark:text-slate-400">Total Recordings</span>
+                      <span className="text-[11px] font-bold uppercase text-charcoal-400 dark:text-zinc-400">Total Recordings</span>
                       <div className="text-xl font-bold text-navy-800 dark:text-white mt-0.5">{recordings.length}</div>
-                      <span className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 block">Full Session WebM / MP4</span>
+                      <span className="text-[11px] text-emerald-600 dark:text-amber-400 mt-1 block">Full Session WebM / MP4</span>
                     </div>
-                    <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-amber-950/30 border border-emerald-200 dark:border-amber-800/40 flex items-center justify-center text-emerald-600 dark:text-amber-400">
                       <Film className="w-5 h-5" />
                     </div>
                   </div>
 
-                  <div className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle flex items-center justify-between">
+                  <div className="bg-white dark:bg-[#121215] p-5 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle flex items-center justify-between">
                     <div>
-                      <span className="text-[11px] font-bold uppercase text-charcoal-400 dark:text-slate-400">Cloud Storage Used</span>
+                      <span className="text-[11px] font-bold uppercase text-charcoal-400 dark:text-zinc-400">Cloud Storage Used</span>
                       <div className="text-xl font-bold text-navy-800 dark:text-white mt-0.5">
                         {((recordings.length * 142.5) / 1024).toFixed(2)} GB
                       </div>
-                      <span className="text-[11px] text-charcoal-500 dark:text-slate-400 mt-1 block">of 50.0 GB Included</span>
+                      <span className="text-[11px] text-charcoal-500 dark:text-zinc-400 mt-1 block">of 50.0 GB Included</span>
                     </div>
                     <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400">
                       <HardDrive className="w-5 h-5" />
                     </div>
                   </div>
 
-                  <div className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle flex items-center justify-between">
+                  <div className="bg-white dark:bg-[#121215] p-5 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle flex items-center justify-between">
                     <div>
-                      <span className="text-[11px] font-bold uppercase text-charcoal-400 dark:text-slate-400">Hours Recorded</span>
+                      <span className="text-[11px] font-bold uppercase text-charcoal-400 dark:text-zinc-400">Hours Recorded</span>
                       <div className="text-xl font-bold text-navy-800 dark:text-white mt-0.5">
                         {(recordings.reduce((acc, r) => acc + (r.duration_seconds || 1800), 0) / 3600).toFixed(1)} hrs
                       </div>
-                      <span className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 block">High Definition 1080p</span>
+                      <span className="text-[11px] text-emerald-600 dark:text-amber-400 mt-1 block">High Definition 1080p</span>
                     </div>
                     <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 flex items-center justify-center text-purple-600 dark:text-purple-400">
                       <Sparkles className="w-5 h-5" />
@@ -729,13 +729,13 @@ export default function TeacherDashboardPage() {
 
                 {/* Filter and Search Bar */}
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                  <div className="flex items-center bg-white dark:bg-[#111827] border border-gray-200 dark:border-[#1E293B] rounded-xl p-1 w-full sm:w-auto shadow-subtle">
+                  <div className="flex items-center bg-white dark:bg-[#121215] border border-gray-200 dark:border-[#27272a] rounded-xl p-1 w-full sm:w-auto shadow-subtle">
                     <button
                       onClick={() => setRecordingFilter('all')}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
                         recordingFilter === 'all'
-                          ? 'bg-navy-800 dark:bg-emerald-600 text-white shadow-xs'
-                          : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-800 dark:hover:text-white'
+                          ? 'bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold text-white shadow-xs'
+                          : 'text-charcoal-600 dark:text-zinc-400 hover:text-navy-800 dark:hover:text-white'
                       }`}
                     >
                       All Subjects ({recordings.length})
@@ -744,8 +744,8 @@ export default function TeacherDashboardPage() {
                       onClick={() => setRecordingFilter('mathematics')}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
                         recordingFilter === 'mathematics'
-                          ? 'bg-navy-800 dark:bg-emerald-600 text-white shadow-xs'
-                          : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-800 dark:hover:text-white'
+                          ? 'bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold text-white shadow-xs'
+                          : 'text-charcoal-600 dark:text-zinc-400 hover:text-navy-800 dark:hover:text-white'
                       }`}
                     >
                       Mathematics
@@ -754,8 +754,8 @@ export default function TeacherDashboardPage() {
                       onClick={() => setRecordingFilter('computer_science')}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
                         recordingFilter === 'computer_science'
-                          ? 'bg-navy-800 dark:bg-emerald-600 text-white shadow-xs'
-                          : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-800 dark:hover:text-white'
+                          ? 'bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold text-white shadow-xs'
+                          : 'text-charcoal-600 dark:text-zinc-400 hover:text-navy-800 dark:hover:text-white'
                       }`}
                     >
                       Computer Science
@@ -763,13 +763,13 @@ export default function TeacherDashboardPage() {
                   </div>
 
                   <div className="relative w-full sm:w-64">
-                    <Search className="w-4 h-4 text-charcoal-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <Search className="w-4 h-4 text-charcoal-400 dark:text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
                       type="text"
                       value={recordingSearchQuery}
                       onChange={(e) => setRecordingSearchQuery(e.target.value)}
                       placeholder="Search by title, student, subject..."
-                      className="w-full pl-9 pr-3 py-2 bg-white dark:bg-[#111827] border border-gray-200 dark:border-[#1E293B] rounded-xl text-xs text-charcoal-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-500 focus:outline-none focus:border-navy-800 dark:focus:border-emerald-500 shadow-subtle"
+                      className="w-full pl-9 pr-3 py-2 bg-white dark:bg-[#121215] border border-gray-200 dark:border-[#27272a] rounded-xl text-xs text-charcoal-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-500 focus:outline-none focus:border-navy-800 dark:focus:border-amber-400 shadow-subtle"
                     />
                   </div>
                 </div>
@@ -812,7 +812,7 @@ export default function TeacherDashboardPage() {
                       .map((rec) => (
                         <div
                           key={rec.id}
-                          className="bg-white dark:bg-[#111827] rounded-2xl border border-gray-200/90 dark:border-[#1E293B] overflow-hidden shadow-subtle hover:shadow-card transition flex flex-col group"
+                          className="bg-white dark:bg-[#121215] rounded-2xl border border-gray-200/90 dark:border-[#27272a] overflow-hidden shadow-subtle hover:shadow-card transition flex flex-col group"
                         >
                           {/* Video Thumbnail */}
                           <div 
@@ -846,21 +846,21 @@ export default function TeacherDashboardPage() {
                             <div>
                               <h3 
                                 onClick={() => setActivePlaybackRecording(rec)}
-                                className="font-bold text-sm text-navy-800 dark:text-white group-hover:text-emerald-500 transition cursor-pointer line-clamp-2"
+                                className="font-bold text-sm text-navy-800 dark:text-white group-hover:text-amber-500 transition cursor-pointer line-clamp-2"
                               >
                                 {rec.title}
                               </h3>
                               
-                              <div className="flex items-center justify-between text-xs text-charcoal-500 dark:text-slate-400 mt-2.5">
-                                <span>Student: <strong className="text-navy-800 dark:text-slate-200">{rec.student_name}</strong></span>
+                              <div className="flex items-center justify-between text-xs text-charcoal-500 dark:text-zinc-400 mt-2.5">
+                                <span>Student: <strong className="text-navy-800 dark:text-zinc-200">{rec.student_name}</strong></span>
                                 {rec.file_size && <span>{rec.file_size}</span>}
                               </div>
-                              <div className="text-[11px] text-charcoal-400 dark:text-slate-500 mt-1">
+                              <div className="text-[11px] text-charcoal-400 dark:text-zinc-500 mt-1">
                                 {rec.date}
                               </div>
 
                               {rec.chapters && rec.chapters.length > 0 && (
-                                <div className="mt-3 pt-3 border-t border-gray-100 dark:border-[#1E293B] flex items-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400">
+                                <div className="mt-3 pt-3 border-t border-gray-100 dark:border-[#27272a] flex items-center gap-1.5 text-[11px] text-emerald-600 dark:text-amber-400">
                                   <Sparkles className="w-3 h-3" />
                                   <span>{rec.chapters.length} Interactive Chapter Markers</span>
                                 </div>
@@ -868,10 +868,10 @@ export default function TeacherDashboardPage() {
                             </div>
 
                             {/* Card Actions */}
-                            <div className="mt-4 pt-3 border-t border-gray-100 dark:border-[#1E293B] flex items-center gap-2">
+                            <div className="mt-4 pt-3 border-t border-gray-100 dark:border-[#27272a] flex items-center gap-2">
                               <button
                                 onClick={() => setActivePlaybackRecording(rec)}
-                                className="flex-1 py-2 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-xs"
+                                className="flex-1 py-2 bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold hover:bg-navy-900 dark:hover:bg-amber-300 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-xs"
                               >
                                 <Play className="w-3.5 h-3.5 fill-white" />
                                 <span>Watch Video</span>
@@ -879,7 +879,7 @@ export default function TeacherDashboardPage() {
                               <a
                                 href={rec.video_url}
                                 download
-                                className="p-2 bg-gray-50 dark:bg-[#162032] hover:bg-gray-100 dark:hover:bg-[#1E293B] text-charcoal-600 dark:text-slate-300 rounded-lg border border-gray-200 dark:border-[#1E293B] transition"
+                                className="p-2 bg-gray-50 dark:bg-[#18181c] hover:bg-gray-100 dark:hover:bg-[#27272a] text-charcoal-600 dark:text-zinc-300 rounded-lg border border-gray-200 dark:border-[#27272a] transition"
                                 title="Download Recording (.mp4)"
                               >
                                 <Download className="w-3.5 h-3.5" />
@@ -898,12 +898,12 @@ export default function TeacherDashboardPage() {
                       ))}
                   </div>
                 ) : (
-                  <div className="bg-white dark:bg-[#111827] p-12 rounded-2xl border border-gray-200/90 dark:border-[#1E293B] shadow-subtle text-center">
-                    <div className="w-12 h-12 rounded-full bg-gray-50 dark:bg-[#162032] text-charcoal-400 dark:text-slate-400 flex items-center justify-center mx-auto mb-3">
+                  <div className="bg-white dark:bg-[#121215] p-12 rounded-2xl border border-gray-200/90 dark:border-[#27272a] shadow-subtle text-center">
+                    <div className="w-12 h-12 rounded-full bg-gray-50 dark:bg-[#18181c] text-charcoal-400 dark:text-zinc-400 flex items-center justify-center mx-auto mb-3">
                       <Film className="w-6 h-6" />
                     </div>
                     <h3 className="text-base font-bold text-navy-800 dark:text-white">No Matching Recordings</h3>
-                    <p className="text-xs text-charcoal-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
+                    <p className="text-xs text-charcoal-500 dark:text-zinc-400 max-w-sm mx-auto mt-1">
                       Start recording during any live classroom session to automatically save lesson videos here for your students.
                     </p>
                   </div>
@@ -913,41 +913,41 @@ export default function TeacherDashboardPage() {
 
             {/* CREATE CLASS TAB */}
             {activeTab === 'create_class' && (
-              <div className="bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle">
+              <div className="bg-white dark:bg-[#121215] p-6 sm:p-8 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle">
                 <div className="mb-6">
                   <h2 className="text-lg font-bold text-navy-800 dark:text-white">Create a New Class Listing</h2>
-                  <p className="text-xs text-charcoal-600 dark:text-slate-400">
+                  <p className="text-xs text-charcoal-600 dark:text-zinc-400">
                     Publish an interactive small group workshop or topic review for US students.
                   </p>
                 </div>
 
                 {classCreatedNotice && (
-                  <div className="p-4 mb-6 bg-accent-50 dark:bg-emerald-950/40 border border-accent-200 dark:border-emerald-800 text-accent-800 dark:text-emerald-300 rounded-lg text-xs font-semibold flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-accent-500 dark:text-emerald-400" />
+                  <div className="p-4 mb-6 bg-accent-50 dark:bg-amber-950/30 border border-accent-200 dark:border-amber-800/40 text-accent-800 dark:text-amber-300 rounded-lg text-xs font-semibold flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-accent-500 dark:text-amber-400" />
                     <span>Class created and added to your schedule!</span>
                   </div>
                 )}
 
                 <form onSubmit={handleCreateClass} className="space-y-4 text-xs">
                   <div>
-                    <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Class Title *</label>
+                    <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Class Title *</label>
                     <input
                       type="text"
                       required
                       placeholder="e.g. AP Calculus AB Optimization & Related Rates Masterclass"
                       value={newClass.title}
                       onChange={(e) => setNewClass({ ...newClass, title: e.target.value })}
-                      className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded-md text-navy-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-[#162032] focus:ring-1 focus:ring-emerald-500 outline-none"
+                      className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#27272a] rounded-md text-navy-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-[#18181c] focus:ring-1 focus:ring-amber-400 outline-none"
                     />
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Subject *</label>
+                      <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Subject *</label>
                       <select
                         value={newClass.subject}
                         onChange={(e) => setNewClass({ ...newClass, subject: e.target.value })}
-                        className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded-md text-navy-800 dark:text-white focus:ring-1 focus:ring-emerald-500 outline-none"
+                        className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#27272a] rounded-md text-navy-800 dark:text-white focus:ring-1 focus:ring-amber-400 outline-none"
                       >
                         <option value="Mathematics">Mathematics</option>
                         <option value="Physics">Physics</option>
@@ -957,11 +957,11 @@ export default function TeacherDashboardPage() {
                     </div>
 
                     <div>
-                      <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Target Grade Level *</label>
+                      <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Target Grade Level *</label>
                       <select
                         value={newClass.gradeLevel}
                         onChange={(e) => setNewClass({ ...newClass, gradeLevel: e.target.value })}
-                        className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded-md text-navy-800 dark:text-white focus:ring-1 focus:ring-emerald-500 outline-none"
+                        className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#27272a] rounded-md text-navy-800 dark:text-white focus:ring-1 focus:ring-amber-400 outline-none"
                       >
                         <option value="Grade 8">Grade 8</option>
                         <option value="Grade 9">Grade 9</option>
@@ -974,18 +974,18 @@ export default function TeacherDashboardPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                      <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Price per Student (USD) *</label>
+                      <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Price per Student (USD) *</label>
                       <input
                         type="number"
                         min="10"
                         required
                         value={newClass.price}
                         onChange={(e) => setNewClass({ ...newClass, price: e.target.value })}
-                        className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded-md text-navy-800 dark:text-white focus:ring-1 focus:ring-emerald-500 outline-none"
+                        className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#27272a] rounded-md text-navy-800 dark:text-white focus:ring-1 focus:ring-amber-400 outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Max Students *</label>
+                      <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Max Students *</label>
                       <input
                         type="number"
                         min="2"
@@ -993,15 +993,15 @@ export default function TeacherDashboardPage() {
                         required
                         value={newClass.maxStudents}
                         onChange={(e) => setNewClass({ ...newClass, maxStudents: e.target.value })}
-                        className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded-md text-navy-800 dark:text-white focus:ring-1 focus:ring-emerald-500 outline-none"
+                        className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#27272a] rounded-md text-navy-800 dark:text-white focus:ring-1 focus:ring-amber-400 outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Duration (Minutes) *</label>
+                      <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Duration (Minutes) *</label>
                       <select
                         value={newClass.durationMinutes}
                         onChange={(e) => setNewClass({ ...newClass, durationMinutes: e.target.value })}
-                        className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded-md text-navy-800 dark:text-white focus:ring-1 focus:ring-emerald-500 outline-none"
+                        className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#27272a] rounded-md text-navy-800 dark:text-white focus:ring-1 focus:ring-amber-400 outline-none"
                       >
                         <option value="45">45 Minutes</option>
                         <option value="60">60 Minutes</option>
@@ -1012,14 +1012,14 @@ export default function TeacherDashboardPage() {
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-charcoal-700 dark:text-slate-300 mb-1">Syllabus / Focus Description *</label>
+                    <label className="block font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">Syllabus / Focus Description *</label>
                     <textarea
                       rows={3}
                       required
                       placeholder="Outline key topics to be mastered and what students should prepare..."
                       value={newClass.description}
                       onChange={(e) => setNewClass({ ...newClass, description: e.target.value })}
-                      className="w-full px-3 py-2 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] rounded-md text-navy-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-[#162032] focus:ring-1 focus:ring-emerald-500 outline-none"
+                      className="w-full px-3 py-2 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#27272a] rounded-md text-navy-800 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-[#18181c] focus:ring-1 focus:ring-amber-400 outline-none"
                     />
                   </div>
 
@@ -1027,7 +1027,7 @@ export default function TeacherDashboardPage() {
                     <button
                       type="submit"
                       disabled={isSubmittingClass}
-                      className="px-6 py-2.5 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 disabled:bg-gray-400 dark:disabled:bg-gray-700 text-white rounded-lg font-bold text-xs shadow-subtle flex items-center gap-2"
+                      className="px-6 py-2.5 bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold hover:bg-navy-900 dark:hover:bg-amber-300 disabled:bg-gray-400 dark:disabled:bg-gray-700 text-white rounded-lg font-bold text-xs shadow-subtle flex items-center gap-2"
                     >
                       {isSubmittingClass && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                       <span>{isSubmittingClass ? 'Publishing Class...' : 'Publish Class'}</span>
@@ -1039,20 +1039,20 @@ export default function TeacherDashboardPage() {
 
             {/* AVAILABILITY TAB */}
             {activeTab === 'availability' && (
-              <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle space-y-4">
+              <div className="bg-white dark:bg-[#121215] p-6 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle space-y-4">
                 <h2 className="text-base font-bold text-navy-800 dark:text-white">Weekly Availability Schedule</h2>
-                <p className="text-xs text-charcoal-600 dark:text-slate-400">
+                <p className="text-xs text-charcoal-600 dark:text-zinc-400">
                   Configure time slots open for student bookings. Times auto-sync between your local India (IST) time and student local US Eastern Time.
                 </p>
                 <div className="space-y-3 pt-2">
                   {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
-                    <div key={day} className="p-3 bg-gray-50 dark:bg-[#162032] rounded-lg border border-gray-200 dark:border-[#1E293B] flex items-center justify-between text-xs">
+                    <div key={day} className="p-3 bg-gray-50 dark:bg-[#18181c] rounded-lg border border-gray-200 dark:border-[#27272a] flex items-center justify-between text-xs">
                       <span className="font-bold text-navy-800 dark:text-white w-28">{day}</span>
                       <div className="flex flex-wrap gap-2 flex-1">
-                        <span className="px-2 py-1 bg-white dark:bg-[#111827] border border-gray-200 dark:border-[#1E293B] rounded text-charcoal-700 dark:text-slate-300">07:00 AM EST</span>
-                        <span className="px-2 py-1 bg-white dark:bg-[#111827] border border-gray-200 dark:border-[#1E293B] rounded text-charcoal-700 dark:text-slate-300">08:30 AM EST</span>
-                        <span className="px-2 py-1 bg-white dark:bg-[#111827] border border-gray-200 dark:border-[#1E293B] rounded text-charcoal-700 dark:text-slate-300">05:00 PM EST</span>
-                        <span className="px-2 py-1 bg-white dark:bg-[#111827] border border-gray-200 dark:border-[#1E293B] rounded text-charcoal-700 dark:text-slate-300">06:30 PM EST</span>
+                        <span className="px-2 py-1 bg-white dark:bg-[#121215] border border-gray-200 dark:border-[#27272a] rounded text-charcoal-700 dark:text-zinc-300">07:00 AM EST</span>
+                        <span className="px-2 py-1 bg-white dark:bg-[#121215] border border-gray-200 dark:border-[#27272a] rounded text-charcoal-700 dark:text-zinc-300">08:30 AM EST</span>
+                        <span className="px-2 py-1 bg-white dark:bg-[#121215] border border-gray-200 dark:border-[#27272a] rounded text-charcoal-700 dark:text-zinc-300">05:00 PM EST</span>
+                        <span className="px-2 py-1 bg-white dark:bg-[#121215] border border-gray-200 dark:border-[#27272a] rounded text-charcoal-700 dark:text-zinc-300">06:30 PM EST</span>
                       </div>
                       <button 
                         onClick={() => setAlertNotice({
@@ -1060,7 +1060,7 @@ export default function TeacherDashboardPage() {
                           message: 'Your weekly availability slots are confirmed and synced to your booking calendar in US Eastern Time.',
                           variant: 'success'
                         })} 
-                        className="text-xs font-semibold text-navy-800 dark:text-emerald-400 hover:underline"
+                        className="text-xs font-semibold text-navy-800 dark:text-amber-400 hover:underline"
                       >
                         Edit
                       </button>
@@ -1075,42 +1075,42 @@ export default function TeacherDashboardPage() {
               <div className="space-y-6 text-xs">
                 {/* Payout Summary Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle">
-                    <span className="text-xs text-charcoal-500 dark:text-slate-400 font-medium block mb-1">Gross Lesson Volume</span>
+                  <div className="bg-white dark:bg-[#121215] p-5 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle">
+                    <span className="text-xs text-charcoal-500 dark:text-zinc-400 font-medium block mb-1">Gross Lesson Volume</span>
                     <span className="text-2xl font-bold text-navy-800 dark:text-white">${totalEarned.toFixed(2)}</span>
-                    <span className="text-[11px] text-charcoal-400 dark:text-slate-500 block mt-1">{bookings.length} confirmed student sessions</span>
+                    <span className="text-[11px] text-charcoal-400 dark:text-zinc-500 block mt-1">{bookings.length} confirmed student sessions</span>
                   </div>
-                  <div className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle">
-                    <span className="text-xs text-charcoal-500 dark:text-slate-400 font-medium block mb-1">Platform Commission (15%)</span>
-                    <span className="text-2xl font-bold text-charcoal-600 dark:text-slate-300">-${(totalEarned * 0.15).toFixed(2)}</span>
-                    <span className="text-[11px] text-charcoal-400 dark:text-slate-500 block mt-1">Standard educator rate</span>
+                  <div className="bg-white dark:bg-[#121215] p-5 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle">
+                    <span className="text-xs text-charcoal-500 dark:text-zinc-400 font-medium block mb-1">Platform Commission (15%)</span>
+                    <span className="text-2xl font-bold text-charcoal-600 dark:text-zinc-300">-${(totalEarned * 0.15).toFixed(2)}</span>
+                    <span className="text-[11px] text-charcoal-400 dark:text-zinc-500 block mt-1">Standard educator rate</span>
                   </div>
-                  <div className="bg-white dark:bg-[#111827] p-5 rounded-xl border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50/40 dark:bg-emerald-950/20 shadow-subtle">
-                    <span className="text-xs text-emerald-900 dark:text-emerald-300 font-bold block mb-1">Net Accrued Payout</span>
-                    <span className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">${netAccruedPayout.toFixed(2)}</span>
-                    <span className="text-[11px] text-emerald-800 dark:text-emerald-300/80 block mt-1">Ready for direct bank transfer</span>
+                  <div className="bg-white dark:bg-[#121215] p-5 rounded-xl border border-emerald-200 dark:border-amber-800/40 bg-emerald-50/40 dark:bg-amber-950/20 shadow-subtle">
+                    <span className="text-xs text-emerald-900 dark:text-amber-300 font-bold block mb-1">Net Accrued Payout</span>
+                    <span className="text-2xl font-bold text-emerald-700 dark:text-amber-400">${netAccruedPayout.toFixed(2)}</span>
+                    <span className="text-[11px] text-emerald-800 dark:text-amber-300/80 block mt-1">Ready for direct bank transfer</span>
                   </div>
                 </div>
 
                 {/* Bank Coordinates */}
-                <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle space-y-4">
+                <div className="bg-white dark:bg-[#121215] p-6 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle space-y-4">
                   <h2 className="text-base font-bold text-navy-800 dark:text-white">Bank Payout Coordinates & Transfer Settings</h2>
-                  <div className="p-4 bg-softblue-50 dark:bg-[#162032] border border-softblue-200 dark:border-[#1E293B] rounded-lg">
+                  <div className="p-4 bg-softblue-50 dark:bg-[#18181c] border border-softblue-200 dark:border-[#27272a] rounded-lg">
                     <div className="font-bold text-navy-800 dark:text-white mb-1">Direct Bank Account Transfer (India NEFT / IMPS)</div>
-                    <p className="text-[11px] text-charcoal-600 dark:text-slate-300">
+                    <p className="text-[11px] text-charcoal-600 dark:text-zinc-300">
                       Payouts are calculated in USD and disbursed directly to your verified local Indian bank account via NEFT/IMPS with zero international wire deduction fees.
                     </p>
                   </div>
                 </div>
 
                 {/* Itemized Transaction Ledger */}
-                <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle space-y-4">
+                <div className="bg-white dark:bg-[#121215] p-6 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle space-y-4">
                   <h2 className="text-base font-bold text-navy-800 dark:text-white">Lesson Payout Ledger ({bookings.length})</h2>
                   {bookings.length > 0 ? (
                     <div className="overflow-x-auto">
                       <table className="w-full text-left text-xs">
                         <thead>
-                          <tr className="border-b border-gray-200 dark:border-[#1E293B] text-charcoal-400 dark:text-slate-500 uppercase tracking-wider text-[10px]">
+                          <tr className="border-b border-gray-200 dark:border-[#27272a] text-charcoal-400 dark:text-zinc-500 uppercase tracking-wider text-[10px]">
                             <th className="pb-3 font-semibold">Date & Time</th>
                             <th className="pb-3 font-semibold">Student</th>
                             <th className="pb-3 font-semibold">Subject</th>
@@ -1126,10 +1126,10 @@ export default function TeacherDashboardPage() {
                             const fee = gross * 0.15;
                             const net = gross - fee;
                             return (
-                              <tr key={b.id} className="hover:bg-gray-50 dark:hover:bg-[#162032]/60 transition">
+                              <tr key={b.id} className="hover:bg-gray-50 dark:hover:bg-[#18181c]/60 transition">
                                 <td className="py-3 text-navy-800 dark:text-white font-medium">{b.formatted_time || `${b.date} at ${b.time_slot}`}</td>
-                                <td className="py-3 text-charcoal-700 dark:text-slate-300">{b.student_name}</td>
-                                <td className="py-3 text-charcoal-700 dark:text-slate-300">
+                                <td className="py-3 text-charcoal-700 dark:text-zinc-300">{b.student_name}</td>
+                                <td className="py-3 text-charcoal-700 dark:text-zinc-300">
                                   <span>{b.subject}</span>
                                   {b.package_tier && b.package_tier > 1 && (
                                     <span className="ml-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300">
@@ -1137,11 +1137,11 @@ export default function TeacherDashboardPage() {
                                     </span>
                                   )}
                                 </td>
-                                <td className="py-3 text-charcoal-700 dark:text-slate-300">${gross.toFixed(2)}</td>
-                                <td className="py-3 text-charcoal-400 dark:text-slate-500">-${fee.toFixed(2)}</td>
-                                <td className="py-3 font-bold text-accent-700 dark:text-emerald-400">${net.toFixed(2)}</td>
+                                <td className="py-3 text-charcoal-700 dark:text-zinc-300">${gross.toFixed(2)}</td>
+                                <td className="py-3 text-charcoal-400 dark:text-zinc-500">-${fee.toFixed(2)}</td>
+                                <td className="py-3 font-bold text-accent-700 dark:text-amber-400">${net.toFixed(2)}</td>
                                 <td className="py-3">
-                                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-accent-50 dark:bg-emerald-950/40 text-accent-700 dark:text-emerald-400 border border-accent-200 dark:border-emerald-800">
+                                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-accent-50 dark:bg-amber-950/30 text-accent-700 dark:text-amber-400 border border-accent-200 dark:border-amber-800/40">
                                     Accrued
                                   </span>
                                 </td>
@@ -1152,10 +1152,10 @@ export default function TeacherDashboardPage() {
                       </table>
                     </div>
                   ) : (
-                    <div className="p-6 bg-gray-50 dark:bg-[#162032] rounded-xl border border-gray-200 dark:border-[#1E293B] text-center">
-                      <DollarSign className="w-8 h-8 text-gray-400 dark:text-slate-500 mx-auto mb-2" />
+                    <div className="p-6 bg-gray-50 dark:bg-[#18181c] rounded-xl border border-gray-200 dark:border-[#27272a] text-center">
+                      <DollarSign className="w-8 h-8 text-gray-400 dark:text-zinc-500 mx-auto mb-2" />
                       <div className="font-bold text-navy-800 dark:text-white text-sm">No Pending Payouts</div>
-                      <p className="text-[11px] text-charcoal-500 dark:text-slate-400 mt-1">
+                      <p className="text-[11px] text-charcoal-500 dark:text-zinc-400 mt-1">
                         Lesson fees accrue here upon student bookings.
                       </p>
                     </div>
@@ -1166,11 +1166,11 @@ export default function TeacherDashboardPage() {
 
             {/* STUDENTS TAB */}
             {activeTab === 'students' && (
-              <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle space-y-4">
+              <div className="bg-white dark:bg-[#121215] p-6 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-base font-bold text-navy-800 dark:text-white">Student Roster ({bookings.length})</h2>
-                    <p className="text-xs text-charcoal-500 dark:text-slate-400">Students enrolled in your private or group sessions</p>
+                    <p className="text-xs text-charcoal-500 dark:text-zinc-400">Students enrolled in your private or group sessions</p>
                   </div>
                 </div>
 
@@ -1179,17 +1179,17 @@ export default function TeacherDashboardPage() {
                     {bookings.map((b, idx) => (
                       <div key={idx} className="py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-softblue-100 dark:bg-[#162032] text-navy-800 dark:text-emerald-400 border border-transparent dark:border-[#1E293B] flex items-center justify-center font-bold text-sm">
+                          <div className="w-10 h-10 rounded-full bg-softblue-100 dark:bg-[#18181c] text-navy-800 dark:text-amber-400 border border-transparent dark:border-[#27272a] flex items-center justify-center font-bold text-sm">
                             {(b.student_name || 'S').charAt(0).toUpperCase()}
                           </div>
                           <div>
                             <h3 className="text-sm font-bold text-navy-800 dark:text-white">{b.student_name}</h3>
-                            <p className="text-xs text-charcoal-500 dark:text-slate-400">{b.student_email || 'Student Email Protected'}</p>
+                            <p className="text-xs text-charcoal-500 dark:text-zinc-400">{b.student_email || 'Student Email Protected'}</p>
                             <div className="flex items-center gap-2 mt-1">
-                              <span className="text-[11px] font-semibold text-accent-700 dark:text-emerald-400 bg-accent-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-accent-200 dark:border-emerald-800">
+                              <span className="text-[11px] font-semibold text-accent-700 dark:text-amber-400 bg-accent-50 dark:bg-amber-950/30 px-2 py-0.5 rounded border border-accent-200 dark:border-amber-800/40">
                                 {b.subject}
                               </span>
-                              <span className="text-[11px] text-charcoal-400 dark:text-slate-500">
+                              <span className="text-[11px] text-charcoal-400 dark:text-zinc-500">
                                 Session: {b.formatted_time || `${b.date} at ${b.time_slot}`}
                               </span>
                             </div>
@@ -1199,7 +1199,7 @@ export default function TeacherDashboardPage() {
                         <div className="flex items-center gap-2">
                           <Link
                             href={user ? `/classroom/room-tutor-${user.id}?subject=${encodeURIComponent(b.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}` : (b.meeting_url || `/classroom/room-${b.id}?subject=${encodeURIComponent(b.subject || user?.user_metadata?.specialties?.[0] || 'Mathematics')}`)}
-                            className="px-3.5 py-1.5 bg-navy-800 dark:bg-emerald-600 hover:bg-navy-900 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5"
+                            className="px-3.5 py-1.5 bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold hover:bg-navy-900 dark:hover:bg-amber-300 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5"
                           >
                             <Video className="w-3.5 h-3.5" />
                             <span>Launch Classroom</span>
@@ -1209,8 +1209,8 @@ export default function TeacherDashboardPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="py-8 text-center text-xs text-charcoal-500 dark:text-slate-400">
-                    <Users className="w-8 h-8 text-gray-400 dark:text-slate-500 mx-auto mb-2" />
+                  <div className="py-8 text-center text-xs text-charcoal-500 dark:text-zinc-400">
+                    <Users className="w-8 h-8 text-gray-400 dark:text-zinc-500 mx-auto mb-2" />
                     <div className="font-bold text-navy-800 dark:text-white text-sm">No Enrolled Students Yet</div>
                     <p className="max-w-xs mx-auto mt-1">
                       Once students book 1-on-1 sessions or enroll in your published classes, their contact details and learning goals will appear here.
@@ -1245,7 +1245,7 @@ export default function TeacherDashboardPage() {
           classToDelete && (
             <div className="space-y-1 text-xs">
               <div className="font-semibold text-navy-800 dark:text-white">{classToDelete.title}</div>
-              <div className="text-charcoal-500 dark:text-slate-400">{classToDelete.subject} • {classToDelete.dateTime} • ${classToDelete.price} USD</div>
+              <div className="text-charcoal-500 dark:text-zinc-400">{classToDelete.subject} • {classToDelete.dateTime} • ${classToDelete.price} USD</div>
             </div>
           )
         }
@@ -1268,7 +1268,7 @@ export default function TeacherDashboardPage() {
           recordingToDelete && (
             <div className="space-y-1 text-xs">
               <div className="font-semibold text-navy-800 dark:text-white">{recordingToDelete.title}</div>
-              <div className="text-charcoal-500 dark:text-slate-400">
+              <div className="text-charcoal-500 dark:text-zinc-400">
                 Student: {recordingToDelete.student_name} • Duration: {recordingToDelete.duration} {recordingToDelete.file_size ? `• ${recordingToDelete.file_size}` : ''}
               </div>
             </div>

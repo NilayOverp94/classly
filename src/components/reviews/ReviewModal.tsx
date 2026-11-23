@@ -116,13 +116,13 @@ export function ReviewModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/75 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg bg-white dark:bg-[#111827] rounded-2xl border border-gray-200 dark:border-[#1E293B] shadow-2xl p-6 sm:p-7 overflow-hidden transition-all text-charcoal-800 dark:text-slate-100">
+      <div className="relative w-full max-w-lg bg-white dark:bg-[#121215] rounded-2xl border border-gray-200 dark:border-[#27272a] shadow-2xl p-6 sm:p-7 overflow-hidden transition-all text-charcoal-800 dark:text-zinc-100">
         
         {/* Close Button */}
         <button
           onClick={onClose}
           disabled={submitting}
-          className="absolute top-4 right-4 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#162032] transition"
+          className="absolute top-4 right-4 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#18181c] transition"
           aria-label="Close dialog"
         >
           <X className="w-5 h-5" />
@@ -131,13 +131,13 @@ export function ReviewModal({
         {isSuccess ? (
           /* Success Screen */
           <div className="py-8 text-center animate-in zoom-in-95 duration-200">
-            <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto mb-4 border border-emerald-300 dark:border-emerald-700">
+            <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-amber-950/40 text-emerald-600 dark:text-amber-400 flex items-center justify-center mx-auto mb-4 border border-emerald-300 dark:border-amber-700/40">
               <CheckCircle2 className="w-10 h-10" />
             </div>
             <h3 className="text-xl font-bold text-navy-800 dark:text-white mb-2">
               Review Published!
             </h3>
-            <p className="text-xs text-charcoal-600 dark:text-slate-300 max-w-xs mx-auto">
+            <p className="text-xs text-charcoal-600 dark:text-zinc-300 max-w-xs mx-auto">
               Thank you for sharing your feedback. Your review will help students and parents find great educators on Classly.
             </p>
           </div>
@@ -145,10 +145,10 @@ export function ReviewModal({
           /* Form Content */
           <form onSubmit={handleSubmit}>
             <div className="flex items-center gap-2 mb-1">
-              <div className="p-1 rounded-md bg-accent-50 dark:bg-emerald-950/40 text-accent-600 dark:text-emerald-400">
+              <div className="p-1 rounded-md bg-accent-50 dark:bg-amber-950/30 text-accent-600 dark:text-amber-400">
                 <Sparkles className="w-4 h-4" />
               </div>
-              <span className="text-xs font-bold uppercase tracking-wider text-accent-700 dark:text-emerald-400">
+              <span className="text-xs font-bold uppercase tracking-wider text-accent-700 dark:text-amber-400">
                 Post-Lesson Review
               </span>
             </div>
@@ -156,7 +156,7 @@ export function ReviewModal({
             <h2 className="text-lg font-bold text-navy-800 dark:text-white mb-1">
               Rate Your Session with {tutorName}
             </h2>
-            <p className="text-xs text-charcoal-500 dark:text-slate-400 mb-5">
+            <p className="text-xs text-charcoal-500 dark:text-zinc-400 mb-5">
               Verified review for <strong>{subject}</strong>
             </p>
 
@@ -169,7 +169,7 @@ export function ReviewModal({
             )}
 
             {/* Interactive Star Rating */}
-            <div className="mb-5 p-4 rounded-xl bg-gray-50 dark:bg-[#162032] border border-gray-200/80 dark:border-[#1E293B] text-center">
+            <div className="mb-5 p-4 rounded-xl bg-gray-50 dark:bg-[#18181c] border border-gray-200/80 dark:border-[#27272a] text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
                 {[1, 2, 3, 4, 5].map((star) => {
                   const activeStar = hoverRating > 0 ? star <= hoverRating : star <= rating;
@@ -200,7 +200,7 @@ export function ReviewModal({
 
             {/* Quick Praise Tags */}
             <div className="mb-4">
-              <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 mb-2">
+              <label className="block text-xs font-semibold text-charcoal-700 dark:text-zinc-300 mb-2">
                 What went well? (Select all that apply)
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -213,8 +213,8 @@ export function ReviewModal({
                       onClick={() => toggleTag(tag)}
                       className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${
                         isSelected
-                          ? 'bg-navy-800 text-white border-navy-800 dark:bg-emerald-600 dark:border-emerald-600'
-                          : 'bg-white dark:bg-[#162032] text-charcoal-600 dark:text-slate-300 border-gray-200 dark:border-[#2D3B4F] hover:bg-gray-100 dark:hover:bg-[#1E293B]'
+                          ? 'bg-navy-800 text-white border-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold dark:border-amber-600/50'
+                          : 'bg-white dark:bg-[#18181c] text-charcoal-600 dark:text-zinc-300 border-gray-200 dark:border-[#323238] hover:bg-gray-100 dark:hover:bg-[#27272a]'
                       }`}
                     >
                       {tag}
@@ -226,7 +226,7 @@ export function ReviewModal({
 
             {/* Written Comment */}
             <div className="mb-6">
-              <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold text-charcoal-700 dark:text-zinc-300 mb-1.5">
                 Share details of your experience (Optional)
               </label>
               <textarea
@@ -235,7 +235,7 @@ export function ReviewModal({
                 placeholder="How did your tutor explain the concepts? What did they help you achieve or solve during the lesson?"
                 rows={3}
                 maxLength={600}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-[#1E293B] bg-white dark:bg-[#162032] text-charcoal-800 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-emerald-500"
+                className="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#18181c] text-charcoal-800 dark:text-zinc-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-amber-400"
               />
               <div className="text-right text-[10px] text-gray-400 mt-1">
                 {comment.length}/600 characters
@@ -243,19 +243,19 @@ export function ReviewModal({
             </div>
 
             {/* Actions */}
-            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-gray-100 dark:border-[#1E293B]">
+            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-gray-100 dark:border-[#27272a]">
               <button
                 type="button"
                 onClick={onClose}
                 disabled={submitting}
-                className="px-4 py-2 rounded-lg text-xs font-semibold text-charcoal-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-[#162032] transition"
+                className="px-4 py-2 rounded-lg text-xs font-semibold text-charcoal-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-[#18181c] transition"
               >
                 Skip for Now
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-5 py-2 rounded-lg text-xs font-bold bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 disabled:opacity-50 text-white transition flex items-center gap-1.5 shadow-sm"
+                className="px-5 py-2 rounded-lg text-xs font-bold bg-navy-800 hover:bg-navy-900 dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-zinc-950 font-bold disabled:opacity-50 text-white transition flex items-center gap-1.5 shadow-sm"
               >
                 {submitting ? (
                   <>

@@ -7,7 +7,7 @@ import { FadeIn } from '@/components/ui/MotionComponents';
 
 export function CTASection() {
   return (
-    <section className="py-20 lg:py-28 bg-navy-950 dark:bg-[#070C15] border-t border-transparent dark:border-[#1E293B] text-white relative overflow-hidden transition-colors duration-200">
+    <section className="py-20 lg:py-28 bg-navy-950 dark:bg-[#09090b] border-t border-transparent dark:border-[#27272a] text-white relative overflow-hidden transition-colors duration-200">
       
       {/* Ambient background glow */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-accent-500/10 rounded-full blur-3xl pointer-events-none" />

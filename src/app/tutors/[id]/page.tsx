@@ -171,10 +171,10 @@ export default function TutorProfilePage() {
 
   if (loading) {
     return (
-      <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-[60vh] flex items-center justify-center py-16 px-4 transition-colors duration-200">
+      <div className="bg-offwhite dark:bg-[#09090b] min-h-[60vh] flex items-center justify-center py-16 px-4 transition-colors duration-200">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-navy-800 dark:border-emerald-400 border-t-transparent dark:border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-xs text-charcoal-500 dark:text-slate-400">Loading educator profile...</p>
+          <div className="w-8 h-8 border-2 border-navy-800 dark:border-amber-400 border-t-transparent dark:border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-xs text-charcoal-500 dark:text-zinc-400">Loading educator profile...</p>
         </div>
       </div>
     );
@@ -182,16 +182,16 @@ export default function TutorProfilePage() {
 
   if (!tutor) {
     return (
-      <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-[60vh] flex items-center justify-center py-16 px-4 transition-colors duration-200">
-        <div className="bg-white dark:bg-[#111827] p-8 max-w-md w-full rounded-2xl border border-gray-200 dark:border-[#1E293B] text-center shadow-card">
-          <ShieldCheck className="w-12 h-12 text-gray-400 dark:text-slate-500 mx-auto mb-3" />
+      <div className="bg-offwhite dark:bg-[#09090b] min-h-[60vh] flex items-center justify-center py-16 px-4 transition-colors duration-200">
+        <div className="bg-white dark:bg-[#121215] p-8 max-w-md w-full rounded-2xl border border-gray-200 dark:border-[#27272a] text-center shadow-card">
+          <ShieldCheck className="w-12 h-12 text-gray-400 dark:text-zinc-500 mx-auto mb-3" />
           <h1 className="text-lg font-bold text-navy-800 dark:text-white mb-1">Educator Profile Not Found</h1>
-          <p className="text-xs text-charcoal-600 dark:text-slate-300 mb-6">
+          <p className="text-xs text-charcoal-600 dark:text-zinc-300 mb-6">
             This educator profile is not active, currently undergoing compliance review, or does not exist.
           </p>
           <Link
             href="/tutors"
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-navy-800 hover:bg-navy-900 dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-zinc-950 font-bold text-white rounded-lg text-xs font-bold transition"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Browse Educator Directory</span>
@@ -204,16 +204,16 @@ export default function TutorProfilePage() {
   const activeAvailability = tutor.availability?.find((a) => a.day === selectedDay);
 
   return (
-    <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-screen py-8 lg:py-12 border-b border-gray-200 dark:border-[#1E293B] transition-colors duration-200">
+    <div className="bg-offwhite dark:bg-[#09090b] min-h-screen py-8 lg:py-12 border-b border-gray-200 dark:border-[#27272a] transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Navigation Breadcrumb */}
-        <div className="mb-6 flex items-center gap-2 text-xs text-charcoal-500 dark:text-slate-400">
+        <div className="mb-6 flex items-center gap-2 text-xs text-charcoal-500 dark:text-zinc-400">
           <Link href="/" className="hover:text-navy-800 dark:hover:text-white">Home</Link>
           <ChevronRight className="w-3.5 h-3.5" />
           <Link href="/tutors" className="hover:text-navy-800 dark:hover:text-white">Find a Tutor</Link>
           <ChevronRight className="w-3.5 h-3.5" />
-          <span className="font-semibold text-navy-800 dark:text-slate-200">{tutor.full_name}</span>
+          <span className="font-semibold text-navy-800 dark:text-zinc-200">{tutor.full_name}</span>
         </div>
 
         {/* Profile Grid: Main Content (8 cols) + Sticky Booking Card (4 cols) */}
@@ -224,10 +224,10 @@ export default function TutorProfilePage() {
             <FadeIn direction="up" delay={0.05} duration={0.5} className="space-y-6">
               
               {/* Header Card */}
-              <div className="bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle hover:shadow-card transition-shadow duration-300">
+              <div className="bg-white dark:bg-[#121215] p-6 sm:p-8 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle hover:shadow-card transition-shadow duration-300">
                 <div className="flex flex-col sm:flex-row gap-6 items-start">
                 
-                <div className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden bg-gray-100 dark:bg-[#162032] border border-gray-200 dark:border-[#1E293B] shadow-subtle flex-shrink-0">
+                <div className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden bg-gray-100 dark:bg-[#18181c] border border-gray-200 dark:border-[#27272a] shadow-subtle flex-shrink-0">
                   <Image
                     src={tutor.avatar_url}
                     alt={tutor.full_name}
@@ -243,26 +243,26 @@ export default function TutorProfilePage() {
                     <h1 className="text-2xl sm:text-3xl font-bold text-navy-800 dark:text-white">
                       {tutor.full_name}
                     </h1>
-                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent-700 dark:text-emerald-300 bg-accent-50 dark:bg-emerald-950/40 px-2.5 py-0.5 rounded-full border border-accent-200 dark:border-emerald-800/60">
-                      <ShieldCheck className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400" />
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent-700 dark:text-amber-300 bg-accent-50 dark:bg-amber-950/30 px-2.5 py-0.5 rounded-full border border-accent-200 dark:border-amber-800/40">
+                      <ShieldCheck className="w-3.5 h-3.5 text-accent-500 dark:text-amber-400" />
                       <span>Verified Educator</span>
                     </span>
                   </div>
 
-                  <p className="text-sm font-medium text-charcoal-600 dark:text-slate-300 mb-3">
+                  <p className="text-sm font-medium text-charcoal-600 dark:text-zinc-300 mb-3">
                     {tutor.headline}
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-charcoal-600 dark:text-slate-300 mb-4">
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-charcoal-600 dark:text-zinc-300 mb-4">
                     <div className="flex items-center gap-1 font-bold text-navy-900 dark:text-white">
                       {tutor.review_count > 0 ? (
                         <>
                           <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                           <span>{tutor.rating.toFixed(2)}</span>
-                          <span className="font-normal text-charcoal-400 dark:text-slate-400">({tutor.review_count} reviews)</span>
+                          <span className="font-normal text-charcoal-400 dark:text-zinc-400">({tutor.review_count} reviews)</span>
                         </>
                       ) : (
-                        <span className="text-[11px] text-accent-700 dark:text-emerald-300 bg-accent-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded font-semibold border border-accent-200 dark:border-emerald-800/60">
+                        <span className="text-[11px] text-accent-700 dark:text-amber-300 bg-accent-50 dark:bg-amber-950/30 px-2 py-0.5 rounded font-semibold border border-accent-200 dark:border-amber-800/40">
                           New Verified Educator
                         </span>
                       )}
@@ -271,14 +271,14 @@ export default function TutorProfilePage() {
                       <>
                         <span>•</span>
                         <div className="flex items-center gap-1">
-                          <Clock className="w-4 h-4 text-charcoal-400 dark:text-slate-400" />
+                          <Clock className="w-4 h-4 text-charcoal-400 dark:text-zinc-400" />
                           <span>{tutor.total_hours_taught}+ hours taught</span>
                         </div>
                       </>
                     )}
                     <span>•</span>
                     <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4 text-charcoal-400 dark:text-slate-400" />
+                      <MapPin className="w-4 h-4 text-charcoal-400 dark:text-zinc-400" />
                       <span>{tutor.city}, {tutor.country}</span>
                     </div>
                   </div>
@@ -287,7 +287,7 @@ export default function TutorProfilePage() {
                     {tutor.subjects.map((s) => (
                       <span
                         key={s}
-                        className="px-2.5 py-1 rounded bg-softblue-100 dark:bg-[#162032] text-navy-800 dark:text-emerald-400 text-xs font-semibold border border-softblue-200 dark:border-[#2D3B4F]"
+                        className="px-2.5 py-1 rounded bg-softblue-100 dark:bg-[#18181c] text-navy-800 dark:text-amber-400 text-xs font-semibold border border-softblue-200 dark:border-[#323238]"
                       >
                         {s}
                       </span>
@@ -295,7 +295,7 @@ export default function TutorProfilePage() {
                     {tutor.languages.map((l) => (
                       <span
                         key={l}
-                        className="px-2.5 py-1 rounded bg-gray-50 dark:bg-[#162032] text-charcoal-600 dark:text-slate-300 text-xs font-medium border border-gray-200 dark:border-[#2D3B4F]"
+                        className="px-2.5 py-1 rounded bg-gray-50 dark:bg-[#18181c] text-charcoal-600 dark:text-zinc-300 text-xs font-medium border border-gray-200 dark:border-[#323238]"
                       >
                         Speaks {l}
                       </span>
@@ -308,55 +308,55 @@ export default function TutorProfilePage() {
             </div>
 
             {/* Biography & Teaching Methodology */}
-            <div className="bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle space-y-6">
+            <div className="bg-white dark:bg-[#121215] p-6 sm:p-8 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle space-y-6">
               <div>
                 <h2 className="text-base font-bold text-navy-800 dark:text-white mb-2">
                   About {tutor.full_name}
                 </h2>
-                <p className="text-sm text-charcoal-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                <p className="text-sm text-charcoal-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line">
                   {tutor.bio || 'Accredited educator specialized in tailored curriculum instruction.'}
                 </p>
               </div>
 
-              <div className="pt-6 border-t border-gray-100 dark:border-[#1E293B]">
+              <div className="pt-6 border-t border-gray-100 dark:border-[#27272a]">
                 <h2 className="text-base font-bold text-navy-800 dark:text-white mb-2">
                   Teaching Methodology
                 </h2>
-                <p className="text-sm text-charcoal-700 dark:text-slate-300 leading-relaxed">
+                <p className="text-sm text-charcoal-700 dark:text-zinc-300 leading-relaxed">
                   {tutor.teaching_methodology}
                 </p>
               </div>
 
               {/* Education & Verified Credentials */}
               {tutor.education && (
-                <div className="pt-6 border-t border-gray-100 dark:border-[#1E293B]">
+                <div className="pt-6 border-t border-gray-100 dark:border-[#27272a]">
                   <h2 className="text-base font-bold text-navy-800 dark:text-white mb-3 flex items-center gap-2">
-                    <Award className="w-4 h-4 text-accent-500 dark:text-emerald-400" />
+                    <Award className="w-4 h-4 text-accent-500 dark:text-amber-400" />
                     <span>Verified Qualifications & Degrees</span>
                   </h2>
-                  <div className="p-3 bg-gray-50 dark:bg-[#162032] rounded-lg border border-gray-200 dark:border-[#2D3B4F] text-xs">
+                  <div className="p-3 bg-gray-50 dark:bg-[#18181c] rounded-lg border border-gray-200 dark:border-[#323238] text-xs">
                     <span className="font-bold text-navy-800 dark:text-white block">{tutor.education}</span>
-                    <span className="text-charcoal-500 dark:text-slate-400">Degree verified by Classly Compliance Team</span>
+                    <span className="text-charcoal-500 dark:text-zinc-400">Degree verified by Classly Compliance Team</span>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Student Reviews Section */}
-            <div className="bg-white dark:bg-[#111827] p-6 sm:p-8 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100 dark:border-[#1E293B]">
+            <div className="bg-white dark:bg-[#121215] p-6 sm:p-8 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100 dark:border-[#27272a]">
                 <div>
                   <div className="flex items-center gap-2">
                     <h2 className="text-lg font-bold text-navy-800 dark:text-white">
                       Student & Parent Reviews
                     </h2>
                     {reviewStats.total > 0 && (
-                      <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-[11px] font-bold border border-emerald-200 dark:border-emerald-800/60">
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-amber-950/30 text-emerald-700 dark:text-amber-300 text-[11px] font-bold border border-emerald-200 dark:border-amber-800/40">
                         {reviewStats.total} Verified
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-charcoal-500 dark:text-slate-400 mt-0.5">
+                  <p className="text-xs text-charcoal-500 dark:text-zinc-400 mt-0.5">
                     100% authentic feedback from verified 1-on-1 lessons on Classly
                   </p>
                 </div>
@@ -367,7 +367,7 @@ export default function TutorProfilePage() {
                     <span className="text-sm font-extrabold text-navy-900 dark:text-amber-300">
                       {reviewStats.averageRating.toFixed(1)}
                     </span>
-                    <span className="text-[11px] text-charcoal-500 dark:text-slate-400">
+                    <span className="text-[11px] text-charcoal-500 dark:text-zinc-400">
                       ({reviewStats.total})
                     </span>
                   </div>
@@ -377,9 +377,9 @@ export default function TutorProfilePage() {
               {reviews.length > 0 ? (
                 <>
                   {/* Rating Breakdown Dashboard */}
-                  <div className="p-5 bg-gray-50/70 dark:bg-[#162032]/60 rounded-xl border border-gray-200/80 dark:border-[#1E293B] flex flex-col md:flex-row items-center gap-6">
+                  <div className="p-5 bg-gray-50/70 dark:bg-[#18181c]/60 rounded-xl border border-gray-200/80 dark:border-[#27272a] flex flex-col md:flex-row items-center gap-6">
                     {/* Big Score Block */}
-                    <div className="text-center md:border-r border-gray-200 dark:border-[#2D3B4F] md:pr-8 min-w-[140px]">
+                    <div className="text-center md:border-r border-gray-200 dark:border-[#323238] md:pr-8 min-w-[140px]">
                       <div className="text-4xl font-extrabold text-navy-800 dark:text-white">
                         {reviewStats.averageRating.toFixed(1)}
                       </div>
@@ -395,7 +395,7 @@ export default function TutorProfilePage() {
                           />
                         ))}
                       </div>
-                      <p className="text-[11px] text-charcoal-500 dark:text-slate-400">
+                      <p className="text-[11px] text-charcoal-500 dark:text-zinc-400">
                         Based on {reviewStats.total} lesson{reviewStats.total === 1 ? '' : 's'}
                       </p>
                     </div>
@@ -407,7 +407,7 @@ export default function TutorProfilePage() {
                         const pct = reviewStats.total > 0 ? Math.round((count / reviewStats.total) * 100) : 0;
                         return (
                           <div key={stars} className="flex items-center gap-2">
-                            <span className="w-12 text-[11px] font-semibold text-charcoal-600 dark:text-slate-300 flex items-center gap-0.5">
+                            <span className="w-12 text-[11px] font-semibold text-charcoal-600 dark:text-zinc-300 flex items-center gap-0.5">
                               <span>{stars}</span>
                               <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
                             </span>
@@ -417,7 +417,7 @@ export default function TutorProfilePage() {
                                 style={{ width: `${pct}%` }}
                               />
                             </div>
-                            <span className="w-9 text-right text-[11px] text-charcoal-400 dark:text-slate-400 font-mono">
+                            <span className="w-9 text-right text-[11px] text-charcoal-400 dark:text-zinc-400 font-mono">
                               {count}
                             </span>
                           </div>
@@ -431,11 +431,11 @@ export default function TutorProfilePage() {
                     {reviews.map((r) => (
                       <div
                         key={r.id}
-                        className="p-5 rounded-xl border border-gray-100 dark:border-[#1E293B] bg-white dark:bg-[#111827] shadow-xs hover:border-gray-300 dark:hover:border-slate-700 transition"
+                        className="p-5 rounded-xl border border-gray-100 dark:border-[#27272a] bg-white dark:bg-[#121215] shadow-xs hover:border-gray-300 dark:hover:border-slate-700 transition"
                       >
                         <div className="flex items-start justify-between gap-3 mb-2.5">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-navy-800 dark:bg-emerald-700 text-white flex items-center justify-center font-bold text-sm shadow-xs">
+                            <div className="w-10 h-10 rounded-full bg-navy-800 dark:bg-amber-500 text-white flex items-center justify-center font-bold text-sm shadow-xs">
                               {r.student_name.charAt(0).toUpperCase()}
                             </div>
                             <div>
@@ -443,12 +443,12 @@ export default function TutorProfilePage() {
                                 <h4 className="text-sm font-bold text-navy-800 dark:text-white">
                                   {r.student_name}
                                 </h4>
-                                <span className="text-[10px] font-semibold text-accent-700 dark:text-emerald-400 bg-accent-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded border border-accent-200 dark:border-emerald-800/60">
+                                <span className="text-[10px] font-semibold text-accent-700 dark:text-amber-400 bg-accent-50 dark:bg-amber-950/30 px-1.5 py-0.5 rounded border border-accent-200 dark:border-amber-800/40">
                                   {r.student_grade || 'Student'}
                                 </span>
                               </div>
-                              <div className="flex items-center gap-1.5 text-[11px] text-charcoal-400 dark:text-slate-400 mt-0.5">
-                                <span className="flex items-center gap-0.5 text-emerald-600 dark:text-emerald-400 font-medium">
+                              <div className="flex items-center gap-1.5 text-[11px] text-charcoal-400 dark:text-zinc-400 mt-0.5">
+                                <span className="flex items-center gap-0.5 text-emerald-600 dark:text-amber-400 font-medium">
                                   <CheckCircle2 className="w-3 h-3" />
                                   <span>Verified Lesson</span>
                                 </span>
@@ -472,13 +472,13 @@ export default function TutorProfilePage() {
 
                         {/* Subject Badge & Praise Tags */}
                         <div className="flex flex-wrap items-center gap-1.5 mb-2.5">
-                          <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-[#162032] text-navy-800 dark:text-slate-300 text-[10px] font-semibold border border-gray-200 dark:border-[#2D3B4F]">
+                          <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-[#18181c] text-navy-800 dark:text-zinc-300 text-[10px] font-semibold border border-gray-200 dark:border-[#323238]">
                             {r.subject}
                           </span>
                           {r.tags && r.tags.map((t) => (
                             <span
                               key={t}
-                              className="px-2 py-0.5 rounded-full bg-softblue-50 dark:bg-[#162032] text-navy-800 dark:text-emerald-300 text-[10px] font-medium border border-blue-100 dark:border-[#2D3B4F]"
+                              className="px-2 py-0.5 rounded-full bg-softblue-50 dark:bg-[#18181c] text-navy-800 dark:text-amber-300 text-[10px] font-medium border border-blue-100 dark:border-[#323238]"
                             >
                               {t}
                             </span>
@@ -487,7 +487,7 @@ export default function TutorProfilePage() {
 
                         {/* Written feedback */}
                         {r.comment && (
-                          <p className="text-xs text-charcoal-700 dark:text-slate-300 leading-relaxed">
+                          <p className="text-xs text-charcoal-700 dark:text-zinc-300 leading-relaxed">
                             "{r.comment}"
                           </p>
                         )}
@@ -496,8 +496,8 @@ export default function TutorProfilePage() {
                   </div>
                 </>
               ) : (
-                <div className="p-8 text-center text-xs text-charcoal-500 dark:text-slate-400 bg-gray-50/50 dark:bg-[#162032]/40 rounded-xl border border-dashed border-gray-200 dark:border-[#2D3B4F]">
-                  <MessageSquare className="w-8 h-8 text-gray-400 dark:text-slate-500 mx-auto mb-2 opacity-60" />
+                <div className="p-8 text-center text-xs text-charcoal-500 dark:text-zinc-400 bg-gray-50/50 dark:bg-[#18181c]/40 rounded-xl border border-dashed border-gray-200 dark:border-[#323238]">
+                  <MessageSquare className="w-8 h-8 text-gray-400 dark:text-zinc-500 mx-auto mb-2 opacity-60" />
                   <h4 className="font-bold text-sm text-navy-800 dark:text-white mb-1">
                     No Reviews Yet for this Educator
                   </h4>
@@ -517,31 +517,31 @@ export default function TutorProfilePage() {
               {(() => {
                 const packagePricing = calculatePackagePricing(tutor.hourly_rate, selectedPackage);
                 return (
-                  <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-lift hover:shadow-lift-lg transition-shadow duration-300">
+                  <div className="bg-white dark:bg-[#121215] p-6 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-lift hover:shadow-lift-lg transition-shadow duration-300">
                     
                     {/* Hourly rate display */}
-                    <div className="pb-4 mb-4 border-b border-gray-100 dark:border-[#1E293B] flex items-baseline justify-between">
+                    <div className="pb-4 mb-4 border-b border-gray-100 dark:border-[#27272a] flex items-baseline justify-between">
                       <div>
                         {selectedPackage === 1 ? (
                           <>
                             <span className="text-3xl font-extrabold text-navy-800 dark:text-white">${tutor.hourly_rate}</span>
-                            <span className="text-xs text-charcoal-500 dark:text-slate-400 ml-1">/ hour</span>
+                            <span className="text-xs text-charcoal-500 dark:text-zinc-400 ml-1">/ hour</span>
                           </>
                         ) : (
                           <div>
                             <div className="flex items-baseline gap-2">
                               <span className="text-3xl font-extrabold text-navy-800 dark:text-white">${packagePricing.effectiveHourlyRate}</span>
-                              <span className="text-xs text-charcoal-500 dark:text-slate-400">/ lesson</span>
-                              <span className="text-sm line-through text-charcoal-400 dark:text-slate-500">${tutor.hourly_rate}</span>
+                              <span className="text-xs text-charcoal-500 dark:text-zinc-400">/ lesson</span>
+                              <span className="text-sm line-through text-charcoal-400 dark:text-zinc-500">${tutor.hourly_rate}</span>
                             </div>
-                            <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                            <span className="text-xs font-semibold text-emerald-600 dark:text-amber-400">
                               Save ${packagePricing.totalSaved} on {selectedPackage} lessons
                             </span>
                           </div>
                         )}
                       </div>
                       <div className="text-right">
-                        <span className="text-xs font-semibold text-accent-700 dark:text-emerald-300 bg-accent-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-accent-200 dark:border-emerald-800/60">
+                        <span className="text-xs font-semibold text-accent-700 dark:text-amber-300 bg-accent-50 dark:bg-amber-950/30 px-2 py-0.5 rounded border border-accent-200 dark:border-amber-800/40">
                           100% money-back guarantee
                         </span>
                       </div>
@@ -550,7 +550,7 @@ export default function TutorProfilePage() {
                     {/* Lesson Package Tier Selector */}
                     <div className="mb-5">
                       <div className="flex items-center justify-between mb-2">
-                        <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider">
+                        <label className="block text-xs font-semibold text-charcoal-700 dark:text-zinc-300 uppercase tracking-wider">
                           Package Bundles
                         </label>
                         <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800/40">
@@ -558,7 +558,7 @@ export default function TutorProfilePage() {
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-1.5 p-1 bg-gray-100 dark:bg-[#162032] rounded-lg">
+                      <div className="grid grid-cols-2 gap-1.5 p-1 bg-gray-100 dark:bg-[#18181c] rounded-lg">
                         {LESSON_PACKAGES.map((pkg) => {
                           const isSelected = selectedPackage === pkg.tier;
                           return (
@@ -568,19 +568,19 @@ export default function TutorProfilePage() {
                               onClick={() => setSelectedPackage(pkg.tier)}
                               className={`p-2 rounded-md text-left transition flex flex-col justify-between ${
                                 isSelected
-                                  ? 'bg-white dark:bg-[#1C283F] text-navy-900 dark:text-white shadow-subtle border border-navy-800/20 dark:border-emerald-500/50'
-                                  : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white'
+                                  ? 'bg-white dark:bg-[#202025] text-navy-900 dark:text-white shadow-subtle border border-navy-800/20 dark:border-amber-500/40/50'
+                                  : 'text-charcoal-600 dark:text-zinc-400 hover:text-navy-900 dark:hover:text-white'
                               }`}
                             >
                               <div className="flex items-center justify-between gap-1">
                                 <span className="font-bold text-xs">{pkg.tier === 1 ? '1 Lesson' : `${pkg.tier} Lessons`}</span>
                                 {pkg.discountPercent > 0 && (
-                                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300">
+                                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 dark:bg-amber-950/40 dark:text-amber-300">
                                     -{pkg.discountPercent}%
                                   </span>
                                 )}
                               </div>
-                              <span className="text-[10px] text-charcoal-400 dark:text-slate-400 mt-0.5">
+                              <span className="text-[10px] text-charcoal-400 dark:text-zinc-400 mt-0.5">
                                 {pkg.tier === 1 ? 'Single session' : `$${calculatePackagePricing(tutor.hourly_rate, pkg.tier).effectiveHourlyRate}/hr`}
                               </span>
                             </button>
@@ -591,11 +591,11 @@ export default function TutorProfilePage() {
 
                     {/* Booking Mode Selector: 1-on-1 */}
                     <div className="mb-4">
-                      <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                      <label className="block text-xs font-semibold text-charcoal-700 dark:text-zinc-300 uppercase tracking-wider mb-1.5">
                         Format
                       </label>
-                      <div className="p-1 bg-gray-100 dark:bg-[#162032] rounded-lg text-xs font-semibold">
-                        <div className="py-1.5 text-center bg-white dark:bg-[#1C283F] text-navy-800 dark:text-white rounded-md shadow-subtle">
+                      <div className="p-1 bg-gray-100 dark:bg-[#18181c] rounded-lg text-xs font-semibold">
+                        <div className="py-1.5 text-center bg-white dark:bg-[#202025] text-navy-800 dark:text-white rounded-md shadow-subtle">
                           1-on-1 Private Live Instruction
                         </div>
                       </div>
@@ -603,7 +603,7 @@ export default function TutorProfilePage() {
 
                     {/* Availability Day Picker */}
                     <div className="mb-4">
-                      <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                      <label className="block text-xs font-semibold text-charcoal-700 dark:text-zinc-300 uppercase tracking-wider mb-2">
                         Select First Lesson Day (US Eastern)
                       </label>
                       <div className="flex flex-wrap gap-1.5">
@@ -614,8 +614,8 @@ export default function TutorProfilePage() {
                             onClick={() => setSelectedDay(a.day)}
                             className={`px-3 py-1.5 rounded text-xs font-medium border transition ${
                               selectedDay === a.day
-                                ? 'bg-navy-800 dark:bg-emerald-600 text-white border-navy-800 dark:border-emerald-600'
-                                : 'bg-gray-50 dark:bg-[#162032] text-charcoal-700 dark:text-slate-300 border-gray-200 dark:border-[#2D3B4F] hover:bg-gray-100 dark:hover:bg-[#1E293B]'
+                                ? 'bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold text-white border-navy-800 dark:border-amber-600/50'
+                                : 'bg-gray-50 dark:bg-[#18181c] text-charcoal-700 dark:text-zinc-300 border-gray-200 dark:border-[#323238] hover:bg-gray-100 dark:hover:bg-[#27272a]'
                             }`}
                           >
                             {a.day.slice(0, 3)}
@@ -626,20 +626,20 @@ export default function TutorProfilePage() {
 
                     {/* Available Time Slots */}
                     <div className="mb-5">
-                      <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                      <label className="block text-xs font-semibold text-charcoal-700 dark:text-zinc-300 uppercase tracking-wider mb-2">
                         Available Time Slots
                       </label>
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         {activeAvailability?.slots.map((slot) => (
                           <div
                             key={slot}
-                            className="p-2 text-center rounded bg-softblue-50 dark:bg-[#162032] border border-softblue-200 dark:border-[#2D3B4F] text-navy-800 dark:text-emerald-400 font-medium"
+                            className="p-2 text-center rounded bg-softblue-50 dark:bg-[#18181c] border border-softblue-200 dark:border-[#323238] text-navy-800 dark:text-amber-400 font-medium"
                           >
                             {slot}
                           </div>
                         ))}
                       </div>
-                      <p className="mt-2 text-[11px] text-charcoal-400 dark:text-slate-400">
+                      <p className="mt-2 text-[11px] text-charcoal-400 dark:text-zinc-400">
                         Times auto-adjust to your local timezone during checkout.
                       </p>
                     </div>
@@ -647,7 +647,7 @@ export default function TutorProfilePage() {
                     {/* Primary CTA */}
                     <Link
                       href={`/booking/${tutor.id}?format=one_on_one&day=${encodeURIComponent(selectedDay)}${selectedPackage > 1 ? `&package=${selectedPackage}` : ''}`}
-                      className="w-full block text-center py-3 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-sm font-bold shadow-subtle transition"
+                      className="w-full block text-center py-3 bg-navy-800 hover:bg-navy-900 dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-zinc-950 font-bold text-white rounded-lg text-sm font-bold shadow-subtle transition"
                     >
                       {selectedPackage === 1 
                         ? 'Book 1-on-1 Lesson' 
@@ -655,25 +655,25 @@ export default function TutorProfilePage() {
                     </Link>
 
                     {/* Referral Promo Teaser */}
-                    <div className="mt-3 p-2.5 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/40 text-center">
-                      <p className="text-[11px] text-emerald-800 dark:text-emerald-300 flex items-center justify-center gap-1.5 font-medium">
-                        <Gift className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                    <div className="mt-3 p-2.5 rounded-lg bg-emerald-50/70 dark:bg-amber-950/25 border border-emerald-200/60 dark:border-amber-800/40 text-center">
+                      <p className="text-[11px] text-emerald-800 dark:text-amber-300 flex items-center justify-center gap-1.5 font-medium">
+                        <Gift className="w-3.5 h-3.5 text-emerald-600 dark:text-amber-400 flex-shrink-0" />
                         <span>Have a friend referral? Enter it at checkout to get <strong>$20 off</strong></span>
                       </p>
                     </div>
 
                     {/* Safety & Guarantee Points */}
-                    <div className="mt-5 pt-4 border-t border-gray-100 dark:border-[#1E293B] space-y-2 text-[11px] text-charcoal-500 dark:text-slate-400">
+                    <div className="mt-5 pt-4 border-t border-gray-100 dark:border-[#27272a] space-y-2 text-[11px] text-charcoal-500 dark:text-zinc-400">
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400 flex-shrink-0" />
+                        <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-amber-400 flex-shrink-0" />
                         <span>Free cancellation up to 24 hours in advance</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400 flex-shrink-0" />
+                        <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-amber-400 flex-shrink-0" />
                         <span>Secure browser-based classroom</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400 flex-shrink-0" />
+                        <CheckCircle className="w-3.5 h-3.5 text-accent-500 dark:text-amber-400 flex-shrink-0" />
                         <span>Direct parent monitoring & attendance records</span>
                       </div>
                     </div>

@@ -71,7 +71,7 @@ export function TopInstructorsMarquee() {
   const marqueeList = [...INSTRUCTORS, ...INSTRUCTORS];
 
   return (
-    <section className="py-16 sm:py-20 lg:py-24 bg-white dark:bg-[#0A0F1D] border-b border-gray-200/80 dark:border-[#1E293B] transition-colors duration-200 overflow-hidden select-none">
+    <section className="py-16 sm:py-20 lg:py-24 bg-white dark:bg-[#09090b] border-b border-gray-200/80 dark:border-[#27272a] transition-colors duration-200 overflow-hidden select-none">
       
       {/* Top Header Row */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 sm:mb-12">
@@ -80,7 +80,7 @@ export function TopInstructorsMarquee() {
             
             {/* Left: Tag + Headline */}
             <div>
-              <span className="text-xs font-bold text-accent-600 dark:text-emerald-400 tracking-[1.5px] uppercase block mb-2.5">
+              <span className="text-xs font-bold text-accent-600 dark:text-amber-400 tracking-[1.5px] uppercase block mb-2.5">
                 Future-Ready Curriculum
               </span>
               <h2 className="text-2xl sm:text-3xl lg:text-[40px] font-bold text-navy-950 dark:text-white tracking-tight leading-[1.18]">
@@ -90,7 +90,7 @@ export function TopInstructorsMarquee() {
 
             {/* Right: MAANG Companies Banner */}
             <div className="flex flex-col lg:items-end gap-2.5 pt-2 lg:pt-0">
-              <p className="text-xs sm:text-sm font-medium text-charcoal-500 dark:text-slate-400">
+              <p className="text-xs sm:text-sm font-medium text-charcoal-500 dark:text-zinc-400">
                 Working in Top MAANG companies
               </p>
               <div className="flex items-center gap-5 sm:gap-6 flex-wrap text-navy-950 dark:text-white">
@@ -117,8 +117,8 @@ export function TopInstructorsMarquee() {
       <div className="relative w-full overflow-hidden py-2">
         
         {/* Soft edge fade masks on left and right */}
-        <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-24 lg:w-32 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-[#0A0F1D] dark:via-[#0A0F1D]/80 dark:to-transparent z-20 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-24 lg:w-32 bg-gradient-to-l from-white via-white/80 to-transparent dark:from-[#0A0F1D] dark:via-[#0A0F1D]/80 dark:to-transparent z-20 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-24 lg:w-32 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-[#09090b] dark:via-[#09090b]/80 dark:to-transparent z-20 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-24 lg:w-32 bg-gradient-to-l from-white via-white/80 to-transparent dark:from-[#09090b] dark:via-[#09090b]/80 dark:to-transparent z-20 pointer-events-none" />
 
         {/* Animated Marquee Flex Strip */}
         <div className="flex gap-5 sm:gap-6 animate-marquee hover:[animation-play-state:paused] w-max">
@@ -127,7 +127,7 @@ export function TopInstructorsMarquee() {
               key={`${inst.name}-${idx}`}
               className="w-[260px] sm:w-[280px] lg:w-[295px] flex-shrink-0 group cursor-pointer transition-transform duration-300 hover:-translate-y-1.5"
             >
-              <div className="relative rounded-[22px] overflow-hidden border border-navy-800 shadow-subtle group-hover:shadow-lift transition-shadow duration-300 bg-[#0B121E]">
+              <div className="relative rounded-[22px] overflow-hidden border border-navy-800 shadow-subtle group-hover:shadow-lift transition-shadow duration-300 bg-[#121215]">
                 
                 {/* Instructor Studio Portrait */}
                 <div className="relative w-full h-[280px] sm:h-[305px] lg:h-[315px] bg-black overflow-hidden flex items-end justify-center">
@@ -141,7 +141,7 @@ export function TopInstructorsMarquee() {
                 </div>
 
                 {/* Bottom Dark Pill Overlay */}
-                <div className="bg-[#0B121E] px-4 py-3.5 sm:px-5 sm:py-4 text-white">
+                <div className="bg-[#121215] px-4 py-3.5 sm:px-5 sm:py-4 text-white">
                   
                   {/* Row 1: Name + LinkedIn Badge */}
                   <div className="flex items-center justify-between gap-2 mb-1.5">

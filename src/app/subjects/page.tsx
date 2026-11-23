@@ -54,14 +54,14 @@ const detailedSubjects: DetailedSubject[] = [
 ];
 
 const iconMap: Record<string, React.ReactNode> = {
-  Calculator: <Calculator className="w-6 h-6 text-navy-800 dark:text-emerald-400" />,
-  Atom: <Atom className="w-6 h-6 text-navy-800 dark:text-emerald-400" />,
-  TestTube: <TestTube className="w-6 h-6 text-navy-800 dark:text-emerald-400" />,
-  Dna: <Dna className="w-6 h-6 text-navy-800 dark:text-emerald-400" />,
-  Code: <Code className="w-6 h-6 text-navy-800 dark:text-emerald-400" />,
-  BookOpen: <BookOpen className="w-6 h-6 text-navy-800 dark:text-emerald-400" />,
-  Landmark: <Landmark className="w-6 h-6 text-navy-800 dark:text-emerald-400" />,
-  FlaskConical: <FlaskConical className="w-6 h-6 text-navy-800 dark:text-emerald-400" />,
+  Calculator: <Calculator className="w-6 h-6 text-navy-800 dark:text-amber-400" />,
+  Atom: <Atom className="w-6 h-6 text-navy-800 dark:text-amber-400" />,
+  TestTube: <TestTube className="w-6 h-6 text-navy-800 dark:text-amber-400" />,
+  Dna: <Dna className="w-6 h-6 text-navy-800 dark:text-amber-400" />,
+  Code: <Code className="w-6 h-6 text-navy-800 dark:text-amber-400" />,
+  BookOpen: <BookOpen className="w-6 h-6 text-navy-800 dark:text-amber-400" />,
+  Landmark: <Landmark className="w-6 h-6 text-navy-800 dark:text-amber-400" />,
+  FlaskConical: <FlaskConical className="w-6 h-6 text-navy-800 dark:text-amber-400" />,
 };
 
 export default function SubjectsDirectoryPage() {
@@ -85,20 +85,20 @@ export default function SubjectsDirectoryPage() {
   }, [searchQuery, selectedCategory]);
 
   return (
-    <div className="bg-offwhite dark:bg-[#0A0F1D] min-h-screen py-10 lg:py-16 border-b border-gray-200 dark:border-[#1E293B] transition-colors duration-200">
+    <div className="bg-offwhite dark:bg-[#09090b] min-h-screen py-10 lg:py-16 border-b border-gray-200 dark:border-[#27272a] transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Page Header */}
         <FadeIn direction="up" delay={0.05} duration={0.5}>
           <div className="text-center max-w-3xl mx-auto mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-softblue-100 dark:bg-[#162032] border border-softblue-200 dark:border-[#2D3B4F] text-xs font-semibold text-navy-800 dark:text-emerald-400 mb-3 shadow-subtle">
-              <GraduationCap className="w-4 h-4 text-accent-500 dark:text-emerald-400" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-softblue-100 dark:bg-[#18181c] border border-softblue-200 dark:border-[#323238] text-xs font-semibold text-navy-800 dark:text-amber-400 mb-3 shadow-subtle">
+              <GraduationCap className="w-4 h-4 text-accent-500 dark:text-amber-400" />
               <span>US K-12 & AP Curriculum Directory</span>
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-navy-800 dark:text-white tracking-tight">
               Subjects & Curriculum Taught on Classly
             </h1>
-            <p className="mt-3 text-sm sm:text-base text-charcoal-600 dark:text-slate-300 leading-relaxed">
+            <p className="mt-3 text-sm sm:text-base text-charcoal-600 dark:text-zinc-300 leading-relaxed">
               Every subject on Classly is instructed by verified degree-holding educators who specialize in US school curricula, AP exam standards, and foundational academic confidence.
             </p>
           </div>
@@ -106,15 +106,15 @@ export default function SubjectsDirectoryPage() {
 
         {/* Search & Category Filter Bar */}
         <FadeIn direction="up" delay={0.15} duration={0.5}>
-          <div className="bg-white dark:bg-[#111827] p-4 rounded-xl border border-gray-200 dark:border-[#1E293B] shadow-subtle mb-10 max-w-4xl mx-auto space-y-3">
+          <div className="bg-white dark:bg-[#121215] p-4 rounded-xl border border-gray-200 dark:border-[#27272a] shadow-subtle mb-10 max-w-4xl mx-auto space-y-3">
             <div className="relative">
-              <Search className="w-4 h-4 text-charcoal-400 dark:text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-charcoal-400 dark:text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Search by topic (e.g. 'Calculus', 'Python', 'Algebra I & II', 'Geometry', 'Data Structures')..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-[#162032] border border-gray-200 dark:border-[#2D3B4F] rounded-lg text-sm text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-emerald-500 focus:bg-white dark:focus:bg-[#1C283F] transition"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-[#18181c] border border-gray-200 dark:border-[#323238] rounded-lg text-sm text-navy-800 dark:text-white placeholder-charcoal-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-600 dark:focus:ring-amber-400 focus:bg-white dark:focus:bg-[#202025] transition"
               />
             </div>
 
@@ -129,8 +129,8 @@ export default function SubjectsDirectoryPage() {
                   onClick={() => setSelectedCategory(cat.id)}
                   className={`px-3 py-1.5 rounded-lg border transition active:scale-95 ${
                     selectedCategory === cat.id
-                      ? 'bg-navy-800 dark:bg-emerald-600 text-white border-navy-800 dark:border-emerald-600 shadow-subtle'
-                      : 'bg-gray-50 dark:bg-[#162032] text-charcoal-700 dark:text-slate-300 border-gray-200 dark:border-[#2D3B4F] hover:bg-gray-100 dark:hover:bg-[#1E293B]'
+                      ? 'bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold text-white border-navy-800 dark:border-amber-600/50 shadow-subtle'
+                      : 'bg-gray-50 dark:bg-[#18181c] text-charcoal-700 dark:text-zinc-300 border-gray-200 dark:border-[#323238] hover:bg-gray-100 dark:hover:bg-[#27272a]'
                   }`}
                 >
                   {cat.label}
@@ -145,20 +145,20 @@ export default function SubjectsDirectoryPage() {
           {filteredSubjects.map((subj) => (
             <StaggerItem key={subj.id} distance={18} duration={0.5}>
               <div
-                className="bg-white dark:bg-[#111827] rounded-2xl border border-gray-200/90 dark:border-[#1E293B] shadow-subtle hover:shadow-card dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] hover:border-navy-300 dark:hover:border-slate-600 transition-all duration-300 p-6 sm:p-7 flex flex-col justify-between h-full group hover:-translate-y-1"
+                className="bg-white dark:bg-[#121215] rounded-2xl border border-gray-200/90 dark:border-[#27272a] shadow-subtle hover:shadow-card dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] hover:border-navy-300 dark:hover:border-zinc-700 transition-all duration-300 p-6 sm:p-7 flex flex-col justify-between h-full group hover:-translate-y-1"
               >
                 <div>
                   {/* Header row */}
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-softblue-100 dark:bg-[#162032] border border-transparent dark:border-[#2D3B4F] flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
+                      <div className="w-12 h-12 rounded-xl bg-softblue-100 dark:bg-[#18181c] border border-transparent dark:border-[#323238] flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
                         {iconMap[subj.iconName]}
                       </div>
                       <div>
                         <h2 className="text-xl font-bold text-navy-800 dark:text-white">
                           {subj.name}
                         </h2>
-                        <span className="text-xs font-semibold text-accent-600 dark:text-emerald-400">
+                        <span className="text-xs font-semibold text-accent-600 dark:text-amber-400">
                           {subj.headline}
                         </span>
                       </div>
@@ -166,26 +166,26 @@ export default function SubjectsDirectoryPage() {
 
                     <div className="text-right flex-shrink-0">
                       <span className="text-xs font-bold text-navy-800 dark:text-white block">{subj.grades}</span>
-                      <span className="text-[11px] text-accent-700 dark:text-emerald-300 font-semibold bg-accent-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-accent-200 dark:border-emerald-800/60">
+                      <span className="text-[11px] text-accent-700 dark:text-amber-300 font-semibold bg-accent-50 dark:bg-amber-950/30 px-2 py-0.5 rounded border border-accent-200 dark:border-amber-800/40">
                         Standard Track
                       </span>
                     </div>
                   </div>
 
-                  <p className="text-xs text-charcoal-600 dark:text-slate-300 leading-relaxed mb-4">
+                  <p className="text-xs text-charcoal-600 dark:text-zinc-300 leading-relaxed mb-4">
                     {subj.description}
                   </p>
 
                   {/* Subtopic tags */}
                   <div className="mb-6">
-                    <span className="text-[11px] font-bold text-charcoal-400 dark:text-slate-400 uppercase tracking-wider block mb-2">
+                    <span className="text-[11px] font-bold text-charcoal-400 dark:text-zinc-400 uppercase tracking-wider block mb-2">
                       Key Topics Covered ({subj.grades})
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {subj.topics.map((t) => (
                         <span
                           key={t}
-                          className="px-2.5 py-1 rounded bg-gray-50 dark:bg-[#162032] text-navy-900 dark:text-slate-200 text-xs font-medium border border-gray-200 dark:border-[#2D3B4F] hover:bg-gray-100 dark:hover:bg-[#1E293B] transition-colors"
+                          className="px-2.5 py-1 rounded bg-gray-50 dark:bg-[#18181c] text-navy-900 dark:text-zinc-200 text-xs font-medium border border-gray-200 dark:border-[#323238] hover:bg-gray-100 dark:hover:bg-[#27272a] transition-colors"
                         >
                           {t}
                         </span>
@@ -195,15 +195,15 @@ export default function SubjectsDirectoryPage() {
                 </div>
 
                 {/* Bottom action row */}
-                <div className="pt-4 border-t border-gray-100 dark:border-[#1E293B] flex items-center justify-between">
-                  <span className="text-[11px] text-charcoal-500 dark:text-slate-400 flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-accent-500 dark:text-emerald-400" />
+                <div className="pt-4 border-t border-gray-100 dark:border-[#27272a] flex items-center justify-between">
+                  <span className="text-[11px] text-charcoal-500 dark:text-zinc-400 flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-accent-500 dark:text-amber-400" />
                     <span>1-on-1 & Small Group Sessions</span>
                   </span>
                   
                   <Link
                     href={`/tutors?subject=${encodeURIComponent(subj.name)}`}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition shadow-subtle active:scale-95"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-navy-800 hover:bg-navy-900 dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-zinc-950 font-bold text-white rounded-lg text-xs font-bold transition shadow-subtle active:scale-95"
                   >
                     <span>Browse {subj.name} Tutors</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -217,24 +217,24 @@ export default function SubjectsDirectoryPage() {
 
         {/* Pedagogical Trust Strip */}
         <FadeIn direction="up" delay={0.2} duration={0.5}>
-          <div className="mt-14 p-8 bg-white dark:bg-[#111827] rounded-2xl border border-gray-200 dark:border-[#1E293B] shadow-subtle hover:shadow-card transition-shadow duration-300">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-charcoal-600 dark:text-slate-300">
+          <div className="mt-14 p-8 bg-white dark:bg-[#121215] rounded-2xl border border-gray-200 dark:border-[#27272a] shadow-subtle hover:shadow-card transition-shadow duration-300">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-charcoal-600 dark:text-zinc-300">
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-accent-500 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-accent-500 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold text-navy-800 dark:text-white text-sm block mb-1">Targeted to US School Syllabi</span>
                   <span>Our tutors teach directly from your student's textbook, teacher assignments, and state standards.</span>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-accent-500 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-accent-500 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold text-navy-800 dark:text-white text-sm block mb-1">College Board AP Exam Alignment</span>
                   <span>Specialized focus on FRQs (Free-Response Questions), rubric scoring guidelines, and past exam pattern practice.</span>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-accent-500 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-accent-500 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold text-navy-800 dark:text-white text-sm block mb-1">Homework & Test Preparation</span>
                   <span>Bring difficult weekly homework problems directly into the live whiteboard classroom for immediate clarity.</span>

@@ -89,26 +89,26 @@ export function FeaturedTutors() {
   // When no educators are approved yet, showcase the rigorous educator accreditation standard
   if (!loading && featured.length === 0) {
     return (
-      <section className="py-16 lg:py-20 bg-offwhite/60 dark:bg-[#0A0F1D] border-b border-gray-200/70 dark:border-[#1E293B] transition-colors duration-200">
+      <section className="py-16 lg:py-20 bg-offwhite/60 dark:bg-[#09090b] border-b border-gray-200/70 dark:border-[#27272a] transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <FadeIn direction="up" delay={0.05} duration={0.5}>
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
               <div>
-                <div className="inline-flex items-center gap-2 text-xs font-semibold text-accent-600 dark:text-emerald-400 uppercase tracking-wider mb-2">
+                <div className="inline-flex items-center gap-2 text-xs font-semibold text-accent-600 dark:text-amber-400 uppercase tracking-wider mb-2">
                   <ShieldCheck className="w-4 h-4" />
                   <span>Rigorous Educator Accreditation</span>
                 </div>
                 <h2 className="text-3xl font-bold text-navy-800 dark:text-white tracking-tight">
                   Our Educator Standards
                 </h2>
-                <p className="mt-2 text-charcoal-600 dark:text-slate-300 text-sm max-w-xl">
+                <p className="mt-2 text-charcoal-600 dark:text-zinc-300 text-sm max-w-xl">
                   Every educator on Classly undergoes an audit before conducting lessons. Learn about our verification criteria.
                 </p>
               </div>
               <Link
                 href="/become-a-tutor"
-                className="mt-4 md:mt-0 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 dark:text-emerald-400 hover:text-navy-900 dark:hover:text-emerald-300 group"
+                className="mt-4 md:mt-0 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 dark:text-amber-400 hover:text-navy-900 dark:hover:text-amber-300 group"
               >
                 <span>Apply to teach on Classly</span>
                 <ArrowRight className="w-4 h-4 text-accent-500 transition-transform group-hover:translate-x-1" />
@@ -118,17 +118,17 @@ export function FeaturedTutors() {
 
           <StaggerContainer staggerDelay={0.08} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <StaggerItem distance={18} duration={0.5}>
-              <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200/90 dark:border-[#1E293B] shadow-subtle dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)] hover:shadow-lift transition-all duration-300 flex flex-col justify-between h-full group hover:-translate-y-1">
+              <div className="bg-white dark:bg-[#121215] p-6 rounded-xl border border-gray-200/90 dark:border-[#27272a] shadow-subtle dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)] hover:shadow-lift transition-all duration-300 flex flex-col justify-between h-full group hover:-translate-y-1">
                 <div>
-                  <div className="w-10 h-10 rounded-lg bg-softblue-100 dark:bg-[#1E293B] flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-105">
+                  <div className="w-10 h-10 rounded-lg bg-softblue-100 dark:bg-[#27272a] flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-105">
                     <GraduationCap className="w-5 h-5 text-navy-800 dark:text-white" />
                   </div>
                   <h3 className="font-bold text-base text-navy-800 dark:text-white mb-2">Degree Verification</h3>
-                  <p className="text-xs text-charcoal-600 dark:text-slate-300 leading-relaxed">
+                  <p className="text-xs text-charcoal-600 dark:text-zinc-300 leading-relaxed">
                     Direct audit of undergraduate and master's degree transcripts from recognized universities and institutions.
                   </p>
                 </div>
-                <div className="mt-4 pt-3 border-t border-gray-100 dark:border-[#1E293B] text-[11px] font-semibold text-accent-700 dark:text-emerald-400 flex items-center gap-1">
+                <div className="mt-4 pt-3 border-t border-gray-100 dark:border-[#27272a] text-[11px] font-semibold text-accent-700 dark:text-amber-400 flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>Audited Transcripts</span>
                 </div>
@@ -136,17 +136,17 @@ export function FeaturedTutors() {
             </StaggerItem>
 
             <StaggerItem distance={18} duration={0.5}>
-              <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200/90 dark:border-[#1E293B] shadow-subtle dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)] hover:shadow-lift transition-all duration-300 flex flex-col justify-between h-full group hover:-translate-y-1">
+              <div className="bg-white dark:bg-[#121215] p-6 rounded-xl border border-gray-200/90 dark:border-[#27272a] shadow-subtle dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)] hover:shadow-lift transition-all duration-300 flex flex-col justify-between h-full group hover:-translate-y-1">
                 <div>
-                  <div className="w-10 h-10 rounded-lg bg-softblue-100 dark:bg-[#1E293B] flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-105">
+                  <div className="w-10 h-10 rounded-lg bg-softblue-100 dark:bg-[#27272a] flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-105">
                     <BookOpen className="w-5 h-5 text-navy-800 dark:text-white" />
                   </div>
                   <h3 className="font-bold text-base text-navy-800 dark:text-white mb-2">Curriculum Mastery</h3>
-                  <p className="text-xs text-charcoal-600 dark:text-slate-300 leading-relaxed">
+                  <p className="text-xs text-charcoal-600 dark:text-zinc-300 leading-relaxed">
                     Specialized evaluation in US Common Core, College Board AP course rubrics, and state standardized test frameworks.
                   </p>
                 </div>
-                <div className="mt-4 pt-3 border-t border-gray-100 dark:border-[#1E293B] text-[11px] font-semibold text-accent-700 dark:text-emerald-400 flex items-center gap-1">
+                <div className="mt-4 pt-3 border-t border-gray-100 dark:border-[#27272a] text-[11px] font-semibold text-accent-700 dark:text-amber-400 flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>AP & K-12 Aligned</span>
                 </div>
@@ -154,17 +154,17 @@ export function FeaturedTutors() {
             </StaggerItem>
 
             <StaggerItem distance={18} duration={0.5}>
-              <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200/90 dark:border-[#1E293B] shadow-subtle dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)] hover:shadow-lift transition-all duration-300 flex flex-col justify-between h-full group hover:-translate-y-1">
+              <div className="bg-white dark:bg-[#121215] p-6 rounded-xl border border-gray-200/90 dark:border-[#27272a] shadow-subtle dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)] hover:shadow-lift transition-all duration-300 flex flex-col justify-between h-full group hover:-translate-y-1">
                 <div>
-                  <div className="w-10 h-10 rounded-lg bg-softblue-100 dark:bg-[#1E293B] flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-105">
+                  <div className="w-10 h-10 rounded-lg bg-softblue-100 dark:bg-[#27272a] flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-105">
                     <Award className="w-5 h-5 text-navy-800 dark:text-white" />
                   </div>
                   <h3 className="font-bold text-base text-navy-800 dark:text-white mb-2">Pedagogical Demo</h3>
-                  <p className="text-xs text-charcoal-600 dark:text-slate-300 leading-relaxed">
+                  <p className="text-xs text-charcoal-600 dark:text-zinc-300 leading-relaxed">
                     Live digital whiteboard mock teaching sessions assessed for clarity, student patience, and conceptual explanation.
                   </p>
                 </div>
-                <div className="mt-4 pt-3 border-t border-gray-100 dark:border-[#1E293B] text-[11px] font-semibold text-accent-700 dark:text-emerald-400 flex items-center gap-1">
+                <div className="mt-4 pt-3 border-t border-gray-100 dark:border-[#27272a] text-[11px] font-semibold text-accent-700 dark:text-amber-400 flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>Simulated Instruction</span>
                 </div>
@@ -172,17 +172,17 @@ export function FeaturedTutors() {
             </StaggerItem>
 
             <StaggerItem distance={18} duration={0.5}>
-              <div className="bg-white dark:bg-[#111827] p-6 rounded-xl border border-gray-200/90 dark:border-[#1E293B] shadow-subtle dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)] hover:shadow-lift transition-all duration-300 flex flex-col justify-between h-full group hover:-translate-y-1">
+              <div className="bg-white dark:bg-[#121215] p-6 rounded-xl border border-gray-200/90 dark:border-[#27272a] shadow-subtle dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)] hover:shadow-lift transition-all duration-300 flex flex-col justify-between h-full group hover:-translate-y-1">
                 <div>
-                  <div className="w-10 h-10 rounded-lg bg-softblue-100 dark:bg-[#1E293B] flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-105">
-                    <ShieldCheck className="w-5 h-5 text-accent-500 dark:text-emerald-400" />
+                  <div className="w-10 h-10 rounded-lg bg-softblue-100 dark:bg-[#27272a] flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-105">
+                    <ShieldCheck className="w-5 h-5 text-accent-500 dark:text-amber-400" />
                   </div>
                   <h3 className="font-bold text-base text-navy-800 dark:text-white mb-2">Identity & Safety</h3>
-                  <p className="text-xs text-charcoal-600 dark:text-slate-300 leading-relaxed">
+                  <p className="text-xs text-charcoal-600 dark:text-zinc-300 leading-relaxed">
                     Government ID verification, COPPA compliant parent controls, and secure monitored classroom access.
                   </p>
                 </div>
-                <div className="mt-4 pt-3 border-t border-gray-100 dark:border-[#1E293B] text-[11px] font-semibold text-accent-700 dark:text-emerald-400 flex items-center gap-1">
+                <div className="mt-4 pt-3 border-t border-gray-100 dark:border-[#27272a] text-[11px] font-semibold text-accent-700 dark:text-amber-400 flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>COPPA Safe Environment</span>
                 </div>
@@ -193,7 +193,7 @@ export function FeaturedTutors() {
           <div className="mt-10 text-center">
             <Link
               href="/tutors"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition shadow-subtle"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-navy-800 hover:bg-navy-900 dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-zinc-950 font-bold text-white rounded-lg text-xs font-bold transition shadow-subtle"
             >
               <span>Explore Educator Directory</span>
               <ArrowRight className="w-4 h-4" />
@@ -207,26 +207,26 @@ export function FeaturedTutors() {
 
   // When real approved educators exist in the database:
   return (
-    <section className="py-16 lg:py-20 bg-offwhite/60 dark:bg-[#0A0F1D] border-b border-gray-200/70 dark:border-[#1E293B] transition-colors duration-200">
+    <section className="py-16 lg:py-20 bg-offwhite/60 dark:bg-[#09090b] border-b border-gray-200/70 dark:border-[#27272a] transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <FadeIn direction="up" delay={0.05} duration={0.5}>
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
-              <div className="inline-flex items-center gap-2 text-xs font-semibold text-accent-600 dark:text-emerald-400 uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold text-accent-600 dark:text-amber-400 uppercase tracking-wider mb-2">
                 <ShieldCheck className="w-4 h-4" />
                 <span>Rigorous Vetting • Verified Credentials</span>
               </div>
               <h2 className="text-3xl font-bold text-navy-800 dark:text-white tracking-tight">
                 Featured Educators
               </h2>
-              <p className="mt-2 text-charcoal-600 dark:text-slate-300 text-sm max-w-xl">
+              <p className="mt-2 text-charcoal-600 dark:text-zinc-300 text-sm max-w-xl">
                 Meet some of our accredited instructors with university degrees and specialized AP subject expertise.
               </p>
             </div>
             <Link
               href="/tutors"
-              className="mt-4 md:mt-0 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 dark:text-emerald-400 hover:text-navy-900 dark:hover:text-emerald-300 group"
+              className="mt-4 md:mt-0 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 dark:text-amber-400 hover:text-navy-900 dark:hover:text-amber-300 group"
             >
               <span>View all tutors</span>
               <ArrowRight className="w-4 h-4 text-accent-500 transition-transform group-hover:translate-x-1" />
@@ -238,9 +238,9 @@ export function FeaturedTutors() {
           {featured.map((tutor) => (
             <StaggerItem key={tutor.id} distance={18} duration={0.5}>
               <div
-                className="bg-white dark:bg-[#111827] rounded-xl border border-gray-200/90 dark:border-[#1E293B] shadow-subtle dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)] hover:shadow-lift transition-all duration-300 flex flex-col overflow-hidden h-full group hover:-translate-y-1"
+                className="bg-white dark:bg-[#121215] rounded-xl border border-gray-200/90 dark:border-[#27272a] shadow-subtle dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)] hover:shadow-lift transition-all duration-300 flex flex-col overflow-hidden h-full group hover:-translate-y-1"
               >
-                <div className="relative aspect-[4/3] w-full bg-gray-100 dark:bg-[#162032] overflow-hidden">
+                <div className="relative aspect-[4/3] w-full bg-gray-100 dark:bg-[#18181c] overflow-hidden">
                   <Image
                     src={tutor.avatar_url}
                     alt={tutor.full_name}
@@ -252,7 +252,7 @@ export function FeaturedTutors() {
                     ${tutor.hourly_rate} / hr
                   </div>
 
-                  <div className="absolute bottom-3 left-3 bg-white/95 dark:bg-[#111827]/95 backdrop-blur-sm px-2 py-0.5 rounded text-[11px] font-semibold text-navy-800 dark:text-white flex items-center gap-1 shadow-subtle border border-transparent dark:border-[#1E293B]">
+                  <div className="absolute bottom-3 left-3 bg-white/95 dark:bg-[#121215]/95 backdrop-blur-sm px-2 py-0.5 rounded text-[11px] font-semibold text-navy-800 dark:text-white flex items-center gap-1 shadow-subtle border border-transparent dark:border-[#27272a]">
                     <ShieldCheck className="w-3.5 h-3.5 text-accent-500" />
                     <span>Verified</span>
                   </div>
@@ -264,7 +264,7 @@ export function FeaturedTutors() {
                       <h3 className="text-base font-bold text-navy-800 dark:text-white truncate">
                         {tutor.full_name}
                       </h3>
-                      <div className="flex items-center gap-1 text-xs font-semibold text-navy-900 dark:text-slate-100">
+                      <div className="flex items-center gap-1 text-xs font-semibold text-navy-900 dark:text-zinc-100">
                         {tutor.review_count > 0 ? (
                           <>
                             <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
@@ -272,40 +272,40 @@ export function FeaturedTutors() {
                             <span className="text-gray-400 text-[11px]">({tutor.review_count})</span>
                           </>
                         ) : (
-                          <span className="text-[11px] text-accent-700 dark:text-emerald-400 bg-accent-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded font-semibold border border-accent-200 dark:border-emerald-800/60">
+                          <span className="text-[11px] text-accent-700 dark:text-amber-400 bg-accent-50 dark:bg-amber-950/30 px-1.5 py-0.5 rounded font-semibold border border-accent-200 dark:border-amber-800/40">
                             New Educator
                           </span>
                         )}
                       </div>
                     </div>
 
-                    <p className="text-xs text-charcoal-500 dark:text-slate-400 line-clamp-2 mb-3 leading-relaxed">
+                    <p className="text-xs text-charcoal-500 dark:text-zinc-400 line-clamp-2 mb-3 leading-relaxed">
                       {tutor.headline}
                     </p>
 
                     <div className="flex flex-wrap gap-1.5 mb-4">
                       {tutor.years_experience > 0 && (
-                        <span className="px-2 py-0.5 rounded bg-gray-50 dark:bg-[#162032] text-charcoal-600 dark:text-slate-300 text-[11px] font-medium border border-gray-200 dark:border-[#1E293B]">
+                        <span className="px-2 py-0.5 rounded bg-gray-50 dark:bg-[#18181c] text-charcoal-600 dark:text-zinc-300 text-[11px] font-medium border border-gray-200 dark:border-[#27272a]">
                           {tutor.years_experience}+ yrs exp
                         </span>
                       )}
                     </div>
 
-                    <p className="text-xs text-charcoal-600 dark:text-slate-300 line-clamp-3 leading-relaxed mb-4">
+                    <p className="text-xs text-charcoal-600 dark:text-zinc-300 line-clamp-3 leading-relaxed mb-4">
                       {tutor.bio}
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-gray-100 dark:border-[#1E293B] flex items-center gap-2">
+                  <div className="pt-3 border-t border-gray-100 dark:border-[#27272a] flex items-center gap-2">
                     <Link
                       href={`/tutors/${tutor.id}`}
-                      className="flex-1 text-center py-2 px-3 rounded-md text-xs font-semibold text-navy-800 dark:text-slate-200 bg-gray-50 dark:bg-[#162032] hover:bg-navy-800 hover:text-white dark:hover:bg-[#1E293B] dark:hover:text-white border border-gray-200 dark:border-[#2D3B4F] transition-colors"
+                      className="flex-1 text-center py-2 px-3 rounded-md text-xs font-semibold text-navy-800 dark:text-zinc-200 bg-gray-50 dark:bg-[#18181c] hover:bg-navy-800 hover:text-white dark:hover:bg-[#27272a] dark:hover:text-white border border-gray-200 dark:border-[#323238] transition-colors"
                     >
                       View Profile
                     </Link>
                     <Link
                       href={`/booking/${tutor.id}`}
-                      className="py-2 px-3 rounded-md text-xs font-semibold text-white bg-accent-500 hover:bg-accent-600 dark:bg-emerald-600 dark:hover:bg-emerald-500 transition-colors"
+                      className="py-2 px-3 rounded-md text-xs font-semibold text-white bg-accent-500 hover:bg-accent-600 dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-zinc-950 font-bold transition-colors"
                     >
                       Book
                     </Link>

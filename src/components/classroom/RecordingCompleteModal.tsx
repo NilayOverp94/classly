@@ -113,13 +113,13 @@ export function RecordingCompleteModal({
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
       <div 
-        className="bg-[#0E1526] border border-[#1E293B] text-slate-100 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+        className="bg-[#0c0c0e] border border-[#27272a] text-slate-100 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-5 border-b border-[#1E293B] bg-[#111827] flex items-center justify-between">
+        <div className="p-5 border-b border-[#27272a] bg-[#121215] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
               <Film className="w-5 h-5" />
             </div>
             <div>
@@ -129,7 +129,7 @@ export function RecordingCompleteModal({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#1E293B] transition"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#27272a] transition"
           >
             <X className="w-5 h-5" />
           </button>
@@ -138,7 +138,7 @@ export function RecordingCompleteModal({
         {/* Content */}
         <div className="p-5 space-y-4">
           {/* Video Preview */}
-          <div className="relative rounded-xl overflow-hidden bg-black aspect-video border border-[#1E293B]">
+          <div className="relative rounded-xl overflow-hidden bg-black aspect-video border border-[#27272a]">
             <video
               src={recordedUrl}
               controls
@@ -148,10 +148,10 @@ export function RecordingCompleteModal({
           </div>
 
           {/* Quick Stats Pill */}
-          <div className="flex items-center justify-between text-xs bg-[#162032] p-3 rounded-xl border border-[#1E293B]">
+          <div className="flex items-center justify-between text-xs bg-[#18181c] p-3 rounded-xl border border-[#27272a]">
             <div>
               <span className="text-slate-400">Duration: </span>
-              <strong className="text-emerald-400 font-mono">{formatDuration(durationSeconds)}</strong>
+              <strong className="text-amber-400 font-mono">{formatDuration(durationSeconds)}</strong>
             </div>
             <div>
               <span className="text-slate-400">Estimated Size: </span>
@@ -172,14 +172,14 @@ export function RecordingCompleteModal({
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3.5 py-2 bg-[#162032] border border-[#1E293B] focus:border-emerald-500 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none"
+              className="w-full px-3.5 py-2 bg-[#18181c] border border-[#27272a] focus:border-amber-400 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none"
               placeholder="e.g. Calculus: Derivatives Review"
             />
           </div>
 
           {savedSuccess && (
-            <div className="p-3 bg-emerald-950/60 border border-emerald-500/40 rounded-xl flex items-center gap-2 text-xs text-emerald-300">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div className="p-3 bg-amber-950/40 border border-amber-500/40 rounded-xl flex items-center gap-2 text-xs text-amber-300">
+              <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
               <span>Recording successfully archived and linked to student & teacher dashboards!</span>
             </div>
           )}
@@ -189,7 +189,7 @@ export function RecordingCompleteModal({
             <button
               onClick={handleSaveToCloud}
               disabled={isSaving || savedSuccess}
-              className="w-full sm:flex-1 py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm"
+              className="w-full sm:flex-1 py-2.5 px-4 bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold disabled:bg-zinc-800 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm"
             >
               {isSaving ? (
                 <>
@@ -211,7 +211,7 @@ export function RecordingCompleteModal({
 
             <button
               onClick={handleDownload}
-              className="w-full sm:w-auto py-2.5 px-4 bg-[#162032] hover:bg-[#1E293B] text-slate-200 border border-[#1E293B] rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2"
+              className="w-full sm:w-auto py-2.5 px-4 bg-[#18181c] hover:bg-[#27272a] text-slate-200 border border-[#27272a] rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2"
             >
               <Download className="w-4 h-4" />
               <span>Download File</span>

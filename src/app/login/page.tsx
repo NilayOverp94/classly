@@ -205,7 +205,7 @@ function LoginFormContent() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col justify-between bg-[#F9FAF8] dark:bg-[#0A0F1D] text-navy-800 dark:text-slate-100 selection:bg-softblue-200 selection:text-navy-900 overflow-hidden transition-colors duration-200">
+    <div className="relative min-h-screen flex flex-col justify-between bg-[#F9FAF8] dark:bg-[#09090b] text-navy-800 dark:text-zinc-100 selection:bg-softblue-200 selection:text-navy-900 overflow-hidden transition-colors duration-200">
       
       {/* 1. Atmospheric Context: Quiet, sunlit academic architectural background */}
       <div className="absolute inset-0 pointer-events-none select-none z-0">
@@ -217,7 +217,7 @@ function LoginFormContent() {
           className="object-cover object-center opacity-[0.14] dark:opacity-[0.05] blur-[3px] scale-105"
         />
         {/* Soft, warm architectural daylight wash */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#FAF9F6]/92 via-[#F8F9FA]/88 to-[#F1F3F5]/96 dark:from-[#0A0F1D]/95 dark:via-[#0A0F1D]/90 dark:to-[#070C15]/98" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FAF9F6]/92 via-[#F8F9FA]/88 to-[#F1F3F5]/96 dark:from-[#09090b]/95 dark:via-[#09090b]/90 dark:to-[#09090b]/98" />
         
         {/* Minimal architectural precision grid */}
         <div 
@@ -229,14 +229,14 @@ function LoginFormContent() {
         />
 
         {/* Ambient top light beam */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-b from-white/90 via-softblue-50/20 to-transparent dark:from-emerald-500/10 dark:via-blue-500/5 blur-3xl pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-b from-white/90 via-softblue-50/20 to-transparent dark:from-amber-500/10 dark:via-blue-500/5 blur-3xl pointer-events-none" />
       </div>
 
       {/* Top Bar: Clean minimal header navigation */}
       <header className="relative z-10 w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
         <Link 
           href="/" 
-          className="inline-flex items-center gap-2 text-xs font-semibold text-charcoal-600 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white transition-colors group"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-charcoal-600 dark:text-zinc-400 hover:text-navy-900 dark:hover:text-white transition-colors group"
         >
           <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5" />
           <span>Back to Classly</span>
@@ -244,7 +244,7 @@ function LoginFormContent() {
 
         <Link
           href="/faq"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-charcoal-500 dark:text-slate-400 hover:text-navy-800 dark:hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-charcoal-500 dark:text-zinc-400 hover:text-navy-800 dark:hover:text-white transition-colors"
         >
           <HelpCircle className="w-3.5 h-3.5" />
           <span>Help & Support</span>
@@ -257,7 +257,7 @@ function LoginFormContent() {
         {/* Concentric Framing Architecture */}
         <ScaleIn className="w-full max-w-[440px]">
           <div 
-            className="w-full rounded-[28px] p-2 transition-all duration-300 border border-charcoal-200/50 dark:border-[#1E293B] bg-white/75 dark:bg-[#111827]/80 backdrop-blur-xl"
+            className="w-full rounded-[28px] p-2 transition-all duration-300 border border-charcoal-200/50 dark:border-[#27272a] bg-white/75 dark:bg-[#121215]/80 backdrop-blur-xl"
             style={{
               boxShadow: `
                 0 1px 2px rgba(24, 49, 83, 0.03),
@@ -267,7 +267,7 @@ function LoginFormContent() {
               `,
             }}
           >
-          <div className="relative rounded-[20px] bg-white dark:bg-[#111827] border border-charcoal-200/70 dark:border-[#1E293B] p-7 sm:p-9 shadow-sm overflow-hidden">
+          <div className="relative rounded-[20px] bg-white dark:bg-[#121215] border border-charcoal-200/70 dark:border-[#27272a] p-7 sm:p-9 shadow-sm overflow-hidden">
             
             {/* Top ambient edge highlight */}
             <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white dark:via-slate-600 to-transparent opacity-80" />
@@ -275,7 +275,7 @@ function LoginFormContent() {
             {/* SUCCESS STATE TRANSITION */}
             {success ? (
               <div className="py-10 flex flex-col items-center justify-center text-center animate-check-pop">
-                <div className="relative w-16 h-16 rounded-full bg-accent-50 dark:bg-emerald-950/40 border border-accent-300/80 dark:border-emerald-800/60 flex items-center justify-center mb-5 text-accent-600 dark:text-emerald-400 shadow-[0_0_24px_rgba(69,168,121,0.2)]">
+                <div className="relative w-16 h-16 rounded-full bg-accent-50 dark:bg-amber-950/30 border border-accent-300/80 dark:border-amber-800/40 flex items-center justify-center mb-5 text-accent-600 dark:text-amber-400 shadow-[0_0_24px_rgba(69,168,121,0.2)]">
                   <Check className="w-8 h-8 stroke-[2.5]" />
                 </div>
 
@@ -283,15 +283,15 @@ function LoginFormContent() {
                   {successMessage}
                 </h2>
                 
-                <p className="text-xs text-charcoal-500 dark:text-slate-400 max-w-xs mb-6">
+                <p className="text-xs text-charcoal-500 dark:text-zinc-400 max-w-xs mb-6">
                   {role === 'teacher'
                     ? 'Entering your educator studio...'
                     : 'Opening your learning workspace...'}
                 </p>
 
                 {/* Progress sweep indicator */}
-                <div className="w-48 h-1 bg-charcoal-100 dark:bg-[#162032] rounded-full overflow-hidden">
-                  <div className="h-full bg-accent-500 dark:bg-emerald-500 rounded-full animate-progress-sweep" />
+                <div className="w-48 h-1 bg-charcoal-100 dark:bg-[#18181c] rounded-full overflow-hidden">
+                  <div className="h-full bg-accent-500 dark:bg-amber-400 rounded-full animate-progress-sweep" />
                 </div>
               </div>
             ) : (
@@ -303,7 +303,7 @@ function LoginFormContent() {
                   <div className="relative group cursor-pointer">
                     <div className="absolute -inset-1.5 rounded-2xl bg-amber-400/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out" />
                     
-                    <div className="relative w-14 h-14 rounded-[16px] p-2 bg-white dark:bg-[#162032] border border-charcoal-200/80 dark:border-[#2D3B4F] shadow-[0_4px_16px_rgba(24,49,83,0.08)] transition-all duration-300 ease-out group-hover:scale-105 group-hover:-translate-y-0.5 flex items-center justify-center">
+                    <div className="relative w-14 h-14 rounded-[16px] p-2 bg-white dark:bg-[#18181c] border border-charcoal-200/80 dark:border-[#323238] shadow-[0_4px_16px_rgba(24,49,83,0.08)] transition-all duration-300 ease-out group-hover:scale-105 group-hover:-translate-y-0.5 flex items-center justify-center">
                       <Image
                         src="/images/logo-mark.png"
                         alt="Classly"
@@ -318,14 +318,14 @@ function LoginFormContent() {
 
                 {/* Mode Switcher: Sign In vs Create Account */}
                 <div className="flex items-center justify-center mb-5">
-                  <div className="grid grid-cols-2 p-1 bg-charcoal-100 dark:bg-[#162032] rounded-xl border border-charcoal-200/60 dark:border-[#2D3B4F] w-full max-w-[280px]">
+                  <div className="grid grid-cols-2 p-1 bg-charcoal-100 dark:bg-[#18181c] rounded-xl border border-charcoal-200/60 dark:border-[#323238] w-full max-w-[280px]">
                     <button
                       type="button"
                       onClick={() => handleModeChange('signin')}
                       className={`py-1.5 text-xs font-bold rounded-lg transition-all ${
                         mode === 'signin'
-                          ? 'bg-white dark:bg-[#1E293B] text-navy-900 dark:text-white shadow-sm border border-charcoal-200/50 dark:border-transparent'
-                          : 'text-charcoal-500 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white'
+                          ? 'bg-white dark:bg-[#27272a] text-navy-900 dark:text-white shadow-sm border border-charcoal-200/50 dark:border-transparent'
+                          : 'text-charcoal-500 dark:text-zinc-400 hover:text-navy-900 dark:hover:text-white'
                       }`}
                     >
                       Sign In
@@ -335,8 +335,8 @@ function LoginFormContent() {
                       onClick={() => handleModeChange('signup')}
                       className={`py-1.5 text-xs font-bold rounded-lg transition-all ${
                         mode === 'signup'
-                          ? 'bg-white dark:bg-[#1E293B] text-navy-900 dark:text-white shadow-sm border border-charcoal-200/50 dark:border-transparent'
-                          : 'text-charcoal-500 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white'
+                          ? 'bg-white dark:bg-[#27272a] text-navy-900 dark:text-white shadow-sm border border-charcoal-200/50 dark:border-transparent'
+                          : 'text-charcoal-500 dark:text-zinc-400 hover:text-navy-900 dark:hover:text-white'
                       }`}
                     >
                       Create Account
@@ -351,7 +351,7 @@ function LoginFormContent() {
                       ? (role === 'teacher' ? 'Educator Sign In' : 'Student & Parent Sign In')
                       : (role === 'teacher' ? 'Create Educator Account' : 'Create Student Account')}
                   </h1>
-                  <p className="mt-1 text-xs text-charcoal-500 dark:text-slate-400">
+                  <p className="mt-1 text-xs text-charcoal-500 dark:text-zinc-400">
                     {role === 'teacher'
                       ? 'Access your teaching schedule, whiteboards, and earnings'
                       : 'Access your 1-on-1 tutoring sessions, homework, and live lessons'}
@@ -360,17 +360,17 @@ function LoginFormContent() {
 
                 {/* Account Type Selector: Strictly Student / Parent vs Teacher */}
                 <div className="mb-5">
-                  <div className="grid grid-cols-2 p-1 bg-charcoal-100/80 dark:bg-[#162032] rounded-2xl border border-charcoal-200/60 dark:border-[#2D3B4F]">
+                  <div className="grid grid-cols-2 p-1 bg-charcoal-100/80 dark:bg-[#18181c] rounded-2xl border border-charcoal-200/60 dark:border-[#323238]">
                     <button
                       type="button"
                       onClick={() => handleRoleChange('student')}
                       className={`py-2 px-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
                         role === 'student'
-                          ? 'bg-white dark:bg-[#1E293B] text-navy-900 dark:text-white shadow-[0_2px_6px_rgba(24,49,83,0.08)] font-bold border border-charcoal-200/40 dark:border-transparent'
-                          : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white'
+                          ? 'bg-white dark:bg-[#27272a] text-navy-900 dark:text-white shadow-[0_2px_6px_rgba(24,49,83,0.08)] font-bold border border-charcoal-200/40 dark:border-transparent'
+                          : 'text-charcoal-600 dark:text-zinc-400 hover:text-navy-900 dark:hover:text-white'
                       }`}
                     >
-                      <GraduationCap className={`w-4 h-4 ${role === 'student' ? 'text-accent-600 dark:text-emerald-400' : 'text-charcoal-400 dark:text-slate-400'}`} />
+                      <GraduationCap className={`w-4 h-4 ${role === 'student' ? 'text-accent-600 dark:text-amber-400' : 'text-charcoal-400 dark:text-zinc-400'}`} />
                       <span className="text-xs">Student / Parent</span>
                     </button>
 
@@ -379,11 +379,11 @@ function LoginFormContent() {
                       onClick={() => handleRoleChange('teacher')}
                       className={`py-2 px-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
                         role === 'teacher'
-                          ? 'bg-white dark:bg-[#1E293B] text-navy-900 dark:text-white shadow-[0_2px_6px_rgba(24,49,83,0.08)] font-bold border border-charcoal-200/40 dark:border-transparent'
-                          : 'text-charcoal-600 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white'
+                          ? 'bg-white dark:bg-[#27272a] text-navy-900 dark:text-white shadow-[0_2px_6px_rgba(24,49,83,0.08)] font-bold border border-charcoal-200/40 dark:border-transparent'
+                          : 'text-charcoal-600 dark:text-zinc-400 hover:text-navy-900 dark:hover:text-white'
                       }`}
                     >
-                      <BookOpen className={`w-4 h-4 ${role === 'teacher' ? 'text-accent-600 dark:text-emerald-400' : 'text-charcoal-400 dark:text-slate-400'}`} />
+                      <BookOpen className={`w-4 h-4 ${role === 'teacher' ? 'text-accent-600 dark:text-amber-400' : 'text-charcoal-400 dark:text-zinc-400'}`} />
                       <span className="text-xs">Teacher / Tutor</span>
                     </button>
                   </div>
@@ -400,7 +400,7 @@ function LoginFormContent() {
                       <button
                         type="button"
                         onClick={() => handleModeChange('signup')}
-                        className="text-[11px] font-bold text-navy-900 dark:text-white underline hover:text-navy-950 dark:hover:text-emerald-300 block pl-6"
+                        className="text-[11px] font-bold text-navy-900 dark:text-white underline hover:text-navy-950 dark:hover:text-amber-300 block pl-6"
                       >
                         Create an account now with this email →
                       </button>
@@ -412,7 +412,7 @@ function LoginFormContent() {
                 <button
                   type="button"
                   onClick={handleGoogleLogin}
-                  className="w-full h-11 px-4 border border-charcoal-200/90 dark:border-[#2D3B4F] rounded-xl text-xs font-semibold text-charcoal-700 dark:text-slate-200 bg-white dark:bg-[#162032] hover:bg-charcoal-50/70 dark:hover:bg-[#1C283F] hover:border-charcoal-300 dark:hover:border-slate-500 flex items-center justify-center gap-2.5 transition-all duration-200 shadow-sm hover:shadow active:scale-[0.99] cursor-pointer"
+                  className="w-full h-11 px-4 border border-charcoal-200/90 dark:border-[#323238] rounded-xl text-xs font-semibold text-charcoal-700 dark:text-zinc-200 bg-white dark:bg-[#18181c] hover:bg-charcoal-50/70 dark:hover:bg-[#202025] hover:border-charcoal-300 dark:hover:border-slate-500 flex items-center justify-center gap-2.5 transition-all duration-200 shadow-sm hover:shadow active:scale-[0.99] cursor-pointer"
                 >
                   <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
                     <path
@@ -439,10 +439,10 @@ function LoginFormContent() {
 
                 <div className="relative my-4">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-charcoal-200/60 dark:border-[#1E293B]" />
+                    <div className="w-full border-t border-charcoal-200/60 dark:border-[#27272a]" />
                   </div>
                   <div className="relative flex justify-center text-[11px]">
-                    <span className="bg-white dark:bg-[#111827] px-2.5 text-charcoal-400 dark:text-slate-400 font-medium">
+                    <span className="bg-white dark:bg-[#121215] px-2.5 text-charcoal-400 dark:text-zinc-400 font-medium">
                       or continue with email
                     </span>
                   </div>
@@ -454,18 +454,18 @@ function LoginFormContent() {
                   {/* Full Name (Sign Up only) */}
                   {mode === 'signup' && (
                     <div>
-                      <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 mb-1">
+                      <label className="block text-xs font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">
                         Full Name
                       </label>
                       <div className="relative">
-                        <User className="w-4 h-4 text-charcoal-400 dark:text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
+                        <User className="w-4 h-4 text-charcoal-400 dark:text-zinc-400 absolute left-3.5 top-3.5 pointer-events-none" />
                         <input
                           type="text"
                           required
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
                           placeholder={role === 'teacher' ? 'e.g. Dr. Sarah Jenkins' : 'e.g. Jane Miller'}
-                          className="w-full h-11 pl-10 pr-3.5 bg-charcoal-50/60 dark:bg-[#162032] border border-charcoal-200/90 dark:border-[#2D3B4F] rounded-xl text-xs text-navy-900 dark:text-white placeholder:text-charcoal-400 dark:placeholder:text-slate-400 focus:bg-white dark:focus:bg-[#1C283F] focus:border-navy-700 dark:focus:border-emerald-500 focus:ring-4 focus:ring-navy-800/8 dark:focus:ring-emerald-500/10 transition-all duration-200 outline-none"
+                          className="w-full h-11 pl-10 pr-3.5 bg-charcoal-50/60 dark:bg-[#18181c] border border-charcoal-200/90 dark:border-[#323238] rounded-xl text-xs text-navy-900 dark:text-white placeholder:text-charcoal-400 dark:placeholder:text-slate-400 focus:bg-white dark:focus:bg-[#202025] focus:border-navy-700 dark:focus:border-amber-400 focus:ring-4 focus:ring-navy-800/8 dark:focus:ring-amber-400/10 transition-all duration-200 outline-none"
                         />
                       </div>
                     </div>
@@ -473,11 +473,11 @@ function LoginFormContent() {
 
                   {/* Email Input */}
                   <div>
-                    <label className="block text-xs font-semibold text-charcoal-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-semibold text-charcoal-700 dark:text-zinc-300 mb-1">
                       Email address
                     </label>
                     <div className="relative">
-                      <Mail className="w-4 h-4 text-charcoal-400 dark:text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
+                      <Mail className="w-4 h-4 text-charcoal-400 dark:text-zinc-400 absolute left-3.5 top-3.5 pointer-events-none" />
                       <input
                         type="email"
                         required
@@ -488,7 +488,7 @@ function LoginFormContent() {
                             ? 'educator@domain.com'
                             : 'student@example.com or parent@example.com'
                         }
-                        className="w-full h-11 pl-10 pr-3.5 bg-charcoal-50/60 dark:bg-[#162032] border border-charcoal-200/90 dark:border-[#2D3B4F] rounded-xl text-xs text-navy-900 dark:text-white placeholder:text-charcoal-400 dark:placeholder:text-slate-400 focus:bg-white dark:focus:bg-[#1C283F] focus:border-navy-700 dark:focus:border-emerald-500 focus:ring-4 focus:ring-navy-800/8 dark:focus:ring-emerald-500/10 transition-all duration-200 outline-none"
+                        className="w-full h-11 pl-10 pr-3.5 bg-charcoal-50/60 dark:bg-[#18181c] border border-charcoal-200/90 dark:border-[#323238] rounded-xl text-xs text-navy-900 dark:text-white placeholder:text-charcoal-400 dark:placeholder:text-slate-400 focus:bg-white dark:focus:bg-[#202025] focus:border-navy-700 dark:focus:border-amber-400 focus:ring-4 focus:ring-navy-800/8 dark:focus:ring-amber-400/10 transition-all duration-200 outline-none"
                       />
                     </div>
                   </div>
@@ -496,20 +496,20 @@ function LoginFormContent() {
                   {/* Password Input */}
                   <div>
                     <div className="flex justify-between items-center mb-1">
-                      <label className="text-xs font-semibold text-charcoal-700 dark:text-slate-300">
+                      <label className="text-xs font-semibold text-charcoal-700 dark:text-zinc-300">
                         Password
                       </label>
                       {mode === 'signin' && (
                         <Link 
                           href="/contact?inquiry=password-reset" 
-                          className="text-[11px] font-medium text-charcoal-500 dark:text-slate-400 hover:text-navy-900 dark:hover:text-emerald-400 transition-colors"
+                          className="text-[11px] font-medium text-charcoal-500 dark:text-zinc-400 hover:text-navy-900 dark:hover:text-amber-300 transition-colors"
                         >
                           Forgot password?
                         </Link>
                       )}
                     </div>
                     <div className="relative">
-                      <Lock className="w-4 h-4 text-charcoal-400 dark:text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
+                      <Lock className="w-4 h-4 text-charcoal-400 dark:text-zinc-400 absolute left-3.5 top-3.5 pointer-events-none" />
                       <input
                         type={showPassword ? 'text' : 'password'}
                         required
@@ -517,19 +517,19 @@ function LoginFormContent() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
-                        className="w-full h-11 pl-10 pr-10 bg-charcoal-50/60 dark:bg-[#162032] border border-charcoal-200/90 dark:border-[#2D3B4F] rounded-xl text-xs text-navy-900 dark:text-white placeholder:text-charcoal-400 dark:placeholder:text-slate-400 focus:bg-white dark:focus:bg-[#1C283F] focus:border-navy-700 dark:focus:border-emerald-500 focus:ring-4 focus:ring-navy-800/8 dark:focus:ring-emerald-500/10 transition-all duration-200 outline-none"
+                        className="w-full h-11 pl-10 pr-10 bg-charcoal-50/60 dark:bg-[#18181c] border border-charcoal-200/90 dark:border-[#323238] rounded-xl text-xs text-navy-900 dark:text-white placeholder:text-charcoal-400 dark:placeholder:text-slate-400 focus:bg-white dark:focus:bg-[#202025] focus:border-navy-700 dark:focus:border-amber-400 focus:ring-4 focus:ring-navy-800/8 dark:focus:ring-amber-400/10 transition-all duration-200 outline-none"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3.5 top-3.5 text-charcoal-400 dark:text-slate-400 hover:text-charcoal-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
+                        className="absolute right-3.5 top-3.5 text-charcoal-400 dark:text-zinc-400 hover:text-charcoal-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
                         aria-label="Toggle password visibility"
                       >
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </div>
                     {mode === 'signup' && (
-                      <span className="text-[10px] text-charcoal-400 dark:text-slate-400 mt-1 block">
+                      <span className="text-[10px] text-charcoal-400 dark:text-zinc-400 mt-1 block">
                         Must be at least 6 characters
                       </span>
                     )}
@@ -539,7 +539,7 @@ function LoginFormContent() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-11 mt-2 bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 active:scale-[0.99] text-white text-xs font-bold rounded-xl transition-all duration-200 shadow-[0_2px_4px_rgba(24,49,83,0.12)] hover:shadow-[0_4px_12px_rgba(24,49,83,0.18)] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
+                    className="w-full h-11 mt-2 bg-navy-800 hover:bg-navy-900 dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-zinc-950 font-bold active:scale-[0.99] text-white text-xs font-bold rounded-xl transition-all duration-200 shadow-[0_2px_4px_rgba(24,49,83,0.12)] hover:shadow-[0_4px_12px_rgba(24,49,83,0.18)] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
                   >
                     {loading ? (
                       <div className="flex items-center gap-2">
@@ -560,14 +560,14 @@ function LoginFormContent() {
                 </form>
 
                 {/* Footer Switcher */}
-                <div className="mt-5 pt-4 border-t border-charcoal-200/50 dark:border-[#1E293B] text-center text-xs text-charcoal-500 dark:text-slate-400">
+                <div className="mt-5 pt-4 border-t border-charcoal-200/50 dark:border-[#27272a] text-center text-xs text-charcoal-500 dark:text-zinc-400">
                   {mode === 'signin' ? (
                     <div>
                       Don't have an account?{' '}
                       <button
                         type="button"
                         onClick={() => handleModeChange('signup')}
-                        className="font-bold text-navy-800 dark:text-emerald-400 hover:text-navy-950 dark:hover:text-emerald-300 underline underline-offset-2 transition-colors cursor-pointer"
+                        className="font-bold text-navy-800 dark:text-amber-400 hover:text-navy-950 dark:hover:text-amber-300 underline underline-offset-2 transition-colors cursor-pointer"
                       >
                         Create an account →
                       </button>
@@ -578,7 +578,7 @@ function LoginFormContent() {
                       <button
                         type="button"
                         onClick={() => handleModeChange('signin')}
-                        className="font-bold text-navy-800 dark:text-emerald-400 hover:text-navy-950 dark:hover:text-emerald-300 underline underline-offset-2 transition-colors cursor-pointer"
+                        className="font-bold text-navy-800 dark:text-amber-400 hover:text-navy-950 dark:hover:text-amber-300 underline underline-offset-2 transition-colors cursor-pointer"
                       >
                         Sign In →
                       </button>
@@ -596,7 +596,7 @@ function LoginFormContent() {
       </main>
 
       {/* Clean Bottom Attribution */}
-      <footer className="relative z-10 w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between text-[11px] text-charcoal-400 dark:text-slate-400">
+      <footer className="relative z-10 w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between text-[11px] text-charcoal-400 dark:text-zinc-400">
         <p>© {new Date().getFullYear()} Classly Inc. Safe, verified learning.</p>
         <div className="flex items-center gap-4">
           <Link href="/privacy" className="hover:text-charcoal-600 dark:hover:text-slate-200 transition-colors">Privacy</Link>
@@ -612,8 +612,8 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#F9FAF8] dark:bg-[#0A0F1D] flex items-center justify-center">
-          <div className="w-6 h-6 border-2 border-navy-800/20 dark:border-emerald-400/20 border-t-navy-800 dark:border-t-emerald-400 rounded-full animate-spin" />
+        <div className="min-h-screen bg-[#F9FAF8] dark:bg-[#09090b] flex items-center justify-center">
+          <div className="w-6 h-6 border-2 border-navy-800/20 dark:border-amber-400/20 border-t-navy-800 dark:border-t-amber-400 rounded-full animate-spin" />
         </div>
       }
     >

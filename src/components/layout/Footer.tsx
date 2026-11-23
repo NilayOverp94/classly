@@ -5,9 +5,9 @@ import { Shield, Lock, Award, Globe, Mail, Phone } from 'lucide-react';
 
 export function Footer() {
   return (
-    <footer className="bg-navy-900 dark:bg-[#070C15] text-gray-300 border-t border-navy-800 dark:border-[#1E293B] transition-colors duration-200">
+    <footer className="bg-navy-900 dark:bg-[#09090b] text-gray-300 border-t border-navy-800 dark:border-[#27272a] transition-colors duration-200">
       {/* Trust & Safety Highlights Strip */}
-      <div className="border-b border-navy-800/80 bg-navy-950/40">
+      <div className="border-b border-navy-800/80 dark:border-[#27272a] bg-navy-950/40 dark:bg-[#121215]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-sm">
             <div className="flex items-center gap-3">

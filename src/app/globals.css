@@ -11,8 +11,8 @@
 }
 
 .dark {
-  --background: #0A0F1D;
-  --foreground: #F8FAFC;
+  --background: #09090b;
+  --foreground: #F4F4F5;
   color-scheme: dark;
 }
 
@@ -44,16 +44,16 @@ body {
 }
 
 .dark ::-webkit-scrollbar-track {
-  background: #0A0F1D;
+  background: #09090b;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #1E293B;
+  background: #27272a;
   border-radius: 4px;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #3f3f46;
 }
 
 @keyframes checkPop {

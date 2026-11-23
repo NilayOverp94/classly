@@ -84,7 +84,7 @@ export function SessionCountdownBanner({
         ? 'bg-gradient-to-r from-emerald-900/90 via-[#0B1E28] to-emerald-950 border-emerald-500/60 shadow-emerald-900/20'
         : isStartingSoon
         ? 'bg-gradient-to-r from-blue-950/90 via-[#0D152A] to-navy-950 border-blue-500/50 shadow-blue-900/20'
-        : 'bg-white dark:bg-[#111827] border-gray-200 dark:border-[#1E293B]'
+        : 'bg-white dark:bg-[#121215] border-gray-200 dark:border-[#27272a]'
     }`}>
       {/* Decorative background glow */}
       {isImminent && (
@@ -99,7 +99,7 @@ export function SessionCountdownBanner({
               ? 'bg-emerald-500/20 border-emerald-400 text-emerald-400 animate-pulse'
               : isStartingSoon
               ? 'bg-blue-500/20 border-blue-400 text-blue-400'
-              : 'bg-emerald-50 dark:bg-[#162032] border-emerald-200 dark:border-[#2D3B4F] text-emerald-600 dark:text-emerald-400'
+              : 'bg-emerald-50 dark:bg-[#18181c] border-emerald-200 dark:border-[#323238] text-emerald-600 dark:text-amber-400'
           }`}>
             {isImminent ? (
               <Radio className="w-6 h-6 animate-spin" style={{ animationDuration: '3s' }} />
@@ -135,7 +135,7 @@ export function SessionCountdownBanner({
               {subject} with {partnerName}
             </h3>
 
-            <div className="flex items-center gap-3 text-xs text-slate-300 dark:text-slate-400 mt-1 flex-wrap">
+            <div className="flex items-center gap-3 text-xs text-slate-300 dark:text-zinc-400 mt-1 flex-wrap">
               <span className="flex items-center gap-1">
                 <Calendar className="w-3.5 h-3.5 opacity-70" />
                 <span>{booking.formatted_time || `${booking.date} at ${booking.time_slot}`}</span>
@@ -181,7 +181,7 @@ export function SessionCountdownBanner({
               className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md ${
                 isImminent
                   ? 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-emerald-500/30 animate-pulse'
-                  : 'bg-navy-800 hover:bg-navy-900 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white'
+                  : 'bg-navy-800 hover:bg-navy-900 dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-zinc-950 font-bold text-white'
               }`}
             >
               <Video className="w-4 h-4" />

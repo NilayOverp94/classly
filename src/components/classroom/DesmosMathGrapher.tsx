@@ -337,10 +337,10 @@ export function DesmosMathGrapher({
   };
 
   return (
-    <div className={`flex flex-col h-full bg-[#0A0F1D] text-white border-l border-[#1E293B] ${className}`}>
+    <div className={`flex flex-col h-full bg-[#09090b] text-white border-l border-[#27272a] ${className}`}>
       
       {/* Top Controls Toolbar */}
-      <div className="h-11 bg-[#0D1424] border-b border-[#1E293B] px-3 sm:px-4 flex items-center justify-between gap-2 flex-shrink-0 select-none">
+      <div className="h-11 bg-[#09090b] border-b border-[#27272a] px-3 sm:px-4 flex items-center justify-between gap-2 flex-shrink-0 select-none">
         
         {/* Left: Branding & Presets Dropdown */}
         <div className="flex items-center gap-2">
@@ -355,7 +355,7 @@ export function DesmosMathGrapher({
               type="button"
               onClick={() => setShowPresetsMenu(!showPresetsMenu)}
               disabled={!canEdit}
-              className="px-2.5 py-1 bg-[#080D1A] border border-[#1E293B] hover:border-[#2D3B4F] disabled:opacity-50 text-slate-300 rounded-xl text-xs font-medium flex items-center gap-1.5 transition shadow-xs"
+              className="px-2.5 py-1 bg-[#080D1A] border border-[#27272a] hover:border-[#323238] disabled:opacity-50 text-slate-300 rounded-xl text-xs font-medium flex items-center gap-1.5 transition shadow-xs"
             >
               <TrendingUp className="w-3.5 h-3.5 text-blue-400" />
               <span>Math Presets</span>
@@ -363,7 +363,7 @@ export function DesmosMathGrapher({
             </button>
 
             {showPresetsMenu && (
-              <div className="absolute left-0 top-full mt-1.5 w-64 bg-[#0D1424] border border-[#1E293B] rounded-xl shadow-2xl py-1.5 z-50 text-xs">
+              <div className="absolute left-0 top-full mt-1.5 w-64 bg-[#09090b] border border-[#27272a] rounded-xl shadow-2xl py-1.5 z-50 text-xs">
                 <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                   Select Interactive Curve:
                 </div>
@@ -371,7 +371,7 @@ export function DesmosMathGrapher({
                   <button
                     key={preset.id}
                     onClick={() => handleLoadPreset(preset)}
-                    className="w-full text-left px-3 py-2 hover:bg-[#1E293B] text-slate-200 flex items-center justify-between transition"
+                    className="w-full text-left px-3 py-2 hover:bg-[#27272a] text-slate-200 flex items-center justify-between transition"
                   >
                     <div>
                       <div className="font-medium text-xs">{preset.title}</div>
@@ -393,7 +393,7 @@ export function DesmosMathGrapher({
               value={latexInput}
               onChange={(e) => setLatexInput(e.target.value)}
               placeholder="e.g. y = x^2 - 4 or y = sin(x)"
-              className="w-full px-3 py-1 bg-[#080D1A] border border-[#1E293B] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition shadow-inner"
+              className="w-full px-3 py-1 bg-[#080D1A] border border-[#27272a] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition shadow-inner"
             />
             <button
               type="submit"
@@ -414,8 +414,8 @@ export function DesmosMathGrapher({
               disabled={isExportingSnapshot}
               className={`px-3 py-1 rounded-xl text-xs font-medium flex items-center gap-1.5 transition shadow-xs ${
                 snapshotSuccess
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                  ? 'bg-amber-400 text-zinc-950 font-bold text-white'
+                  : 'bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold text-white'
               }`}
               title="Take a snapshot of this graph and paste directly into the whiteboard canvas"
             >
@@ -436,7 +436,7 @@ export function DesmosMathGrapher({
           {canEdit && (
             <button
               onClick={handleClearGraph}
-              className="px-2.5 py-1 bg-[#111827] border border-[#1E293B] hover:border-rose-500/30 text-slate-300 hover:text-rose-400 rounded-xl text-xs font-medium transition shadow-xs"
+              className="px-2.5 py-1 bg-[#121215] border border-[#27272a] hover:border-rose-500/30 text-slate-300 hover:text-rose-400 rounded-xl text-xs font-medium transition shadow-xs"
               title="Clear all expressions"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -456,13 +456,13 @@ export function DesmosMathGrapher({
       {/* Main Desmos Graph Container */}
       <div className="flex-1 relative w-full h-full min-h-[300px] overflow-hidden bg-white">
         {loadError && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-[#0A0F1D] text-slate-300">
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-[#09090b] text-slate-300">
             <Calculator className="w-10 h-10 text-rose-500 mb-2 opacity-80" />
             <h4 className="text-sm font-bold text-navy-900 dark:text-white mb-1">Grapher Connection Error</h4>
             <p className="text-xs max-w-sm mb-4">{loadError}</p>
             <button
               onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-navy-800 dark:bg-emerald-600 text-white rounded-lg text-xs font-semibold"
+              className="px-4 py-2 bg-navy-800 dark:bg-amber-400 dark:text-zinc-950 font-bold text-white rounded-lg text-xs font-semibold"
             >
               Reload Session
             </button>
@@ -470,8 +470,8 @@ export function DesmosMathGrapher({
         )}
 
         {!scriptLoaded && !loadError && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gray-50 dark:bg-[#0A0F1D] text-charcoal-500 dark:text-slate-400">
-            <div className="w-6 h-6 border-2 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gray-50 dark:bg-[#09090b] text-charcoal-500 dark:text-zinc-400">
+            <div className="w-6 h-6 border-2 border-amber-500/20 border-t-amber-400 rounded-full animate-spin" />
             <span className="text-xs font-medium">Loading Desmos Math Engine...</span>
           </div>
         )}

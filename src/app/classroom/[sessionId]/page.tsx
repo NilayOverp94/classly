@@ -1118,32 +1118,32 @@ export default function ClassroomPage() {
   };
 
   const renderWhiteboard = () => (
-    <div className="flex-1 flex flex-col h-full bg-[#0A0F1D] text-slate-200 relative overflow-hidden">
+    <div className="flex-1 flex flex-col h-full bg-[#09090b] text-slate-200 relative overflow-hidden">
       {/* Whiteboard Toolbar */}
-      <div className="h-11 bg-[#0D1424] border-b border-[#1E293B] px-3 sm:px-4 flex items-center justify-between text-xs flex-shrink-0 gap-2 overflow-x-auto select-none">
+      <div className="h-11 bg-[#09090b] border-b border-[#27272a] px-3 sm:px-4 flex items-center justify-between text-xs flex-shrink-0 gap-2 overflow-x-auto select-none">
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           <span className="font-medium text-white flex items-center gap-1.5 mr-1">
-            <PenTool className="w-3.5 h-3.5 text-emerald-400" />
+            <PenTool className="w-3.5 h-3.5 text-amber-400" />
             <span className="hidden md:inline">Canvas</span>
           </span>
 
           {/* If the user can draw, show tools */}
           {canDraw ? (
             <>
-              <div className="bg-[#080D1A] p-0.5 rounded-xl border border-[#1E293B] flex items-center shadow-inner">
+              <div className="bg-[#080D1A] p-0.5 rounded-xl border border-[#27272a] flex items-center shadow-inner">
                 <button
                   onClick={() => setTool('pen')}
                   className={`px-2.5 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
-                    tool === 'pen' ? 'bg-[#1E293B] text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
+                    tool === 'pen' ? 'bg-[#27272a] text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
-                  <PenTool className="w-3 h-3 text-emerald-400" />
+                  <PenTool className="w-3 h-3 text-amber-400" />
                   <span>Pen</span>
                 </button>
                 <button
                   onClick={() => setTool('eraser')}
                   className={`px-2.5 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
-                    tool === 'eraser' ? 'bg-[#1E293B] text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
+                    tool === 'eraser' ? 'bg-[#27272a] text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   <Eraser className="w-3 h-3 text-slate-400" />
@@ -1159,7 +1159,7 @@ export default function ClassroomPage() {
                     onClick={() => { setPenColor(color); setTool('pen'); }}
                     className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border transition-transform hover:scale-110 ${
                       penColor === color && tool === 'pen' 
-                        ? 'ring-2 ring-offset-2 ring-offset-[#0D1424] ring-emerald-400 scale-110 border-white' 
+                        ? 'ring-2 ring-offset-2 ring-offset-[#09090b] ring-amber-400 scale-110 border-white' 
                         : 'border-slate-700'
                     }`}
                     style={{ backgroundColor: color }}
@@ -1169,7 +1169,7 @@ export default function ClassroomPage() {
               </div>
 
               {/* Stroke Width Selector */}
-              <div className="hidden xl:flex items-center bg-[#080D1A] border border-[#1E293B] rounded-xl p-0.5">
+              <div className="hidden xl:flex items-center bg-[#080D1A] border border-[#27272a] rounded-xl p-0.5">
                 {[
                   { label: 'Fine', width: 2 },
                   { label: 'Medium', width: 4 },
@@ -1179,7 +1179,7 @@ export default function ClassroomPage() {
                     key={sw.width}
                     onClick={() => setStrokeWidth(sw.width)}
                     className={`px-2 py-0.5 rounded-lg text-[11px] font-medium transition ${
-                      strokeWidth === sw.width ? 'bg-[#1E293B] text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
+                      strokeWidth === sw.width ? 'bg-[#27272a] text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
                     }`}
                     title={`${sw.label} Stroke (${sw.width}px)`}
                   >
@@ -1200,11 +1200,11 @@ export default function ClassroomPage() {
         {/* Center / Right Toolbar Controls */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Whiteboard Page Navigation */}
-          <div className="flex items-center bg-[#080D1A] border border-[#1E293B] rounded-xl px-1.5 py-1 shadow-xs">
+          <div className="flex items-center bg-[#080D1A] border border-[#27272a] rounded-xl px-1.5 py-1 shadow-xs">
             <button
               onClick={() => handleSwitchPage(currentPage - 1)}
               disabled={currentPage <= 1}
-              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#1E293B] disabled:opacity-30 disabled:hover:bg-transparent transition"
+              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#27272a] disabled:opacity-30 disabled:hover:bg-transparent transition"
               title="Previous Page"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
@@ -1215,7 +1215,7 @@ export default function ClassroomPage() {
             <button
               onClick={() => handleSwitchPage(currentPage + 1)}
               disabled={currentPage >= totalPages}
-              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#1E293B] disabled:opacity-30 disabled:hover:bg-transparent transition"
+              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#27272a] disabled:opacity-30 disabled:hover:bg-transparent transition"
               title="Next Page"
             >
               <ChevronRight className="w-3.5 h-3.5" />
@@ -1224,7 +1224,7 @@ export default function ClassroomPage() {
               <button
                 onClick={handleAddPage}
                 disabled={totalPages >= 15}
-                className="ml-1 pl-1.5 border-l border-[#1E293B] py-0.5 text-emerald-400 hover:text-emerald-300 disabled:opacity-30 flex items-center gap-0.5 text-[11px] font-medium transition"
+                className="ml-1 pl-1.5 border-l border-[#27272a] py-0.5 text-amber-400 hover:text-amber-300 disabled:opacity-30 flex items-center gap-0.5 text-[11px] font-medium transition"
                 title="Add New Whiteboard Page"
               >
                 <Plus className="w-3.5 h-3.5" />
@@ -1237,7 +1237,7 @@ export default function ClassroomPage() {
             <>
               <button
                 onClick={handleUndo}
-                className="px-2.5 py-1 bg-[#111827] border border-[#1E293B] rounded-xl text-slate-300 hover:text-white hover:border-[#2D3B4F] font-medium flex items-center gap-1.5 transition text-xs shadow-xs"
+                className="px-2.5 py-1 bg-[#121215] border border-[#27272a] rounded-xl text-slate-300 hover:text-white hover:border-[#323238] font-medium flex items-center gap-1.5 transition text-xs shadow-xs"
                 title="Undo Stroke"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
@@ -1245,7 +1245,7 @@ export default function ClassroomPage() {
               </button>
               <button
                 onClick={clearCanvas}
-                className="px-2.5 py-1 bg-[#111827] border border-[#1E293B] rounded-xl text-slate-300 hover:text-rose-400 hover:border-rose-500/30 font-medium flex items-center gap-1.5 transition text-xs shadow-xs"
+                className="px-2.5 py-1 bg-[#121215] border border-[#27272a] rounded-xl text-slate-300 hover:text-rose-400 hover:border-rose-500/30 font-medium flex items-center gap-1.5 transition text-xs shadow-xs"
                 title="Clear Whiteboard"
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -1257,7 +1257,7 @@ export default function ClassroomPage() {
           {/* PNG Download */}
           <button
             onClick={downloadCanvas}
-            className="px-2.5 py-1 bg-[#111827] border border-[#1E293B] rounded-xl text-slate-300 hover:text-white hover:border-[#2D3B4F] font-medium flex items-center gap-1.5 transition text-xs shadow-xs"
+            className="px-2.5 py-1 bg-[#121215] border border-[#27272a] rounded-xl text-slate-300 hover:text-white hover:border-[#323238] font-medium flex items-center gap-1.5 transition text-xs shadow-xs"
             title="Download Current Page as PNG"
           >
             <Download className="w-3.5 h-3.5" />
@@ -1268,7 +1268,7 @@ export default function ClassroomPage() {
           <button
             onClick={exportAllPagesToPdf}
             disabled={isExportingPdf}
-            className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 text-white rounded-xl font-medium flex items-center gap-1.5 shadow-xs transition text-xs"
+            className="px-3 py-1 bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold disabled:opacity-60 text-white rounded-xl font-medium flex items-center gap-1.5 shadow-xs transition text-xs"
             title="Export All Whiteboard Pages as PDF Notes"
           >
             <FileText className="w-3.5 h-3.5" />
@@ -1294,7 +1294,7 @@ export default function ClassroomPage() {
 
         {/* Locked Overlay for Student when not permitted */}
         {!canDraw && (
-          <div className="absolute inset-0 bg-[#0A0F1D]/80 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center z-10 transition-colors">
+          <div className="absolute inset-0 bg-[#09090b]/80 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center z-10 transition-colors">
             <div className="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-3 shadow-xs">
               <Lock className="w-6 h-6" />
             </div>
@@ -1307,7 +1307,7 @@ export default function ClassroomPage() {
             <button
               onClick={handleRequestWhiteboardAccess}
               disabled={accessRequestSent}
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:bg-[#1E293B] disabled:text-slate-500 text-white rounded-xl text-xs font-medium transition flex items-center gap-2 shadow-xs"
+              className="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold disabled:bg-[#27272a] disabled:text-slate-500 text-white rounded-xl text-xs font-medium transition flex items-center gap-2 shadow-xs"
             >
               <Hand className="w-4 h-4" />
               <span>{accessRequestSent ? 'Access Requested — Waiting for Educator...' : 'Request Drawing Access'}</span>
@@ -1333,19 +1333,19 @@ export default function ClassroomPage() {
     <div className="bg-navy-950 text-white min-h-screen flex flex-col h-screen overflow-hidden select-none">
       
       {/* Top Classroom Bar */}
-      <header className="h-14 bg-[#0B0F19] border-b border-[#1E293B] px-4 sm:px-6 flex items-center justify-between z-20 flex-shrink-0">
+      <header className="h-14 bg-[#0B0F19] border-b border-[#27272a] px-4 sm:px-6 flex items-center justify-between z-20 flex-shrink-0">
         <div className="flex items-center gap-3">
           <Link 
             href={userRole === 'teacher' ? '/dashboard/teacher' : '/dashboard/student'} 
             className="font-bold text-sm text-white flex items-center gap-2 hover:opacity-90 transition group"
           >
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="tracking-tight text-white group-hover:text-emerald-400 transition-colors">Classly Studio</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+            <span className="tracking-tight text-white group-hover:text-amber-400 transition-colors">Classly Studio</span>
           </Link>
           <span className="text-slate-700 hidden sm:inline">/</span>
           <div className="hidden sm:flex items-center gap-2 text-xs">
             <span className="font-medium text-slate-300">{userName}</span>
-            <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
               {userRole === 'teacher' ? 'Educator' : 'Student'}
             </span>
           </div>
@@ -1355,11 +1355,11 @@ export default function ClassroomPage() {
         <div className="flex items-center gap-2 sm:gap-3">
           
           {/* View Mode Switcher */}
-          <div className="bg-[#080D1A] p-0.5 rounded-xl border border-[#1E293B] flex items-center text-xs shadow-inner">
+          <div className="bg-[#080D1A] p-0.5 rounded-xl border border-[#27272a] flex items-center text-xs shadow-inner">
             <button
               onClick={() => setViewMode('video_only')}
               className={`px-3 py-1.5 rounded-lg font-medium transition ${
-                viewMode === 'video_only' ? 'bg-[#1E293B] text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
+                viewMode === 'video_only' ? 'bg-[#27272a] text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               Video Only
@@ -1367,7 +1367,7 @@ export default function ClassroomPage() {
             <button
               onClick={() => setViewMode('split')}
               className={`px-3 py-1.5 rounded-lg font-medium transition ${
-                viewMode === 'split' ? 'bg-[#1E293B] text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
+                viewMode === 'split' ? 'bg-[#27272a] text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               Split View
@@ -1375,7 +1375,7 @@ export default function ClassroomPage() {
             <button
               onClick={() => setViewMode('whiteboard_only')}
               className={`px-3 py-1.5 rounded-lg font-medium transition ${
-                viewMode === 'whiteboard_only' ? 'bg-[#1E293B] text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
+                viewMode === 'whiteboard_only' ? 'bg-[#27272a] text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               Workspace
@@ -1388,7 +1388,7 @@ export default function ClassroomPage() {
               onClick={() => handleToggleStudentWhiteboard(!studentWhiteboardAllowed)}
               className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition ${
                 studentWhiteboardAllowed
-                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
+                  ? 'bg-amber-500/10 text-amber-400 border-amber-500/30 hover:bg-amber-300/20'
                   : 'bg-amber-500/10 text-amber-400 border-amber-500/30 hover:bg-amber-500/20'
               }`}
               title={studentWhiteboardAllowed ? 'Click to lock student drawing access' : 'Click to grant student drawing access'}
@@ -1412,10 +1412,10 @@ export default function ClassroomPage() {
             <div className="hidden md:flex items-center">
               <span className={`px-2.5 py-1 rounded-xl text-xs font-medium border flex items-center gap-1.5 ${
                 studentWhiteboardAllowed 
-                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
-                  : 'bg-[#111827] border-[#1E293B] text-slate-400'
+                  ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' 
+                  : 'bg-[#121215] border-[#27272a] text-slate-400'
               }`}>
-                {studentWhiteboardAllowed ? <Unlock className="w-3.5 h-3.5 text-emerald-400" /> : <Lock className="w-3.5 h-3.5 text-slate-400" />}
+                {studentWhiteboardAllowed ? <Unlock className="w-3.5 h-3.5 text-amber-400" /> : <Lock className="w-3.5 h-3.5 text-slate-400" />}
                 <span>{studentWhiteboardAllowed ? 'Drawing Active' : 'Drawing Locked'}</span>
               </span>
             </div>
@@ -1458,8 +1458,8 @@ export default function ClassroomPage() {
           )}
 
           {/* Elapsed Timer */}
-          <div className="bg-[#111827] px-3 py-1.5 rounded-xl text-xs font-mono font-medium text-emerald-400 border border-[#1E293B] flex items-center gap-1.5 shadow-xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <div className="bg-[#121215] px-3 py-1.5 rounded-xl text-xs font-mono font-medium text-amber-400 border border-[#27272a] flex items-center gap-1.5 shadow-xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
             {formatTimer(seconds)}
           </div>
 
@@ -1484,13 +1484,13 @@ export default function ClassroomPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => handleToggleStudentWhiteboard(true)}
-              className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-medium text-xs transition shadow-xs"
+              className="px-3 py-1 bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold text-white rounded-lg font-medium text-xs transition shadow-xs"
             >
               Grant Access
             </button>
             <button
               onClick={() => setPendingStudentRequest(null)}
-              className="p-1 hover:bg-[#1E293B] rounded-lg text-slate-400 hover:text-white transition"
+              className="p-1 hover:bg-[#27272a] rounded-lg text-slate-400 hover:text-white transition"
             >
               <X className="w-4 h-4" />
             </button>
@@ -1500,12 +1500,12 @@ export default function ClassroomPage() {
 
       {/* Student Toast Notice */}
       {permissionNotice && (
-        <div className="bg-emerald-500/10 border-b border-emerald-500/30 text-emerald-200 px-4 py-2 text-xs font-medium flex items-center justify-between z-30 shadow-md backdrop-blur-xs">
+        <div className="bg-amber-500/10 border-b border-amber-500/30 text-amber-200 px-4 py-2 text-xs font-medium flex items-center justify-between z-30 shadow-md backdrop-blur-xs">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <CheckCircle2 className="w-4 h-4 text-amber-400" />
             <span>{permissionNotice}</span>
           </div>
-          <button onClick={() => setPermissionNotice(null)} className="text-emerald-400 hover:text-white transition">
+          <button onClick={() => setPermissionNotice(null)} className="text-amber-400 hover:text-white transition">
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -1578,29 +1578,29 @@ export default function ClassroomPage() {
         {/* INTERACTIVE WORKSPACE PANE: Whiteboard, Desmos Grapher, Split, Code Studio */}
         {(viewMode === 'split' || viewMode === 'whiteboard_only') && (
           <div className={`${
-            viewMode === 'split' ? 'w-full lg:w-1/2 border-l border-[#1E293B]' : 'flex-1'
-          } bg-[#0A0F1D] flex flex-col text-slate-200 relative shadow-2xl overflow-hidden`}>
+            viewMode === 'split' ? 'w-full lg:w-1/2 border-l border-[#27272a]' : 'flex-1'
+          } bg-[#09090b] flex flex-col text-slate-200 relative shadow-2xl overflow-hidden`}>
             
             {/* Unified Workspace Tab Navigation */}
-            <div className="h-11 bg-[#0D1424] border-b border-[#1E293B] px-3 sm:px-4 flex items-center justify-between text-xs flex-shrink-0 select-none">
+            <div className="h-11 bg-[#09090b] border-b border-[#27272a] px-3 sm:px-4 flex items-center justify-between text-xs flex-shrink-0 select-none">
               <div className="flex items-center gap-2">
-                <div className="bg-[#080D1A] p-0.5 rounded-xl border border-[#1E293B] flex items-center shadow-inner">
+                <div className="bg-[#080D1A] p-0.5 rounded-xl border border-[#27272a] flex items-center shadow-inner">
                   <button
                     onClick={() => handleWorkspaceTabChange('whiteboard')}
                     className={`px-3 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
                       activeWorkspaceTab === 'whiteboard'
-                        ? 'bg-[#1E293B] text-white shadow-xs'
+                        ? 'bg-[#27272a] text-white shadow-xs'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
-                    <PenTool className="w-3.5 h-3.5 text-emerald-400" />
+                    <PenTool className="w-3.5 h-3.5 text-amber-400" />
                     <span>Whiteboard</span>
                   </button>
                   <button
                     onClick={() => handleWorkspaceTabChange('grapher')}
                     className={`px-3 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
                       activeWorkspaceTab === 'grapher'
-                        ? 'bg-[#1E293B] text-white shadow-xs'
+                        ? 'bg-[#27272a] text-white shadow-xs'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -1611,7 +1611,7 @@ export default function ClassroomPage() {
                     onClick={() => handleWorkspaceTabChange('split')}
                     className={`px-3 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
                       activeWorkspaceTab === 'split'
-                        ? 'bg-[#1E293B] text-white shadow-xs'
+                        ? 'bg-[#27272a] text-white shadow-xs'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -1622,7 +1622,7 @@ export default function ClassroomPage() {
                     onClick={() => handleWorkspaceTabChange('code')}
                     className={`px-3 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
                       activeWorkspaceTab === 'code'
-                        ? 'bg-[#1E293B] text-white shadow-xs'
+                        ? 'bg-[#27272a] text-white shadow-xs'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -1633,7 +1633,7 @@ export default function ClassroomPage() {
               </div>
 
               <div className="hidden sm:flex items-center gap-2 text-[11px] text-slate-400">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
                 <span>
                   {activeWorkspaceTab === 'whiteboard' && 'Interactive Collaborative Canvas'}
                   {activeWorkspaceTab === 'grapher' && 'Desmos Graphing Engine'}
@@ -1661,7 +1661,7 @@ export default function ClassroomPage() {
 
             {activeWorkspaceTab === 'split' && (
               <div className="flex-1 flex flex-col xl:flex-row h-full overflow-hidden">
-                <div className="flex-1 h-1/2 xl:h-full overflow-hidden border-b xl:border-b-0 xl:border-r border-[#1E293B]">
+                <div className="flex-1 h-1/2 xl:h-full overflow-hidden border-b xl:border-b-0 xl:border-r border-[#27272a]">
                   {renderWhiteboard()}
                 </div>
                 <div className="flex-1 h-1/2 xl:h-full flex flex-col overflow-hidden relative">
@@ -1715,7 +1715,7 @@ export default function ClassroomPage() {
         details={
           <div className="flex items-center justify-between text-[11px]">
             <span className="text-gray-400">Session Duration:</span>
-            <span className="font-mono font-bold text-emerald-400">{formatTimer(seconds)}</span>
+            <span className="font-mono font-bold text-amber-400">{formatTimer(seconds)}</span>
           </div>
         }
       />

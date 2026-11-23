@@ -152,20 +152,20 @@ export function RecordingPlaybackModal({
   return (
     <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-in fade-in duration-200">
       <div 
-        className="bg-[#0D1322] border border-[#1E293B] text-slate-100 rounded-2xl w-full max-w-5xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[92vh]"
+        className="bg-[#09090b] border border-[#27272a] text-slate-100 rounded-2xl w-full max-w-5xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b border-[#1E293B] bg-[#111827] flex items-center justify-between gap-4">
+        <div className="p-4 sm:p-5 border-b border-[#27272a] bg-[#121215] flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
               <ListVideo className="w-5 h-5" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className={`px-2 py-0.5 rounded text-[11px] font-bold tracking-wide uppercase ${
                   recording.subject.toLowerCase().includes('computer')
-                    ? 'bg-emerald-950/80 border border-emerald-500/40 text-emerald-300'
+                    ? 'bg-amber-950/60 border border-amber-500/40 text-amber-300'
                     : 'bg-blue-950/80 border border-blue-500/40 text-blue-300'
                 }`}>
                   {recording.subject}
@@ -188,15 +188,15 @@ export function RecordingPlaybackModal({
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={handleCopyLink}
-              className="p-2 sm:px-3 sm:py-1.5 rounded-lg bg-[#162032] hover:bg-[#1E293B] text-slate-300 hover:text-white border border-[#1E293B] text-xs font-semibold flex items-center gap-1.5 transition"
+              className="p-2 sm:px-3 sm:py-1.5 rounded-lg bg-[#18181c] hover:bg-[#27272a] text-slate-300 hover:text-white border border-[#27272a] text-xs font-semibold flex items-center gap-1.5 transition"
               title="Copy Shareable Recording Link"
             >
-              {copiedLink ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
+              {copiedLink ? <Check className="w-4 h-4 text-amber-400" /> : <Share2 className="w-4 h-4" />}
               <span className="hidden sm:inline">{copiedLink ? 'Link Copied' : 'Share'}</span>
             </button>
             <button
               onClick={handleDownload}
-              className="p-2 sm:px-3 sm:py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition"
+              className="p-2 sm:px-3 sm:py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition"
               title="Download Recording Video"
             >
               <Download className="w-4 h-4" />
@@ -204,7 +204,7 @@ export function RecordingPlaybackModal({
             </button>
             <button
               onClick={onClose}
-              className="p-2 rounded-lg bg-[#162032] hover:bg-[#1E293B] text-slate-400 hover:text-white transition"
+              className="p-2 rounded-lg bg-[#18181c] hover:bg-[#27272a] text-slate-400 hover:text-white transition"
               title="Close Player"
             >
               <X className="w-5 h-5" />
@@ -230,7 +230,7 @@ export function RecordingPlaybackModal({
           {!isPlaying && (
             <button
               onClick={togglePlay}
-              className="absolute w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-emerald-600/90 hover:bg-emerald-500 text-white flex items-center justify-center shadow-2xl transition-all transform hover:scale-110 z-10 backdrop-blur-sm"
+              className="absolute w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-amber-400/90 hover:bg-amber-300 text-zinc-950 font-bold text-white flex items-center justify-center shadow-2xl transition-all transform hover:scale-110 z-10 backdrop-blur-sm"
               aria-label="Play recording"
             >
               <Play className="w-8 h-8 sm:w-10 sm:h-10 ml-1 fill-white" />
@@ -247,7 +247,7 @@ export function RecordingPlaybackModal({
                 max={duration || recording.duration_seconds || 100}
                 value={currentTime}
                 onChange={handleSeek}
-                className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500 hover:h-2 transition-all"
+                className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-400 hover:h-2 transition-all"
               />
             </div>
 
@@ -284,7 +284,7 @@ export function RecordingPlaybackModal({
                       onClick={() => handleSpeedChange(speed)}
                       className={`px-2 py-0.5 rounded text-[11px] font-semibold transition ${
                         playbackSpeed === speed
-                          ? 'bg-emerald-600 text-white'
+                          ? 'bg-amber-400 text-zinc-950 font-bold text-white'
                           : 'text-slate-400 hover:text-white'
                       }`}
                     >
@@ -312,11 +312,11 @@ export function RecordingPlaybackModal({
         </div>
 
         {/* Chapters & Lesson Meta Footer */}
-        <div className="p-4 sm:p-5 bg-[#0F172A] border-t border-[#1E293B] grid grid-cols-1 md:grid-cols-12 gap-4">
+        <div className="p-4 sm:p-5 bg-[#0F172A] border-t border-[#27272a] grid grid-cols-1 md:grid-cols-12 gap-4">
           {/* Chapter Timeline Jump Marks */}
           <div className="md:col-span-8">
             <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5 mb-2.5">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
               <span>Session Chapters & Timestamps</span>
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -325,12 +325,12 @@ export function RecordingPlaybackModal({
                   <button
                     key={idx}
                     onClick={() => handleJumpToChapter(ch.time)}
-                    className="p-2.5 rounded-xl bg-[#162032] hover:bg-[#1E293B] border border-[#1E293B] hover:border-emerald-500/40 text-left transition flex items-center justify-between group"
+                    className="p-2.5 rounded-xl bg-[#18181c] hover:bg-[#27272a] border border-[#27272a] hover:border-amber-500/40 text-left transition flex items-center justify-between group"
                   >
                     <span className="text-xs text-slate-300 group-hover:text-white font-medium truncate mr-2">
                       {ch.title}
                     </span>
-                    <span className="px-2 py-0.5 bg-[#0D1117] text-emerald-400 rounded text-[10px] font-mono font-bold shrink-0">
+                    <span className="px-2 py-0.5 bg-[#121215] text-amber-400 rounded text-[10px] font-mono font-bold shrink-0">
                       {ch.time}
                     </span>
                   </button>
@@ -344,7 +344,7 @@ export function RecordingPlaybackModal({
           </div>
 
           {/* Session Metadata Card */}
-          <div className="md:col-span-4 bg-[#141E33] border border-[#1E293B] rounded-xl p-3.5 flex flex-col justify-between">
+          <div className="md:col-span-4 bg-[#141E33] border border-[#27272a] rounded-xl p-3.5 flex flex-col justify-between">
             <div>
               <span className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Lesson Details</span>
               <div className="mt-2 space-y-1.5 text-xs text-slate-300">
@@ -358,7 +358,7 @@ export function RecordingPlaybackModal({
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Session ID:</span>
-                  <span className="font-mono text-emerald-400">{recording.session_id}</span>
+                  <span className="font-mono text-amber-400">{recording.session_id}</span>
                 </div>
                 {recording.file_size && (
                   <div className="flex justify-between">
@@ -371,7 +371,7 @@ export function RecordingPlaybackModal({
 
             <button
               onClick={handleDownload}
-              className="mt-3 w-full py-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/40 hover:border-emerald-500 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5"
+              className="mt-3 w-full py-2 bg-amber-400 text-zinc-950 font-bold/20 hover:bg-amber-400 text-zinc-950 font-bold/30 text-amber-400 border border-amber-500/40 hover:border-amber-500/40 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Download Offline (.mp4)</span>

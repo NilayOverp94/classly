@@ -23,10 +23,10 @@ export function ThemeToggle({ className = '', showLabel = false }: ThemeTogglePr
   if (!mounted) {
     return (
       <div 
-        className={`w-9 h-9 rounded-xl border border-gray-200/70 dark:border-[#1E293B] bg-gray-50/80 dark:bg-[#111827] flex items-center justify-center opacity-60 ${className}`}
+        className={`w-9 h-9 rounded-xl border border-gray-200/70 dark:border-[#27272a] bg-gray-50/80 dark:bg-[#121215] flex items-center justify-center opacity-60 ${className}`}
         aria-hidden="true"
       >
-        <div className="w-4 h-4 rounded-full bg-gray-200 dark:bg-slate-700 animate-pulse" />
+        <div className="w-4 h-4 rounded-full bg-gray-200 dark:bg-zinc-800 animate-pulse" />
       </div>
     );
   }
@@ -117,7 +117,7 @@ export function ThemeToggle({ className = '', showLabel = false }: ThemeTogglePr
           : 'w-9 h-9'
       } ${
         isDark
-          ? 'bg-[#111827] border border-[#1E293B] text-amber-300 hover:bg-[#162032] hover:border-slate-600 hover:text-amber-200 shadow-sm'
+          ? 'bg-[#121215] border border-[#27272a] text-amber-300 hover:bg-[#18181c] hover:border-zinc-700 hover:text-amber-200 shadow-sm'
           : 'bg-gray-50 hover:bg-gray-100 border border-gray-200/90 text-charcoal-700 hover:text-navy-900 shadow-subtle'
       } ${className}`}
     >
@@ -150,7 +150,7 @@ export function ThemeToggle({ className = '', showLabel = false }: ThemeTogglePr
       </div>
 
       {showLabel && (
-        <span className="text-xs font-medium text-charcoal-700 dark:text-slate-200">
+        <span className="text-xs font-medium text-charcoal-700 dark:text-zinc-200">
           {isDark ? 'Dark Mode' : 'Light Mode'}
         </span>
       )}
